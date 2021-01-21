@@ -59,6 +59,11 @@ public class MemberService {
                 int lastIndex = originname.lastIndexOf(".");
                 String filetype = originname.substring(lastIndex + 1);
                 int filesize = (int) photo.getSize();
+
+                if(!new File(dir).exists()){
+                    new File(dir).mkdirs();
+                }
+
                 File file = new File(dir, filename);
                 FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
 
