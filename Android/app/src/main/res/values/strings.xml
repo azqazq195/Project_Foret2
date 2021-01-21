@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">jjap_guen</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">홈</string>
+    <string name="anonymousForum">게시판</string>
+    <string name="search">검색</string>
+    <string name="chatting">채팅</string>
+    <string name="notification">알람</string>
+</resources>
