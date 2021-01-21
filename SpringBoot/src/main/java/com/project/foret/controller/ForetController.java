@@ -1,7 +1,9 @@
 package com.project.foret.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.Gson;
 import com.project.foret.model.Foret;
 import com.project.foret.repository.ForetRepository;
 import com.project.foret.service.ForetService;
@@ -35,8 +37,8 @@ public class ForetController {
     }
 
     @GetMapping(value = "/all")
-    public List<Foret> getAll() {
-        return foretRepository.findAll();
+    public String getAll() {
+        return foretService.getAll();
     }
 
     @DeleteMapping(value = "")

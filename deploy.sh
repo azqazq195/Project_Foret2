@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu/apps/
+REPOSITORY=/home/ubuntu/apps/Project_Foret_APP2
 
 cd $REPOSITORY/SpringBoot/
 

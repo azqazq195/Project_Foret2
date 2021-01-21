@@ -2,8 +2,11 @@ package com.project.foret.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.*;
 import com.project.foret.model.Foret;
 import com.project.foret.model.ForetPhoto;
 import com.project.foret.model.Member;
@@ -14,6 +17,7 @@ import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
 
+import com.project.foret.response.ForetResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,5 +76,10 @@ public class ForetService {
             }
         }
         return foretRepository.save(foret);
+    }
+
+    public String getAll() {
+        List<Foret> forets = foretRepository.findAll();
+        return new Gson().toJson(new ForetResponse(forets.size(), forets));
     }
 }
