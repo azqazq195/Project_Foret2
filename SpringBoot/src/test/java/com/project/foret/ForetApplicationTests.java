@@ -1,10 +1,10 @@
-package com.project.danggeun;
+package com.project.foret;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DanggeunApplicationTests {
+class ForetApplicationTests {
 
 	@Test
 	void contextLoads() {
