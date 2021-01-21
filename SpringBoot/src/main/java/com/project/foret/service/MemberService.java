@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @AllArgsConstructor
 public class MemberService {
@@ -26,7 +28,7 @@ public class MemberService {
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
 
-    public Member save(Member newMember, MultipartFile[] newFile) throws Exception {
+    public Member save(HttpServletRequest request, Member newMember, MultipartFile[] newFile) throws Exception {
         List<Tag> tagList = newMember.getTags();
         List<Region> regionList = newMember.getRegions();
 
@@ -49,7 +51,9 @@ public class MemberService {
 
         if (newFile != null) {
             for (MultipartFile photo : newFile) {
-                String dir = System.getProperty("user.dir") + "/src/main/resources/storage";
+                String root_path = request.getSession().getServletContext().getRealPath("/");
+                String attach_path = "resources/storage/";
+                String dir = root_path + attach_path;
                 String originname = photo.getOriginalFilename();
                 String filename = photo.getOriginalFilename();
                 int lastIndex = originname.lastIndexOf(".");
