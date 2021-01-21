@@ -28,8 +28,8 @@ public class MemberController {
     private MemberRepository memberRepository;
 
     @PostMapping(value = "")
-    public Member insert(HttpServletRequest request, Member member, MultipartFile[] file) throws Exception {
-        return memberService.save(request, member, file);
+    public Member insert(Member member, MultipartFile[] file) throws Exception {
+        return memberService.save(member, file);
     }
 
     @GetMapping(value = "")
