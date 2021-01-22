@@ -1,9 +1,11 @@
 package com.project.foret.service;
 
 import com.project.foret.entity.Member;
+import com.project.foret.entity.MemberPhoto;
 import com.project.foret.entity.Region;
 import com.project.foret.entity.Tag;
 import com.project.foret.model.MemberModel;
+import com.project.foret.model.MemberPhotoModel;
 import com.project.foret.model.RegionModel;
 import com.project.foret.model.TagModel;
 import com.project.foret.repository.MemberRepository;
@@ -12,8 +14,13 @@ import com.project.foret.repository.TagRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +32,7 @@ public class MemberService {
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
 
-    public ResponseEntity<Object> createMember(Member model) {
+    public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
         Member newMember = new Member();
         if (memberRepository.findByEmail(model.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("이미 사용중인 이메일 입니다. 회원가입 실패");
@@ -46,7 +53,30 @@ public class MemberService {
                     newMember.addRegion(regionRepository.findByRegionSiAndRegionGu(region.getRegionSi(), region.getRegionGu()).get());
                 }
             }
-            // 사진, 포레
+            if (files != null) {
+                for (MultipartFile photo : files) {
+                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage";
+                    String originname = photo.getOriginalFilename();
+                    String filename = photo.getOriginalFilename();
+                    int lastIndex = originname.lastIndexOf(".");
+                    String filetype = originname.substring(lastIndex + 1);
+                    int filesize = (int) photo.getSize();
+                    if (!new File(dir).exists()) {
+                        new File(dir).mkdirs();
+                    }
+                    File file = new File(dir, filename);
+                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
+
+                    MemberPhoto memberPhoto = new MemberPhoto();
+                    memberPhoto.setDir(dir);
+                    memberPhoto.setOriginname(originname);
+                    memberPhoto.setFilename(filename);
+                    memberPhoto.setFiletype(filetype);
+                    memberPhoto.setFilesize(filesize);
+                    newMember.addPhoto(memberPhoto);
+                }
+            }
+            // 포레
             Member savedMember = memberRepository.save(newMember);
             if (memberRepository.findById(savedMember.getId()).isPresent())
                 return ResponseEntity.ok("회원가입 성공");
@@ -104,6 +134,7 @@ public class MemberService {
             memberModel.setReg_date(member.getReg_date());
             memberModel.setTags(getTagList(member));
             memberModel.setRegions(getRegionList(member));
+            memberModel.setPhotos(getPhotoList(member));
             return memberModel;
         } else return null;
     }
@@ -132,22 +163,43 @@ public class MemberService {
     // 이걸로 안하면 태그안의 멤버타고 재귀 순회
     private List<TagModel> getTagList(Member member) {
         List<TagModel> tagList = new ArrayList<>();
-        for (Tag tag : member.getTags()) {
-            TagModel tagModel = new TagModel();
-            tagModel.setTagName(tag.getTagName());
-            tagList.add(tagModel);
-        }
-        return tagList;
+        if (member.getTags() != null && member.getTags().size() != 0) {
+            for (Tag tag : member.getTags()) {
+                TagModel tagModel = new TagModel();
+                tagModel.setTagName(tag.getTagName());
+                tagList.add(tagModel);
+            }
+            return tagList;
+        } else return null;
     }
 
     private List<RegionModel> getRegionList(Member member) {
         List<RegionModel> regionList = new ArrayList<>();
-        for (Region region : member.getRegions()) {
-            RegionModel regionModel = new RegionModel();
-            regionModel.setRegionSi(region.getRegionSi());
-            regionModel.setRegionGu(region.getRegionGu());
-            regionList.add(regionModel);
-        }
-        return regionList;
+        if (member.getRegions() != null && member.getRegions().size() != 0) {
+            for (Region region : member.getRegions()) {
+                RegionModel regionModel = new RegionModel();
+                regionModel.setRegionSi(region.getRegionSi());
+                regionModel.setRegionGu(region.getRegionGu());
+                regionList.add(regionModel);
+            }
+            return regionList;
+        } else return null;
+    }
+
+    private List<MemberPhotoModel> getPhotoList(Member member){
+        List<MemberPhotoModel> photoList = new ArrayList<>();
+        if (member.getPhotos() != null && member.getPhotos().size() != 0) {
+            for (MemberPhoto memberPhoto : member.getPhotos()) {
+                MemberPhotoModel memberPhotoModel = new MemberPhotoModel();
+                memberPhotoModel.setDir(memberPhoto.getDir());
+                memberPhotoModel.setFilename(memberPhoto.getFilename());
+                memberPhotoModel.setOriginname(memberPhoto.getOriginname());
+                memberPhotoModel.setFilesize(memberPhoto.getFilesize());
+                memberPhotoModel.setFiletype(memberPhoto.getFiletype());
+                memberPhotoModel.setReg_date(memberPhoto.getReg_date());
+                photoList.add(memberPhotoModel);
+            }
+            return photoList;
+        } else return null;
     }
 }

@@ -20,8 +20,8 @@ public class MemberController {
     private MemberRepository memberRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createMember(@RequestBody Member member, MultipartFile[] files) {
-        return memberService.createMember(member);
+    public ResponseEntity<Object> createMember(Member member, MultipartFile[] files) throws Exception {
+        return memberService.createMember(member, files);
     }
 
     @GetMapping("/details/{id}")

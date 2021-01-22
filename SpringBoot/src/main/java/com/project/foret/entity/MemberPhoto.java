@@ -23,6 +23,6 @@ public class MemberPhoto {
     private Date reg_date;
 
     @ManyToOne
-    @JoinColumn (name = "member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 }

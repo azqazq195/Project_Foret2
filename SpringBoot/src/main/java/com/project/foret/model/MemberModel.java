@@ -18,6 +18,6 @@ public class MemberModel {
     private Date reg_date;
     private List<TagModel> tags;
     private List<RegionModel> regions;
-    private List<MemberPhoto> photos;
+    private List<MemberPhotoModel> photos;
     private List<Foret> forets;
 }

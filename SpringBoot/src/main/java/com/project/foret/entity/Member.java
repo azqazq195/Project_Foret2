@@ -30,8 +30,8 @@ public class Member {
     private List<Tag> tags;
     @ManyToMany(targetEntity = Region.class, cascade = CascadeType.ALL)
     private List<Region> regions;
-//    @OneToMany(targetEntity = MemberPhoto.class, cascade = CascadeType.ALL)
-//    private Set<MemberPhoto> photos;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberPhoto> photos;
 
 //    @ManyToMany(targetEntity = Foret.class, cascade = CascadeType.ALL)
 //    private Set<Foret> forets;
@@ -48,6 +48,14 @@ public class Member {
             regions = new ArrayList<>();
         }
         regions.add(region);
+    }
+
+    public void addPhoto(MemberPhoto memberPhoto) {
+        if (photos == null) {
+            photos = new ArrayList<>();
+        }
+        photos.add(memberPhoto);
+        memberPhoto.setMember(this);
     }
 
 }
