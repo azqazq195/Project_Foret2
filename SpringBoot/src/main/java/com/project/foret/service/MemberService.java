@@ -8,6 +8,7 @@ import com.project.foret.model.MemberModel;
 import com.project.foret.model.MemberPhotoModel;
 import com.project.foret.model.RegionModel;
 import com.project.foret.model.TagModel;
+import com.project.foret.repository.MemberPhotoRepository;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
@@ -31,6 +32,7 @@ public class MemberService {
     private MemberRepository memberRepository;
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
+    private MemberPhotoRepository memberPhotoRepository;
 
     public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
         Member newMember = new Member();
@@ -85,15 +87,21 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity<Object> updateMember(Member model, Long id) {
+    public ResponseEntity<Object> updateMember(Long id, Member model, MultipartFile[] files) throws Exception {
         if (memberRepository.findById(id).isPresent()) {
             Member updateMember = memberRepository.findById(id).get();
+            memberPhotoRepository.deleteByMemberId(id);
+
             updateMember.setName(model.getName());
             updateMember.setEmail(model.getEmail());
             updateMember.setPassword(model.getPassword());
             updateMember.setNickname(model.getNickname());
             updateMember.setBirth(model.getBirth());
             updateMember.setDeviceToken(model.getDeviceToken());
+            // 기존에 있던거 초기화
+            updateMember.setTags(null);
+            updateMember.setRegions(null);
+            updateMember.setPhotos(null);
             if (model.getTags() != null) {
                 for (Tag tag : model.getTags()) {
                     updateMember.addTag(tagRepository.findByTagName(tag.getTagName()).get());
@@ -104,7 +112,30 @@ public class MemberService {
                     updateMember.addRegion(regionRepository.findByRegionSiAndRegionGu(region.getRegionSi(), region.getRegionGu()).get());
                 }
             }
-            // 사진, 포레
+            if (files != null) {
+                for (MultipartFile photo : files) {
+                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage";
+                    String originname = photo.getOriginalFilename();
+                    String filename = photo.getOriginalFilename();
+                    int lastIndex = originname.lastIndexOf(".");
+                    String filetype = originname.substring(lastIndex + 1);
+                    int filesize = (int) photo.getSize();
+                    if (!new File(dir).exists()) {
+                        new File(dir).mkdirs();
+                    }
+                    File file = new File(dir, filename);
+                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
+
+                    MemberPhoto memberPhoto = new MemberPhoto();
+                    memberPhoto.setDir(dir);
+                    memberPhoto.setOriginname(originname);
+                    memberPhoto.setFilename(filename);
+                    memberPhoto.setFiletype(filetype);
+                    memberPhoto.setFilesize(filesize);
+                    updateMember.addPhoto(memberPhoto);
+                }
+            }
+            // 포레
             Member savedMember = memberRepository.save(updateMember);
             if (memberRepository.findById(savedMember.getId()).isPresent())
                 return ResponseEntity.ok("회원수정 성공");
@@ -154,6 +185,7 @@ public class MemberService {
                 memberModel.setReg_date(member.getReg_date());
                 memberModel.setTags(getTagList(member));
                 memberModel.setRegions(getRegionList(member));
+                memberModel.setPhotos(getPhotoList(member));
                 memberModels.add(memberModel);
             }
             return memberModels;

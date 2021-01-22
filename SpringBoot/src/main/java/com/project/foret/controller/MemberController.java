@@ -24,6 +24,16 @@ public class MemberController {
         return memberService.createMember(member, files);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> updateMember(@PathVariable Long id, Member member, MultipartFile[] files) throws Exception {
+        return memberService.updateMember(id, member, files);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteMember(@PathVariable Long id) {
+        return memberService.deleteMember(id);
+    }
+
     @GetMapping("/details/{id}")
     public MemberModel getMember(@PathVariable Long id) {
         return memberService.getMember(id);
@@ -32,15 +42,5 @@ public class MemberController {
     @GetMapping("/all")
     public List<MemberModel> getMembers() {
         return memberService.getMembers();
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateMember(@PathVariable Long id, @RequestBody Member member) {
-        return memberService.updateMember(member, id);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteMember(@PathVariable Long id) {
-        return memberService.deleteMember(id);
     }
 }
