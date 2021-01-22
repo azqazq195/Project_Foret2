@@ -1,15 +1,17 @@
 package com.project.foret.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "member")
-@Data
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +20,34 @@ public class Member {
     private String email;
     private String password;
     private String nickname;
-    private String brith;
+    private String birth;
+    private String deviceToken;
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date reg_date;
 
-    private Set<Tag> tags;
-    private Set<Region> regions;
-    private Set<MemberPhoto> photos;
+    @ManyToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
+    private List<Tag> tags;
+    @ManyToMany(targetEntity = Region.class, cascade = CascadeType.ALL)
+    private List<Region> regions;
+//    @OneToMany(targetEntity = MemberPhoto.class, cascade = CascadeType.ALL)
+//    private Set<MemberPhoto> photos;
 
-    private Set<Foret> forets;
+//    @ManyToMany(targetEntity = Foret.class, cascade = CascadeType.ALL)
+//    private Set<Foret> forets;
+
+    public void addTag(Tag tag) {
+        if (tags == null) {
+            tags = new ArrayList<>();
+        }
+        tags.add(tag);
+    }
+
+    public void addRegion(Region region) {
+        if (regions == null) {
+            regions = new ArrayList<>();
+        }
+        regions.add(region);
+    }
+
 }
