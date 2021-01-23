@@ -1,9 +1,11 @@
 package com.project.foret.repository;
 
-import com.project.foret.model.Region;
-
+import com.project.foret.entity.Region;
+import com.project.foret.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface RegionRepository extends JpaRepository<Region, Long> {
-    Region findByRegionSiAndRegionGu(String regionSi, String regionGu);
+    Optional<Region> findByRegionSiAndRegionGu(String regionSi, String regionGu);
 }

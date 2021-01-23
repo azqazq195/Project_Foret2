@@ -1,23 +1,16 @@
 package com.project.foret.controller;
 
-import java.util.List;
-
-import com.project.foret.model.Member;
+import com.project.foret.entity.Member;
+import com.project.foret.model.ForetModel;
+import com.project.foret.model.MemberModel;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.service.MemberService;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.AllArgsConstructor;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -25,26 +18,29 @@ import javax.servlet.http.HttpServletRequest;
 public class MemberController {
 
     private MemberService memberService;
-    private MemberRepository memberRepository;
 
-    @PostMapping(value = "")
-    public Member insert(Member member, MultipartFile[] file) throws Exception {
-        return memberService.save(member, file);
+    @PostMapping("/create")
+    public ResponseEntity<Object> createMember(Member member, MultipartFile[] files) throws Exception {
+        return memberService.createMember(member, files);
     }
 
-    @GetMapping(value = "")
-    public Member get(@RequestParam("id") Long id) {
-        return memberRepository.findById(id).orElse(null);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> updateMember(@PathVariable Long id, Member member, MultipartFile[] files) throws Exception {
+        return memberService.updateMember(id, member, files);
     }
 
-    @GetMapping(value = "/all")
-    public List<Member> getAll() {
-        return memberRepository.findAll();
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteMember(@PathVariable Long id) {
+        return memberService.deleteMember(id);
     }
 
-    @DeleteMapping(value = "")
-    public void delete(@RequestParam("id") Long id) {
-        memberRepository.deleteById(id);
+    @GetMapping("/details/{id}")
+    public MemberModel getMember(@PathVariable Long id) {
+        return memberService.getMember(id);
     }
 
+    @GetMapping("/all")
+    public List<MemberModel> getMembers() {
+        return memberService.getMembers();
+    }
 }

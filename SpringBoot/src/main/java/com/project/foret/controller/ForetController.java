@@ -1,22 +1,15 @@
 package com.project.foret.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.gson.Gson;
-import com.project.foret.model.Foret;
-import com.project.foret.repository.ForetRepository;
+import com.project.foret.entity.Foret;
+import com.project.foret.model.ForetModel;
+import com.project.foret.model.MemberModel;
 import com.project.foret.service.ForetService;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -24,25 +17,41 @@ import lombok.AllArgsConstructor;
 public class ForetController {
 
     private ForetService foretService;
-    private ForetRepository foretRepository;
 
-    @PostMapping(value = "")
-    public Foret insert(Foret foret, MultipartFile[] file) throws Exception {
-        return foretService.save(foret, file);
+    @PostMapping("/create")
+    public ResponseEntity<Object> createForet(
+            @RequestParam Long member_id,
+            Foret foret,
+            MultipartFile[] files) throws Exception {
+        return foretService.createForet(member_id, foret, files);
     }
 
-    @GetMapping(value = "")
-    public Foret get(@RequestParam("id") Long id) {
-        return foretRepository.findById(id).orElse(null);
+    @PutMapping("update/{id}")
+    public ResponseEntity<Object> updateForet(
+            @PathVariable Long id,
+            @RequestParam Long member_id,
+            Foret foret,
+            MultipartFile[] files) throws Exception {
+        return foretService.updateForet(id, member_id, foret, files);
     }
 
-    @GetMapping(value = "/all")
-    public String getAll() {
-        return foretService.getAll();
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteForet(@PathVariable Long id) {
+        return foretService.deleteForet(id);
     }
 
-    @DeleteMapping(value = "")
-    public void delete(@RequestParam("id") Long id) {
-        foretRepository.deleteById(id);
+    @GetMapping("/details/{id}")
+    public ForetModel getForet(@PathVariable Long id){
+        return foretService.getForet(id);
+    }
+
+    @GetMapping("/all")
+    public List<ForetModel> getForets(){
+        return foretService.getForets();
+    }
+
+    @GetMapping("/myForets")
+    public List<ForetModel> getMyForets(@RequestParam Long member_id){
+        return foretService.getMyForets(member_id);
     }
 }
