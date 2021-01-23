@@ -174,6 +174,26 @@ public class ForetService {
         } else return new ArrayList<>();
     }
 
+    public List<ForetModel> getMyForets(Long id) {
+        List<Foret> foretList = foretRepository.findByMembersId(id);
+        if (foretList.size() > 0) {
+            List<ForetModel> foretModels = new ArrayList<>();
+            for (Foret foret : foretList) {
+                ForetModel foretModel = new ForetModel();
+                foretModel.setName(foret.getName());
+                foretModel.setIntroduce(foret.getIntroduce());
+                foretModel.setMax_member(foret.getMax_member());
+                foretModel.setReg_date(foret.getReg_date());
+                foretModel.setTags(getTagList(foret));
+                foretModel.setRegions(getRegionList(foret));
+                foretModel.setPhotos(getPhotoList(foret));
+                foretModel.setMembers(getMemberList(foret));
+                foretModels.add(foretModel);
+            }
+            return foretModels;
+        } else return new ArrayList<>();
+    }
+
     private List<TagModel> getTagList(Foret foret) {
         List<TagModel> tagList = new ArrayList<>();
         if (foret.getTags() != null && foret.getTags().size() != 0) {

@@ -43,4 +43,8 @@ public class ForetController {
         return foretService.getForets();
     }
 
+    @GetMapping("/myForets/{id}")
+    public List<ForetModel> getMyForets(@PathVariable Long id){
+        return foretService.getMyForets(id);
+    }
 }

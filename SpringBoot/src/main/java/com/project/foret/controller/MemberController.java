@@ -1,6 +1,7 @@
 package com.project.foret.controller;
 
 import com.project.foret.entity.Member;
+import com.project.foret.model.ForetModel;
 import com.project.foret.model.MemberModel;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.service.MemberService;
