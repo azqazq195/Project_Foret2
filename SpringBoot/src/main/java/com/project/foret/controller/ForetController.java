@@ -18,14 +18,21 @@ public class ForetController {
 
     private ForetService foretService;
 
-    @PostMapping("/create/{member_id}")
-    public ResponseEntity<Object> createForet(@PathVariable Long member_id, Foret foret, MultipartFile[] files) throws Exception {
+    @PostMapping("/create")
+    public ResponseEntity<Object> createForet(
+            @RequestParam Long member_id,
+            Foret foret,
+            MultipartFile[] files) throws Exception {
         return foretService.createForet(member_id, foret, files);
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<Object> updateForet(@PathVariable Long id, Foret foret, MultipartFile[] files) throws Exception {
-        return foretService.updateForet(id, foret, files);
+    public ResponseEntity<Object> updateForet(
+            @PathVariable Long id,
+            @RequestParam Long member_id,
+            Foret foret,
+            MultipartFile[] files) throws Exception {
+        return foretService.updateForet(id, member_id, foret, files);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -43,8 +50,8 @@ public class ForetController {
         return foretService.getForets();
     }
 
-    @GetMapping("/myForets/{id}")
-    public List<ForetModel> getMyForets(@PathVariable Long id){
-        return foretService.getMyForets(id);
+    @GetMapping("/myForets")
+    public List<ForetModel> getMyForets(@RequestParam Long member_id){
+        return foretService.getMyForets(member_id);
     }
 }

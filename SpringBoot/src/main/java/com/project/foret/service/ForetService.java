@@ -78,54 +78,55 @@ public class ForetService {
     }
 
     @Transactional
-    public ResponseEntity<Object> updateForet(Long id, Foret model, MultipartFile[] files) throws Exception {
+    public ResponseEntity<Object> updateForet(Long id, Long member_id, Foret model, MultipartFile[] files) throws Exception {
         if (foretRepository.findById(id).isPresent()) {
             Foret updateForet = foretRepository.findById(id).get();
             foretPhotoRepository.deleteByForetId(id);
-
-            updateForet.setName(model.getName());
-            updateForet.setIntroduce(model.getIntroduce());
-            updateForet.setMax_member(model.getMax_member());
-            updateForet.setTags(null);
-            updateForet.setRegions(null);
-            updateForet.setPhotos(null);
-            if (model.getTags() != null) {
-                for (Tag tag : model.getTags()) {
-                    updateForet.addTag(tagRepository.findByTagName(tag.getTagName()).get());
-                }
-            }
-            if (model.getRegions() != null) {
-                for (Region region : model.getRegions()) {
-                    updateForet.addRegion(regionRepository.findByRegionSiAndRegionGu(region.getRegionSi(), region.getRegionGu()).get());
-                }
-            }
-            if (files != null) {
-                for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
-                    String originname = photo.getOriginalFilename();
-                    String filename = photo.getOriginalFilename();
-                    int lastIndex = originname.lastIndexOf(".");
-                    String filetype = originname.substring(lastIndex + 1);
-                    int filesize = (int) photo.getSize();
-                    if (!new File(dir).exists()) {
-                        new File(dir).mkdirs();
+            if (updateForet.getLeader_id().equals(member_id)){
+                updateForet.setName(model.getName());
+                updateForet.setIntroduce(model.getIntroduce());
+                updateForet.setMax_member(model.getMax_member());
+                updateForet.setTags(null);
+                updateForet.setRegions(null);
+                updateForet.setPhotos(null);
+                if (model.getTags() != null) {
+                    for (Tag tag : model.getTags()) {
+                        updateForet.addTag(tagRepository.findByTagName(tag.getTagName()).get());
                     }
-                    File file = new File(dir, filename);
-                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
-
-                    ForetPhoto foretPhoto = new ForetPhoto();
-                    foretPhoto.setDir(dir);
-                    foretPhoto.setOriginname(originname);
-                    foretPhoto.setFilename(filename);
-                    foretPhoto.setFiletype(filetype);
-                    foretPhoto.setFilesize(filesize);
-                    updateForet.addPhoto(foretPhoto);
                 }
-            }
-            Foret savedForet = foretRepository.save(updateForet);
-            if (foretRepository.findById(savedForet.getId()).isPresent())
-                return ResponseEntity.ok("포레수정 성공");
-            else return ResponseEntity.unprocessableEntity().body("포레수정 실패");
+                if (model.getRegions() != null) {
+                    for (Region region : model.getRegions()) {
+                        updateForet.addRegion(regionRepository.findByRegionSiAndRegionGu(region.getRegionSi(), region.getRegionGu()).get());
+                    }
+                }
+                if (files != null) {
+                    for (MultipartFile photo : files) {
+                        String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
+                        String originname = photo.getOriginalFilename();
+                        String filename = photo.getOriginalFilename();
+                        int lastIndex = originname.lastIndexOf(".");
+                        String filetype = originname.substring(lastIndex + 1);
+                        int filesize = (int) photo.getSize();
+                        if (!new File(dir).exists()) {
+                            new File(dir).mkdirs();
+                        }
+                        File file = new File(dir, filename);
+                        FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
+
+                        ForetPhoto foretPhoto = new ForetPhoto();
+                        foretPhoto.setDir(dir);
+                        foretPhoto.setOriginname(originname);
+                        foretPhoto.setFilename(filename);
+                        foretPhoto.setFiletype(filetype);
+                        foretPhoto.setFilesize(filesize);
+                        updateForet.addPhoto(foretPhoto);
+                    }
+                }
+                Foret savedForet = foretRepository.save(updateForet);
+                if (foretRepository.findById(savedForet.getId()).isPresent())
+                    return ResponseEntity.ok("포레수정 성공");
+                else return ResponseEntity.unprocessableEntity().body("포레수정 실패");
+            } else return ResponseEntity.unprocessableEntity().body("포레 수정권한이 없습니다.");
         } else return ResponseEntity.unprocessableEntity().body("포레를 찾을 수 없습니다.");
     }
 
@@ -174,8 +175,8 @@ public class ForetService {
         } else return new ArrayList<>();
     }
 
-    public List<ForetModel> getMyForets(Long id) {
-        List<Foret> foretList = foretRepository.findByMembersId(id);
+    public List<ForetModel> getMyForets(Long member_id) {
+        List<Foret> foretList = foretRepository.findByMembersId(member_id);
         if (foretList.size() > 0) {
             List<ForetModel> foretModels = new ArrayList<>();
             for (Foret foret : foretList) {
