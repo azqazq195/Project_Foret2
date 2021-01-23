@@ -3,6 +3,7 @@ package com.project.foret.model;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class BoardModel {
@@ -12,4 +13,5 @@ public class BoardModel {
     private String content;
     private Date reg_date;
     private Date edit_date;
+    private List<PhotoModel> photos;
 }

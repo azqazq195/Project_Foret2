@@ -2,6 +2,7 @@ package com.project.foret.service;
 
 import com.project.foret.entity.*;
 import com.project.foret.model.BoardModel;
+import com.project.foret.model.PhotoModel;
 import com.project.foret.repository.BoardPhotoRepository;
 import com.project.foret.repository.BoardRepository;
 import com.project.foret.repository.ForetRepository;
@@ -23,6 +24,8 @@ import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -121,7 +124,36 @@ public class BoardService {
             else return ResponseEntity.ok().body("게시글삭제 성공");
         } else return ResponseEntity.badRequest().body("게시글을 찾을 수 없습니다.");
     }
-//
-//    public BoardModel getBoard(@PathVariable Long id) {
-//    }
+
+    public BoardModel getBoard(Long id) {
+        if(boardRepository.findById(id).isPresent()){
+            Board board = boardRepository.findById(id).get();
+            BoardModel boardModel = new BoardModel();
+            boardModel.setSubject(board.getSubject());
+            boardModel.setContent(board.getContent());
+            boardModel.setType(board.getType());
+            boardModel.setHit(board.getHit());
+            boardModel.setReg_date(board.getReg_date());
+            boardModel.setEdit_date(board.getEdit_date());
+            boardModel.setPhotos(getPhotoList(board));
+            return boardModel;
+        } else return null;
+    }
+
+    private List<PhotoModel> getPhotoList(Board board) {
+        List<PhotoModel> photoList = new ArrayList<>();
+        if (board.getPhotos() != null && board.getPhotos().size() != 0) {
+            for (BoardPhoto boardPhoto : board.getPhotos()) {
+                PhotoModel photoModel = new PhotoModel();
+                photoModel.setDir(boardPhoto.getDir());
+                photoModel.setFilename(boardPhoto.getFilename());
+                photoModel.setOriginname(boardPhoto.getOriginname());
+                photoModel.setFilesize(boardPhoto.getFilesize());
+                photoModel.setFiletype(boardPhoto.getFiletype());
+                photoModel.setReg_date(boardPhoto.getReg_date());
+                photoList.add(photoModel);
+            }
+            return photoList;
+        } else return null;
+    }
 }
