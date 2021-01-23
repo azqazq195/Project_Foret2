@@ -30,9 +30,9 @@ import java.util.List;
 public class MemberService {
 
     private MemberRepository memberRepository;
+    private MemberPhotoRepository memberPhotoRepository;
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
-    private MemberPhotoRepository memberPhotoRepository;
 
     public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
         Member newMember = new Member();
@@ -57,7 +57,7 @@ public class MemberService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage";
+                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/member";
                     String originname = photo.getOriginalFilename();
                     String filename = photo.getOriginalFilename();
                     int lastIndex = originname.lastIndexOf(".");
@@ -114,7 +114,7 @@ public class MemberService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage";
+                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/member";
                     String originname = photo.getOriginalFilename();
                     String filename = photo.getOriginalFilename();
                     int lastIndex = originname.lastIndexOf(".");

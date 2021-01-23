@@ -1,6 +1,5 @@
 package com.project.foret.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,9 +31,8 @@ public class Member {
     private List<Region> regions;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberPhoto> photos;
-
-//    @ManyToMany(targetEntity = Foret.class, cascade = CascadeType.ALL)
-//    private Set<Foret> forets;
+    @ManyToMany(targetEntity = Foret.class, mappedBy = "members", cascade = CascadeType.ALL)
+    private List<Foret> forets;
 
     public void addTag(Tag tag) {
         if (tags == null) {
@@ -56,6 +54,13 @@ public class Member {
         }
         photos.add(memberPhoto);
         memberPhoto.setMember(this);
+    }
+
+    public void addForet(Foret foret) {
+        if (forets == null) {
+            forets = new ArrayList<>();
+        }
+        forets.add(foret);
     }
 
 }

@@ -6,15 +6,13 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class MemberModel {
+public class ForetModel {
     private String name;
-    private String email;
-    private String password;
-    private String nickname;
-    private String birth;
-    private String deviceToken;
+    private String introduce;
+    private int max_member;
     private Date reg_date;
     private List<TagModel> tags;
     private List<RegionModel> regions;
-    private List<MemberPhotoModel> photos;
+    private List<ForetPhotoModel> photos;
+    private List<MemberModel> members;
 }

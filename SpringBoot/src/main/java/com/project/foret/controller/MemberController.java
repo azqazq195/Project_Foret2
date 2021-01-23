@@ -17,7 +17,6 @@ import java.util.List;
 public class MemberController {
 
     private MemberService memberService;
-    private MemberRepository memberRepository;
 
     @PostMapping("/create")
     public ResponseEntity<Object> createMember(Member member, MultipartFile[] files) throws Exception {
