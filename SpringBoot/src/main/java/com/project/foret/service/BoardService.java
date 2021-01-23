@@ -114,6 +114,12 @@ public class BoardService {
     }
 
     public ResponseEntity<Object> deleteBoard(Long id) {
+        if(boardRepository.findById(id).isPresent()) {
+            boardRepository.deleteById(id);
+            if(boardRepository.findById(id).isPresent())
+                return ResponseEntity.unprocessableEntity().body("게시글삭제 실패");
+            else return ResponseEntity.ok().body("게시글삭제 성공");
+        } else return ResponseEntity.badRequest().body("게시글을 찾을 수 없습니다.");
     }
 //
 //    public BoardModel getBoard(@PathVariable Long id) {

@@ -34,11 +34,11 @@ public class BoardController {
         return boardService.updateBoard(id, member_id, board, files);
     }
 
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<Object> deleteBoard(@PathVariable Long id) {
-//        return boardService.deleteBoard(id);
-//    }
-//
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteBoard(@PathVariable Long id) {
+        return boardService.deleteBoard(id);
+    }
+
 //    @GetMapping("/details/{id}")
 //    public BoardModel getBoard(@PathVariable Long id) {
 //        return boardService.getBoard(id);
