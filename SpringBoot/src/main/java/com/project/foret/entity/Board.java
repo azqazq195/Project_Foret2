@@ -4,7 +4,9 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,4 +29,14 @@ public class Board {
     @ManyToOne
     @JoinColumn(name = "foret_id")
     private Foret foret;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BoardPhoto> photos;
+
+    public void addPhoto(BoardPhoto boardPhoto) {
+        if (photos == null) {
+            photos = new ArrayList<>();
+        }
+        photos.add(boardPhoto);
+        boardPhoto.setBoard(this);
+    }
 }

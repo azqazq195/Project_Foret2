@@ -33,6 +33,8 @@ public class Member {
     private List<MemberPhoto> photos;
     @ManyToMany(targetEntity = Foret.class, mappedBy = "members", cascade = CascadeType.ALL)
     private List<Foret> forets;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Board> boards;
 
     public void addTag(Tag tag) {
         if (tags == null) {
@@ -61,6 +63,14 @@ public class Member {
             forets = new ArrayList<>();
         }
         forets.add(foret);
+    }
+
+    public Member(Long id) {
+        this.id = id;
+    }
+
+    public Member() {
+
     }
 
 }
