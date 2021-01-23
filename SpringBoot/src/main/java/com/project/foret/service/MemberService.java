@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -215,18 +214,18 @@ public class MemberService {
         } else return null;
     }
 
-    private List<MemberPhotoModel> getPhotoList(Member member){
-        List<MemberPhotoModel> photoList = new ArrayList<>();
+    private List<PhotoModel> getPhotoList(Member member){
+        List<PhotoModel> photoList = new ArrayList<>();
         if (member.getPhotos() != null && member.getPhotos().size() != 0) {
             for (MemberPhoto memberPhoto : member.getPhotos()) {
-                MemberPhotoModel memberPhotoModel = new MemberPhotoModel();
-                memberPhotoModel.setDir(memberPhoto.getDir());
-                memberPhotoModel.setFilename(memberPhoto.getFilename());
-                memberPhotoModel.setOriginname(memberPhoto.getOriginname());
-                memberPhotoModel.setFilesize(memberPhoto.getFilesize());
-                memberPhotoModel.setFiletype(memberPhoto.getFiletype());
-                memberPhotoModel.setReg_date(memberPhoto.getReg_date());
-                photoList.add(memberPhotoModel);
+                PhotoModel photoModel = new PhotoModel();
+                photoModel.setDir(memberPhoto.getDir());
+                photoModel.setFilename(memberPhoto.getFilename());
+                photoModel.setOriginname(memberPhoto.getOriginname());
+                photoModel.setFilesize(memberPhoto.getFilesize());
+                photoModel.setFiletype(memberPhoto.getFiletype());
+                photoModel.setReg_date(memberPhoto.getReg_date());
+                photoList.add(photoModel);
             }
             return photoList;
         } else return null;

@@ -219,18 +219,18 @@ public class ForetService {
         } else return null;
     }
 
-    private List<ForetPhotoModel> getPhotoList(Foret foret) {
-        List<ForetPhotoModel> photoList = new ArrayList<>();
+    private List<PhotoModel> getPhotoList(Foret foret) {
+        List<PhotoModel> photoList = new ArrayList<>();
         if (foret.getPhotos() != null && foret.getPhotos().size() != 0) {
             for (ForetPhoto foretPhoto : foret.getPhotos()) {
-                ForetPhotoModel foretPhotoModel = new ForetPhotoModel();
-                foretPhotoModel.setDir(foretPhoto.getDir());
-                foretPhotoModel.setFilename(foretPhoto.getFilename());
-                foretPhotoModel.setOriginname(foretPhoto.getOriginname());
-                foretPhotoModel.setFilesize(foretPhoto.getFilesize());
-                foretPhotoModel.setFiletype(foretPhoto.getFiletype());
-                foretPhotoModel.setReg_date(foretPhoto.getReg_date());
-                photoList.add(foretPhotoModel);
+                PhotoModel photoModel = new PhotoModel();
+                photoModel.setDir(foretPhoto.getDir());
+                photoModel.setFilename(foretPhoto.getFilename());
+                photoModel.setOriginname(foretPhoto.getOriginname());
+                photoModel.setFilesize(foretPhoto.getFilesize());
+                photoModel.setFiletype(foretPhoto.getFiletype());
+                photoModel.setReg_date(foretPhoto.getReg_date());
+                photoList.add(photoModel);
             }
             return photoList;
         } else return null;

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ForetPhotoModel {
+public class PhotoModel {
     private String dir;
     private String filename;
     private String originname;

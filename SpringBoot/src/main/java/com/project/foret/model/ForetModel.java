@@ -13,6 +13,6 @@ public class ForetModel {
     private Date reg_date;
     private List<TagModel> tags;
     private List<RegionModel> regions;
-    private List<ForetPhotoModel> photos;
+    private List<PhotoModel> photos;
     private List<MemberModel> members;
 }
