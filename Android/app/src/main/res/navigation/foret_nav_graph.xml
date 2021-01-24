@@ -21,7 +21,7 @@
     <!-- 익명게시판 -->
     <fragment
         android:id="@+id/anonymousForumFragment"
-        android:name="com.project.jjap_guen.ui.AnonymousForumFragment"
+        android:name="com.project.jjap_guen.ui.AnnoymousForum.AnonymousForumFragment"
         android:label="AnonymousForumFragment">
         <action
             android:id="@+id/action_anonymousForumFragment_to_anonymousForumBoardFragment"

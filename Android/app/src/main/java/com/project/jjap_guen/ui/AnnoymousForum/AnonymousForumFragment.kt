@@ -1,4 +1,4 @@
-package com.project.jjap_guen.ui
+package com.project.jjap_guen.ui.AnnoymousForum
 
 import androidx.fragment.app.Fragment
 import com.project.jjap_guen.R
