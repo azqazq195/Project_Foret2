@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class ForetModel {
+    private Long id;
     private String name;
     private String introduce;
     private int max_member;
@@ -15,4 +16,5 @@ public class ForetModel {
     private List<RegionModel> regions;
     private List<PhotoModel> photos;
     private List<MemberModel> members;
+    private List<BoardModel> boards;
 }

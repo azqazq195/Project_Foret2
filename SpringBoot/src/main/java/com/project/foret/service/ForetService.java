@@ -3,12 +3,14 @@ package com.project.foret.service;
 import com.project.foret.entity.*;
 import com.project.foret.model.*;
 import com.project.foret.repository.*;
+import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +29,11 @@ public class ForetService {
 
     private MemberService memberService;
 
-    public ResponseEntity<Object> createForet(Long member_id, Foret model, MultipartFile[] files) throws Exception {
+    public ResponseEntity<Object> createForet(
+            HttpServletRequest request,
+            Long member_id,
+            Foret model,
+            MultipartFile[] files) throws Exception {
         if (memberRepository.findById(member_id).isPresent()) {
             Foret newForet = new Foret();
             newForet.setName(model.getName());
@@ -46,7 +52,8 @@ public class ForetService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
+                    String dir = request.getSession().getServletContext().getRealPath("/storage/foret");
+                    // String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
                     String originname = photo.getOriginalFilename();
                     String filename = photo.getOriginalFilename();
                     int lastIndex = originname.lastIndexOf(".");
@@ -143,6 +150,7 @@ public class ForetService {
         if (foretRepository.findById(id).isPresent()) {
             Foret foret = foretRepository.findById(id).get();
             ForetModel foretModel = new ForetModel();
+            foretModel.setId(foret.getId());
             foretModel.setName(foret.getName());
             foretModel.setIntroduce(foret.getIntroduce());
             foretModel.setMax_member(foret.getMax_member());
@@ -155,12 +163,13 @@ public class ForetService {
         } else return null;
     }
 
-    public List<ForetModel> getForets() {
+    public ForetResponse getForets() {
         List<Foret> foretList = foretRepository.findAll();
         if (foretList.size() > 0) {
             List<ForetModel> foretModels = new ArrayList<>();
             for (Foret foret : foretList) {
                 ForetModel foretModel = new ForetModel();
+                foretModel.setId(foret.getId());
                 foretModel.setName(foret.getName());
                 foretModel.setIntroduce(foret.getIntroduce());
                 foretModel.setMax_member(foret.getMax_member());
@@ -171,16 +180,17 @@ public class ForetService {
                 foretModel.setMembers(getMemberList(foret));
                 foretModels.add(foretModel);
             }
-            return foretModels;
-        } else return new ArrayList<>();
+            return new ForetResponse(foretModels);
+        } else return new ForetResponse();
     }
 
-    public List<ForetModel> getMyForets(Long member_id) {
+    public ForetResponse getMyForets(Long member_id) {
         List<Foret> foretList = foretRepository.findByMembersId(member_id);
         if (foretList.size() > 0) {
             List<ForetModel> foretModels = new ArrayList<>();
             for (Foret foret : foretList) {
                 ForetModel foretModel = new ForetModel();
+                foretModel.setId(foret.getId());
                 foretModel.setName(foret.getName());
                 foretModel.setIntroduce(foret.getIntroduce());
                 foretModel.setMax_member(foret.getMax_member());
@@ -191,8 +201,8 @@ public class ForetService {
                 foretModel.setMembers(getMemberList(foret));
                 foretModels.add(foretModel);
             }
-            return foretModels;
-        } else return new ArrayList<>();
+            return new ForetResponse(foretModels);
+        } else return new ForetResponse();
     }
 
     private List<TagModel> getTagList(Foret foret) {

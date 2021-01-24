@@ -1,4 +1,4 @@
-package com.project.jjap_guen.ui.home
+package com.project.jjap_guen.ui
 
 import androidx.fragment.app.Fragment
 import com.project.jjap_guen.R

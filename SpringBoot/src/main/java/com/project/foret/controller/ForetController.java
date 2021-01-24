@@ -2,13 +2,14 @@ package com.project.foret.controller;
 
 import com.project.foret.entity.Foret;
 import com.project.foret.model.ForetModel;
-import com.project.foret.model.MemberModel;
+import com.project.foret.response.ForetResponse;
 import com.project.foret.service.ForetService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -20,10 +21,11 @@ public class ForetController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createForet(
+            HttpServletRequest request,
             @RequestParam Long member_id,
             Foret foret,
             MultipartFile[] files) throws Exception {
-        return foretService.createForet(member_id, foret, files);
+        return foretService.createForet(request, member_id, foret, files);
     }
 
     @PutMapping("update/{id}")
@@ -46,12 +48,12 @@ public class ForetController {
     }
 
     @GetMapping("/all")
-    public List<ForetModel> getForets(){
+    public ForetResponse getForets(){
         return foretService.getForets();
     }
 
     @GetMapping("/myForets")
-    public List<ForetModel> getMyForets(@RequestParam Long member_id){
+    public ForetResponse getMyForets(@RequestParam Long member_id){
         return foretService.getMyForets(member_id);
     }
 }
