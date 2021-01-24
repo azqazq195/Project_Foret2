@@ -7,6 +7,9 @@ import java.util.List;
 
 @Data
 public class BoardModel {
+    private Long id;
+    private Long writer_id;
+    private Long foret_id;
     private int type;
     private int hit;
     private String subject;

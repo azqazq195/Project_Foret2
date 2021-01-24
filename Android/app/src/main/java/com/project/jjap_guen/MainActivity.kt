@@ -3,12 +3,14 @@ package com.project.jjap_guen
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
-import androidx.navigation.findNavController
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.project.jjap_guen.repository.ForetRepository
+import com.project.jjap_guen.ui.home.HomeViewModel
+import com.project.jjap_guen.ui.home.HomeViewModelProviderFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +24,5 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         foretNavHostFragment = supportFragmentManager.findFragmentById(R.id.foretNavHostFragment) as NavHostFragment
         bottomNavigationView.setupWithNavController(foretNavHostFragment.findNavController())
-
     }
 }

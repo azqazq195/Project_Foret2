@@ -7,24 +7,22 @@ import com.project.foret.repository.BoardPhotoRepository;
 import com.project.foret.repository.BoardRepository;
 import com.project.foret.repository.ForetRepository;
 import com.project.foret.repository.MemberRepository;
+import com.project.foret.response.BoardResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Temporal;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,6 +32,7 @@ public class BoardService {
     private BoardRepository boardRepository;
     private BoardPhotoRepository boardPhotoRepository;
     private MemberRepository memberRepository;
+    private ForetRepository foretRepository;
 
     public ResponseEntity<Object> createBoard(Long member_id, Long foret_id, Board board, MultipartFile[] files) throws Exception {
         Board newBoard = new Board();
@@ -117,18 +116,21 @@ public class BoardService {
     }
 
     public ResponseEntity<Object> deleteBoard(Long id) {
-        if(boardRepository.findById(id).isPresent()) {
+        if (boardRepository.findById(id).isPresent()) {
             boardRepository.deleteById(id);
-            if(boardRepository.findById(id).isPresent())
+            if (boardRepository.findById(id).isPresent())
                 return ResponseEntity.unprocessableEntity().body("게시글삭제 실패");
             else return ResponseEntity.ok().body("게시글삭제 성공");
         } else return ResponseEntity.badRequest().body("게시글을 찾을 수 없습니다.");
     }
 
     public BoardModel getBoard(Long id) {
-        if(boardRepository.findById(id).isPresent()){
+        if (boardRepository.findById(id).isPresent()) {
             Board board = boardRepository.findById(id).get();
             BoardModel boardModel = new BoardModel();
+            boardModel.setId(board.getId());
+            boardModel.setWriter_id(board.getMember().getId());
+            boardModel.setForet_id(board.getForet().getId());
             boardModel.setSubject(board.getSubject());
             boardModel.setContent(board.getContent());
             boardModel.setType(board.getType());
@@ -138,6 +140,30 @@ public class BoardService {
             boardModel.setPhotos(getPhotoList(board));
             return boardModel;
         } else return null;
+    }
+
+    public BoardResponse getForetBoard(Long foret_id) {
+        if (foretRepository.findById(foret_id).isPresent()) {
+            List<Board> boardList = boardRepository.findTop5ByForetIdOrderByIdDesc(foret_id);
+            if (boardList.size() > 0) {
+                List<BoardModel> boardModels = new ArrayList<>();
+                for (Board board : boardList) {
+                    BoardModel boardModel = new BoardModel();
+                    boardModel.setId(board.getId());
+                    boardModel.setWriter_id(board.getMember().getId());
+                    boardModel.setForet_id(board.getForet().getId());
+                    boardModel.setSubject(board.getSubject());
+                    boardModel.setContent(board.getContent());
+                    boardModel.setType(board.getType());
+                    boardModel.setHit(board.getHit());
+                    boardModel.setReg_date(board.getReg_date());
+                    boardModel.setEdit_date(board.getEdit_date());
+                    boardModel.setPhotos(getPhotoList(board));
+                    boardModels.add(boardModel);
+                }
+                return new BoardResponse(boardModels);
+            } else return new BoardResponse();
+        } else return new BoardResponse();
     }
 
     private List<PhotoModel> getPhotoList(Board board) {
