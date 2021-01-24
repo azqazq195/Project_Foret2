@@ -38,7 +38,7 @@
                 android:layout_marginTop="16dp"
                 android:text="최신순"
                 android:textSize="18sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/textForet"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

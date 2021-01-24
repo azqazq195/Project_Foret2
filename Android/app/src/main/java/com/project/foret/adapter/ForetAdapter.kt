@@ -50,8 +50,6 @@ class ForetAdapter : RecyclerView.Adapter<ForetAdapter.ForetViewHolder>() {
                 // foret.photos[0].dir + "/" + foret.photos[0].filename
                 dumpImage[position]
             ).into(holder.itemView.findViewById(R.id.ivForetImage))
-            holder.itemView.findViewById<TextView>(R.id.textView).text = foret.name
-//            holder.itemView.findViewById<TextView>(R.id.tvForetName).text = foret.name
             setOnClickListener {
                 onItemClickListener?.let { it(foret) }
             }
