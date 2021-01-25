@@ -21,11 +21,10 @@ public class ForetController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createForet(
-            HttpServletRequest request,
             @RequestParam Long member_id,
             Foret foret,
             MultipartFile[] files) throws Exception {
-        return foretService.createForet(request, member_id, foret, files);
+        return foretService.createForet(member_id, foret, files);
     }
 
     @PutMapping("update/{id}")

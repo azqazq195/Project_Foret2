@@ -6,21 +6,16 @@ import com.project.foret.repository.*;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +35,6 @@ public class ForetService {
     private MemberService memberService;
 
     public ResponseEntity<Object> createForet(
-            HttpServletRequest request,
             Long member_id,
             Foret model,
             MultipartFile[] files) throws Exception {
@@ -62,27 +56,7 @@ public class ForetService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    // String dir = request.getSession().getServletContext().getRealPath("/storage/foret");
-                    // String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
-                    String dir = servletContext.getRealPath("/storage/foret");
-                    String originname = photo.getOriginalFilename();
-                    String filename = photo.getOriginalFilename();
-                    int lastIndex = originname.lastIndexOf(".");
-                    String filetype = originname.substring(lastIndex + 1);
-                    int filesize = (int) photo.getSize();
-                    if (!new File(dir).exists()) {
-                        new File(dir).mkdirs();
-                    }
-                    File file = new File(dir, filename);
-                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
-
-                    ForetPhoto foretPhoto = new ForetPhoto();
-                    foretPhoto.setDir(dir);
-                    foretPhoto.setOriginname(originname);
-                    foretPhoto.setFilename(filename);
-                    foretPhoto.setFiletype(filetype);
-                    foretPhoto.setFilesize(filesize);
-                    newForet.addPhoto(foretPhoto);
+                    newForet.addPhoto(uploadPhoto(photo));
                 }
             }
             newForet.addMember(memberRepository.findById(member_id).get());
@@ -119,25 +93,7 @@ public class ForetService {
                 }
                 if (files != null) {
                     for (MultipartFile photo : files) {
-                        String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
-                        String originname = photo.getOriginalFilename();
-                        String filename = photo.getOriginalFilename();
-                        int lastIndex = originname.lastIndexOf(".");
-                        String filetype = originname.substring(lastIndex + 1);
-                        int filesize = (int) photo.getSize();
-                        if (!new File(dir).exists()) {
-                            new File(dir).mkdirs();
-                        }
-                        File file = new File(dir, filename);
-                        FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
-
-                        ForetPhoto foretPhoto = new ForetPhoto();
-                        foretPhoto.setDir(dir);
-                        foretPhoto.setOriginname(originname);
-                        foretPhoto.setFilename(filename);
-                        foretPhoto.setFiletype(filetype);
-                        foretPhoto.setFilesize(filesize);
-                        updateForet.addPhoto(foretPhoto);
+                        updateForet.addPhoto(uploadPhoto(photo));
                     }
                 }
                 Foret savedForet = foretRepository.save(updateForet);
@@ -266,5 +222,27 @@ public class ForetService {
             }
             return memberList;
         } else return null;
+    }
+
+    private ForetPhoto uploadPhoto(MultipartFile photo) throws Exception {
+        String realPath = servletContext.getRealPath("/storage/foret");
+        String dir = "/storage/foret";
+        String originname = photo.getOriginalFilename();
+        String filename = photo.getOriginalFilename();
+        int lastIndex = originname.lastIndexOf(".");
+        String filetype = originname.substring(lastIndex + 1);
+        int filesize = (int) photo.getSize();
+        if (!new File(realPath).exists()) {
+            new File(realPath).mkdirs();
+        }
+        File file = new File(realPath, filename);
+        FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
+        ForetPhoto foretPhoto = new ForetPhoto();
+        foretPhoto.setDir(dir);
+        foretPhoto.setOriginname(originname);
+        foretPhoto.setFilename(filename);
+        foretPhoto.setFiletype(filetype);
+        foretPhoto.setFilesize(filesize);
+        return foretPhoto;
     }
 }

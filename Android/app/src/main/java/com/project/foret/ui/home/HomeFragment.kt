@@ -102,17 +102,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { boardResponse ->
-                        val noticeBoard: MutableList<Board> = mutableListOf()
-                        val feedBoard: MutableList<Board> = mutableListOf()
-                        for(i in boardResponse.boards){
-                            if(i.type == 1){
-                                noticeBoard.add(i)
-                            } else if (i.type == 3){
-                                feedBoard.add(i)
+                        if(boardResponse.total != 0) {
+                            val noticeBoard: MutableList<Board> = mutableListOf()
+                            val feedBoard: MutableList<Board> = mutableListOf()
+                            for(i in boardResponse.boards){
+                                if(i.type == 1){
+                                    noticeBoard.add(i)
+                                } else if (i.type == 3){
+                                    feedBoard.add(i)
+                                }
                             }
+                            noticeAdapter.differ.submitList(noticeBoard)
+                            feedAdapter.differ.submitList(feedBoard)
                         }
-                        noticeAdapter.differ.submitList(noticeBoard)
-                        feedAdapter.differ.submitList(feedBoard)
                     }
                 }
                 is Resource.Error -> {

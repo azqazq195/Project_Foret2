@@ -7,13 +7,13 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ForetAPI {
-    @GET("foret/myForets")
+    @GET("/foret/myForets")
     suspend fun getMyForets(
         @Query("member_id")
         member_id: Long
     ) : Response<ForetResponse>
 
-    @GET("board/getForetBoard")
+    @GET("/board/getForetBoard")
     suspend fun getForetBoard(
         @Query("foret_id")
         foret_id: Long

@@ -18,7 +18,7 @@ class HomeViewModel(
     val foretBoards: MutableLiveData<Resource<BoardResponse>> = MutableLiveData()
 
     init {
-        getMyForets(92L)
+        getMyForets(5L)
     }
 
     fun getMyForets(member_id: Long) = viewModelScope.launch {

@@ -1,20 +1,19 @@
 package com.project.foret.service;
 
-import com.project.foret.entity.Member;
-import com.project.foret.entity.MemberPhoto;
-import com.project.foret.entity.Region;
-import com.project.foret.entity.Tag;
+import com.project.foret.entity.*;
 import com.project.foret.model.*;
 import com.project.foret.repository.MemberPhotoRepository;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,6 +23,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class MemberService {
+
+    @Autowired
+    ServletContext servletContext;
 
     private MemberRepository memberRepository;
     private MemberPhotoRepository memberPhotoRepository;
@@ -53,25 +55,7 @@ public class MemberService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/member";
-                    String originname = photo.getOriginalFilename();
-                    String filename = photo.getOriginalFilename();
-                    int lastIndex = originname.lastIndexOf(".");
-                    String filetype = originname.substring(lastIndex + 1);
-                    int filesize = (int) photo.getSize();
-                    if (!new File(dir).exists()) {
-                        new File(dir).mkdirs();
-                    }
-                    File file = new File(dir, filename);
-                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
-
-                    MemberPhoto memberPhoto = new MemberPhoto();
-                    memberPhoto.setDir(dir);
-                    memberPhoto.setOriginname(originname);
-                    memberPhoto.setFilename(filename);
-                    memberPhoto.setFiletype(filetype);
-                    memberPhoto.setFilesize(filesize);
-                    newMember.addPhoto(memberPhoto);
+                    newMember.addPhoto(uploadPhoto(photo));
                 }
             }
             // 포레
@@ -110,25 +94,7 @@ public class MemberService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = System.getProperty("user.dir") + "/src/main/resources/storage/member";
-                    String originname = photo.getOriginalFilename();
-                    String filename = photo.getOriginalFilename();
-                    int lastIndex = originname.lastIndexOf(".");
-                    String filetype = originname.substring(lastIndex + 1);
-                    int filesize = (int) photo.getSize();
-                    if (!new File(dir).exists()) {
-                        new File(dir).mkdirs();
-                    }
-                    File file = new File(dir, filename);
-                    FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
-
-                    MemberPhoto memberPhoto = new MemberPhoto();
-                    memberPhoto.setDir(dir);
-                    memberPhoto.setOriginname(originname);
-                    memberPhoto.setFilename(filename);
-                    memberPhoto.setFiletype(filetype);
-                    memberPhoto.setFilesize(filesize);
-                    updateMember.addPhoto(memberPhoto);
+                    updateMember.addPhoto(uploadPhoto(photo));
                 }
             }
             // 포레
@@ -229,5 +195,27 @@ public class MemberService {
             }
             return photoList;
         } else return null;
+    }
+
+    private MemberPhoto uploadPhoto(MultipartFile photo) throws Exception {
+        String realPath = servletContext.getRealPath("/storage/member");
+        String dir = "/storage/member";
+        String originname = photo.getOriginalFilename();
+        String filename = photo.getOriginalFilename();
+        int lastIndex = originname.lastIndexOf(".");
+        String filetype = originname.substring(lastIndex + 1);
+        int filesize = (int) photo.getSize();
+        if (!new File(realPath).exists()) {
+            new File(realPath).mkdirs();
+        }
+        File file = new File(realPath, filename);
+        FileCopyUtils.copy(photo.getInputStream(), new FileOutputStream(file));
+        MemberPhoto memberPhoto = new MemberPhoto();
+        memberPhoto.setDir(dir);
+        memberPhoto.setOriginname(originname);
+        memberPhoto.setFilename(filename);
+        memberPhoto.setFiletype(filetype);
+        memberPhoto.setFilesize(filesize);
+        return memberPhoto;
     }
 }
