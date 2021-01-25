@@ -15,21 +15,23 @@ public class Foret {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long leader_id;
     private String name;
     private String introduce;
     private int max_member;
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date reg_date;
+    @ManyToOne
+    @JoinColumn(name = "leader_id")
+    private Member leader;
 
-    @ManyToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Tag.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Tag> tags;
-    @ManyToMany(targetEntity = Region.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Region.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Region> regions;
     @OneToMany(mappedBy = "foret", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ForetPhoto> photos;
-    @ManyToMany(targetEntity = Member.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Member.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Member> members;
     @OneToMany(mappedBy = "foret", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards;

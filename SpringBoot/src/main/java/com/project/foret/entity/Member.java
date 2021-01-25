@@ -25,13 +25,15 @@ public class Member {
     @CreationTimestamp
     private Date reg_date;
 
-    @ManyToMany(targetEntity = Tag.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Tag.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Tag> tags;
-    @ManyToMany(targetEntity = Region.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Region.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Region> regions;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberPhoto> photos;
-    @ManyToMany(targetEntity = Foret.class, mappedBy = "members", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "leader", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Foret> leadForets;
+    @ManyToMany(targetEntity = Foret.class, mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Foret> forets;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards;

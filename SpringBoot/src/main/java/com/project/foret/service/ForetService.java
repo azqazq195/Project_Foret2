@@ -5,21 +5,31 @@ import com.project.foret.model.*;
 import com.project.foret.repository.*;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ForetService {
+
+    @Autowired
+    ServletContext servletContext;
 
     private ForetRepository foretRepository;
     private ForetPhotoRepository foretPhotoRepository;
@@ -39,7 +49,7 @@ public class ForetService {
             newForet.setName(model.getName());
             newForet.setIntroduce(model.getIntroduce());
             newForet.setMax_member(model.getMax_member());
-            newForet.setLeader_id(member_id);
+            newForet.setLeader(memberRepository.findById(member_id).get());
             if (model.getTags() != null) {
                 for (Tag tag : model.getTags()) {
                     newForet.addTag(tagRepository.findByTagName(tag.getTagName()).get());
@@ -52,8 +62,9 @@ public class ForetService {
             }
             if (files != null) {
                 for (MultipartFile photo : files) {
-                    String dir = request.getSession().getServletContext().getRealPath("/storage/foret");
+                    // String dir = request.getSession().getServletContext().getRealPath("/storage/foret");
                     // String dir = System.getProperty("user.dir") + "/src/main/resources/storage/foret";
+                    String dir = servletContext.getRealPath("/storage/foret");
                     String originname = photo.getOriginalFilename();
                     String filename = photo.getOriginalFilename();
                     int lastIndex = originname.lastIndexOf(".");
@@ -89,7 +100,7 @@ public class ForetService {
         if (foretRepository.findById(id).isPresent()) {
             Foret updateForet = foretRepository.findById(id).get();
             foretPhotoRepository.deleteByForetId(id);
-            if (updateForet.getLeader_id().equals(member_id)){
+            if (updateForet.getLeader().getId().equals(member_id)){
                 updateForet.setName(model.getName());
                 updateForet.setIntroduce(model.getIntroduce());
                 updateForet.setMax_member(model.getMax_member());

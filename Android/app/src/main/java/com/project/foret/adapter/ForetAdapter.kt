@@ -49,6 +49,7 @@ class ForetAdapter : RecyclerView.Adapter<ForetAdapter.ForetViewHolder>() {
             Glide.with(this).load(
                 // foret.photos[0].dir + "/" + foret.photos[0].filename
                 dumpImage[position]
+            // foret.photos[0].filename
             ).into(holder.itemView.findViewById(R.id.ivForetImage))
             setOnClickListener {
                 onItemClickListener?.let { it(foret) }
