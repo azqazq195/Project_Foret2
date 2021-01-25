@@ -7,7 +7,7 @@
     <!-- 홈 -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.project.jjap_guen.ui.home.HomeFragment"
+        android:name="com.project.foret.ui.home.HomeFragment"
         android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_foretFragment"
@@ -21,7 +21,7 @@
     <!-- 익명게시판 -->
     <fragment
         android:id="@+id/anonymousForumFragment"
-        android:name="com.project.jjap_guen.ui.AnonymousForumFragment"
+        android:name="com.project.foret.ui.AnnoymousForum.AnonymousForumFragment"
         android:label="AnonymousForumFragment">
         <action
             android:id="@+id/action_anonymousForumFragment_to_anonymousForumBoardFragment"
@@ -35,7 +35,7 @@
     <!-- 검색 -->
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.project.jjap_guen.ui.SearchFragment"
+        android:name="com.project.foret.ui.SearchFragment"
         android:label="SearchFragment">
         <action
             android:id="@+id/action_searchFragment_to_foretFragment"
@@ -49,18 +49,18 @@
     <!-- 채팅 -->
     <fragment
         android:id="@+id/chattingFragment"
-        android:name="com.project.jjap_guen.ui.ChattingFragment"
+        android:name="com.project.foret.ui.ChattingFragment"
         android:label="ChattingFragment" />
 
     <!-- 알람 -->
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.project.jjap_guen.ui.NotificationFragment"
+        android:name="com.project.foret.ui.NotificationFragment"
         android:label="NotificationFragment" />
 
     <fragment
         android:id="@+id/foretFragment"
-        android:name="com.project.jjap_guen.ui.ForetFragment"
+        android:name="com.project.foret.ui.ForetFragment"
         android:label="ForetFragment">
         <action
             android:id="@+id/action_foretFragment_to_foretBoardFragment"
@@ -73,12 +73,12 @@
 
     <fragment
         android:id="@+id/foretBoardFragment"
-        android:name="com.project.jjap_guen.ui.ForetBoardFragment"
+        android:name="com.project.foret.ui.ForetBoardFragment"
         android:label="ForetBoardFragment" />
 
     <fragment
         android:id="@+id/anonymousForumBoardFragment"
-        android:name="com.project.jjap_guen.ui.AnonymousForumBoardFragment"
+        android:name="com.project.foret.ui.AnonymousForumBoardFragment"
         android:label="AnonymousForumBoardFragment" />
 
 </navigation>
