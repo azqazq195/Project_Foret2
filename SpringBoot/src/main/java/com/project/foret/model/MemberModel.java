@@ -9,10 +9,8 @@ import java.util.List;
 public class MemberModel {
     private String name;
     private String email;
-    private String password;
     private String nickname;
     private String birth;
-    private String deviceToken;
     private Date reg_date;
     private List<TagModel> tags;
     private List<RegionModel> regions;

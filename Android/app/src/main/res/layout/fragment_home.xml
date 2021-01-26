@@ -127,7 +127,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvForetName">
 
                     <TextView
-                        android:id="@+id/tvNotice"
+                        android:id="@+id/tvForetBoardComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="공지사항"
@@ -136,7 +136,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/ivNotice"
+                        android:id="@+id/ivForetBoardComment"
                         android:layout_marginLeft="6dp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"

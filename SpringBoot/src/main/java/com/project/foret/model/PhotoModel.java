@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class PhotoModel {
+    private Long id;
     private String dir;
     private String filename;
     private String originname;

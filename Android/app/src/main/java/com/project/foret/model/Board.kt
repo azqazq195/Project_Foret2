@@ -2,7 +2,6 @@ package com.project.foret.model
 
 data class Board(
     val id: Long,
-    val writer_id: Long,
     val foret_id: Long,
     val type: Int,
     val hit: Int,
@@ -10,5 +9,7 @@ data class Board(
     val content: String,
     val reg_date: String,
     val edit_date: String,
-    val photos: MutableList<Photo>
+    val member: Member,
+    val photos: MutableList<Photo>,
+    val comments: MutableList<Comment>
 )

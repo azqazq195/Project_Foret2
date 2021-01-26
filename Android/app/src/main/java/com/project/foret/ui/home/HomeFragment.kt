@@ -5,14 +5,16 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.project.foret.R
-import com.project.foret.adapter.BoardAdapter
+import com.project.foret.adapter.BoardItemAdapter
 import com.project.foret.adapter.ForetAdapter
 import com.project.foret.model.Board
 import com.project.foret.repository.ForetRepository
@@ -23,8 +25,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     lateinit var viewModel: HomeViewModel
     lateinit var foretAdapter: ForetAdapter
-    lateinit var noticeAdapter: BoardAdapter
-    lateinit var feedAdapter: BoardAdapter
+    lateinit var noticeAdapter: BoardItemAdapter
+    lateinit var feedAdapter: BoardItemAdapter
 
     lateinit var vpForetImages: ViewPager2
     lateinit var rvNotice: RecyclerView
@@ -49,16 +51,35 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         rvFeed = view.findViewById(R.id.rvFeed)
         tvForetName = view.findViewById(R.id.tvForetName)
 
+        viewModel.getMyForets(5L)
+
         setUpRecyclerView()
         setForetData()
         setBoardData()
         setViewPagerChangeListener()
+
+        noticeAdapter.setOnItemClickListener {
+            val bundle = bundleOf("boardId" to it.id)
+            view.findNavController()
+                .navigate(
+                    R.id.action_homeFragment_to_foretBoardFragment,
+                    bundle
+                )
+        }
+        feedAdapter.setOnItemClickListener {
+            val bundle = bundleOf("boardId" to it.id)
+            view.findNavController()
+                .navigate(
+                    R.id.action_homeFragment_to_foretBoardFragment,
+                    bundle
+                )
+        }
     }
 
     private fun setUpRecyclerView() {
         foretAdapter = ForetAdapter()
-        noticeAdapter = BoardAdapter()
-        feedAdapter = BoardAdapter()
+        noticeAdapter = BoardItemAdapter()
+        feedAdapter = BoardItemAdapter()
 
         vpForetImages.apply {
             adapter = foretAdapter
@@ -86,7 +107,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.e(TAG, "An error occured $message" )
+                        Log.e(TAG, "An error occured $message")
                     }
                 }
                 is Resource.Loading -> {
@@ -97,18 +118,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setBoardData() {
-        viewModel.foretBoards.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.foretBoardList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { boardResponse ->
                         val noticeBoard: MutableList<Board> = mutableListOf()
                         val feedBoard: MutableList<Board> = mutableListOf()
-                        for(i in boardResponse.boards){
-                            if(i.type == 1){
-                                noticeBoard.add(i)
-                            } else if (i.type == 3){
-                                feedBoard.add(i)
+                        if (boardResponse.total != 0) {
+                            for (i in boardResponse.boards) {
+                                if (i.type == 1) {
+                                    noticeBoard.add(i)
+                                } else if (i.type == 3) {
+                                    feedBoard.add(i)
+                                }
                             }
                         }
                         noticeAdapter.differ.submitList(noticeBoard)
@@ -118,7 +141,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.e(TAG, "An error occured $message" )
+                        Log.e(TAG, "An error occured $message")
                     }
                 }
                 is Resource.Loading -> {
