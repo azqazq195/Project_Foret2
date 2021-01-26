@@ -16,7 +16,7 @@
         app:cardElevation="10dp">
 
         <ImageView
-            android:id="@+id/ivForetImage"
+            android:id="@+id/ivItemForetImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"

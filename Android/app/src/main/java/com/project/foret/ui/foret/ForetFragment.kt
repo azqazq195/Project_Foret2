@@ -1,4 +1,4 @@
-package com.project.foret.ui
+package com.project.foret.ui.foret
 
 import androidx.fragment.app.Fragment
 import com.project.foret.R

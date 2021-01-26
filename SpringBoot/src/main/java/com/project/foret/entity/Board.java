@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "board")
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,8 @@ public class Board {
     private Foret foret;
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardPhoto> photos;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     public void addPhoto(BoardPhoto boardPhoto) {
         if (photos == null) {
@@ -39,4 +42,12 @@ public class Board {
         photos.add(boardPhoto);
         boardPhoto.setBoard(this);
     }
+
+    public Board(Long id) {
+        this.id = id;
+    }
+
+    public Board() {
+    }
+
 }

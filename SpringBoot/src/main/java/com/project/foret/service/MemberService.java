@@ -120,10 +120,8 @@ public class MemberService {
             MemberModel memberModel = new MemberModel();
             memberModel.setName(member.getName());
             memberModel.setEmail(member.getEmail());
-            memberModel.setPassword(member.getPassword());
             memberModel.setNickname(member.getNickname());
             memberModel.setBirth(member.getBirth());
-            memberModel.setDeviceToken(member.getDeviceToken());
             memberModel.setReg_date(member.getReg_date());
             memberModel.setTags(getTagList(member));
             memberModel.setRegions(getRegionList(member));
@@ -140,10 +138,8 @@ public class MemberService {
                 MemberModel memberModel = new MemberModel();
                 memberModel.setName(member.getName());
                 memberModel.setEmail(member.getEmail());
-                memberModel.setPassword(member.getPassword());
                 memberModel.setNickname(member.getNickname());
                 memberModel.setBirth(member.getBirth());
-                memberModel.setDeviceToken(member.getDeviceToken());
                 memberModel.setReg_date(member.getReg_date());
                 memberModel.setTags(getTagList(member));
                 memberModel.setRegions(getRegionList(member));
@@ -185,6 +181,7 @@ public class MemberService {
         if (member.getPhotos() != null && member.getPhotos().size() != 0) {
             for (MemberPhoto memberPhoto : member.getPhotos()) {
                 PhotoModel photoModel = new PhotoModel();
+                photoModel.setId(memberPhoto.getId());
                 photoModel.setDir(memberPhoto.getDir());
                 photoModel.setFilename(memberPhoto.getFilename());
                 photoModel.setOriginname(memberPhoto.getOriginname());

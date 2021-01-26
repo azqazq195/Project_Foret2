@@ -16,6 +16,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_foretBoardFragment"
+            app:destination="@id/foretBoardFragment" />
     </fragment>
 
     <!-- 익명게시판 -->
@@ -60,7 +63,7 @@
 
     <fragment
         android:id="@+id/foretFragment"
-        android:name="com.project.foret.ui.ForetFragment"
+        android:name="com.project.foret.ui.foret.ForetFragment"
         android:label="ForetFragment">
         <action
             android:id="@+id/action_foretFragment_to_foretBoardFragment"
@@ -73,8 +76,12 @@
 
     <fragment
         android:id="@+id/foretBoardFragment"
-        android:name="com.project.foret.ui.ForetBoardFragment"
-        android:label="ForetBoardFragment" />
+        android:name="com.project.foret.ui.foret.ForetBoardFragment"
+        android:label="ForetBoardFragment" >
+        <argument
+            android:name="boardId"
+            app:argType="long" />
+    </fragment>
 
     <fragment
         android:id="@+id/anonymousForumBoardFragment"

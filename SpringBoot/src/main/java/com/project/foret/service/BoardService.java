@@ -2,16 +2,17 @@ package com.project.foret.service;
 
 import com.project.foret.entity.*;
 import com.project.foret.model.BoardModel;
+import com.project.foret.model.CommentModel;
+import com.project.foret.model.MemberModel;
 import com.project.foret.model.PhotoModel;
-import com.project.foret.repository.BoardPhotoRepository;
-import com.project.foret.repository.BoardRepository;
-import com.project.foret.repository.ForetRepository;
+import com.project.foret.repository.*;
 import com.project.foret.response.BoardResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
@@ -32,7 +33,12 @@ public class BoardService {
 
     private BoardRepository boardRepository;
     private BoardPhotoRepository boardPhotoRepository;
+    private CommentRepository commentRepository;
+    private MemberRepository memberRepository;
     private ForetRepository foretRepository;
+
+    private MemberService memberService;
+    private CommentService commentService;
 
     public ResponseEntity<Object> createBoard(Long member_id, Long foret_id, Board board, MultipartFile[] files) throws Exception {
         Board newBoard = new Board();
@@ -62,7 +68,6 @@ public class BoardService {
                 boardPhotoRepository.deleteByBoardId(id);
 
                 updateBoard.setType(board.getType());
-                updateBoard.setHit(board.getHit());
                 updateBoard.setSubject(board.getSubject());
                 updateBoard.setContent(board.getContent());
                 updateBoard.setEdit_date(Timestamp.valueOf(LocalDateTime.now()));
@@ -93,7 +98,6 @@ public class BoardService {
             Board board = boardRepository.findById(id).get();
             BoardModel boardModel = new BoardModel();
             boardModel.setId(board.getId());
-            boardModel.setWriter_id(board.getMember().getId());
             boardModel.setForet_id(board.getForet().getId());
             boardModel.setSubject(board.getSubject());
             boardModel.setContent(board.getContent());
@@ -102,6 +106,8 @@ public class BoardService {
             boardModel.setReg_date(board.getReg_date());
             boardModel.setEdit_date(board.getEdit_date());
             boardModel.setPhotos(getPhotoList(board));
+            boardModel.setMember(getMember(board));
+            boardModel.setComments(commentService.getComments(id));
             return boardModel;
         } else return null;
     }
@@ -114,7 +120,6 @@ public class BoardService {
                 for (Board board : boardList) {
                     BoardModel boardModel = new BoardModel();
                     boardModel.setId(board.getId());
-                    boardModel.setWriter_id(board.getMember().getId());
                     boardModel.setForet_id(board.getForet().getId());
                     boardModel.setSubject(board.getSubject());
                     boardModel.setContent(board.getContent());
@@ -123,6 +128,7 @@ public class BoardService {
                     boardModel.setReg_date(board.getReg_date());
                     boardModel.setEdit_date(board.getEdit_date());
                     boardModel.setPhotos(getPhotoList(board));
+                    boardModel.setMember(getMember(board));
                     boardModels.add(boardModel);
                 }
                 return new BoardResponse(boardModels);
@@ -135,6 +141,7 @@ public class BoardService {
         if (board.getPhotos() != null && board.getPhotos().size() != 0) {
             for (BoardPhoto boardPhoto : board.getPhotos()) {
                 PhotoModel photoModel = new PhotoModel();
+                photoModel.setId(boardPhoto.getId());
                 photoModel.setDir(boardPhoto.getDir());
                 photoModel.setFilename(boardPhoto.getFilename());
                 photoModel.setOriginname(boardPhoto.getOriginname());
@@ -147,9 +154,9 @@ public class BoardService {
         } else return null;
     }
 
-    private BoardPhoto uploadPhoto(MultipartFile photo) throws Exception{
-        String realPath = servletContext.getRealPath("/storage/foret");
-        String dir = "/storage/foret";
+    private BoardPhoto uploadPhoto(MultipartFile photo) throws Exception {
+        String realPath = servletContext.getRealPath("/storage/board");
+        String dir = "/storage/board";
         String originname = photo.getOriginalFilename();
         String filename = photo.getOriginalFilename();
         int lastIndex = originname.lastIndexOf(".");
@@ -168,4 +175,12 @@ public class BoardService {
         boardPhoto.setFilesize(filesize);
         return boardPhoto;
     }
+
+    private MemberModel getMember(Board board) {
+        if (memberRepository.findById(board.getMember().getId()).isPresent()) {
+            return memberService.getMember(board.getMember().getId());
+        }
+        return null;
+    }
+
 }

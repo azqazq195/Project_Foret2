@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.project.foret.R
 import com.project.foret.model.Board
 
-class BoardAdapter : RecyclerView.Adapter<BoardAdapter.BoardViewHolder>() {
+class BoardItemAdapter : RecyclerView.Adapter<BoardItemAdapter.BoardViewHolder>() {
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Board>() {
@@ -38,9 +38,9 @@ class BoardAdapter : RecyclerView.Adapter<BoardAdapter.BoardViewHolder>() {
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         val board = differ.currentList[position]
         holder.itemView.apply {
-            holder.itemView.findViewById<TextView>(R.id.tvSubject).text = board.subject
-            holder.itemView.findViewById<TextView>(R.id.tvContent).text = board.content
-            holder.itemView.findViewById<TextView>(R.id.tvRegDate).text = board.reg_date
+            holder.itemView.findViewById<TextView>(R.id.tvItemSubject).text = board.subject
+            holder.itemView.findViewById<TextView>(R.id.tvItemContent).text = board.content
+            holder.itemView.findViewById<TextView>(R.id.tvItemRegDate).text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
             setOnClickListener {
                 onItemClickListener?.let { it(board) }
             }

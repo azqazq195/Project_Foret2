@@ -1,7 +1,9 @@
 package com.project.foret.controller;
 
 import com.project.foret.entity.Board;
+import com.project.foret.entity.Comment;
 import com.project.foret.model.BoardModel;
+import com.project.foret.model.CommentModel;
 import com.project.foret.response.BoardResponse;
 import com.project.foret.service.BoardService;
 import lombok.AllArgsConstructor;
@@ -21,7 +23,7 @@ public class BoardController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createBoard(
-            @RequestParam Long member_id,
+            @RequestParam @Nullable Long member_id,
             @RequestParam @Nullable Long foret_id,
             Board board,
             MultipartFile[] files
@@ -33,7 +35,8 @@ public class BoardController {
     public ResponseEntity<Object> updateBoard(
             @PathVariable Long id,
             @RequestParam Long member_id,
-            Board board, MultipartFile[] files
+            Board board,
+            MultipartFile[] files
     ) throws Exception {
         return boardService.updateBoard(id, member_id, board, files);
     }
@@ -54,4 +57,6 @@ public class BoardController {
     ) {
         return boardService.getForetBoard(foret_id);
     }
+
+
 }

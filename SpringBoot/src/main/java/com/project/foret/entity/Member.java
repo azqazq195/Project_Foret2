@@ -37,6 +37,8 @@ public class Member {
     private List<Foret> forets;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Board> boards;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     public void addTag(Tag tag) {
         if (tags == null) {
@@ -72,7 +74,6 @@ public class Member {
     }
 
     public Member() {
-
     }
 
 }

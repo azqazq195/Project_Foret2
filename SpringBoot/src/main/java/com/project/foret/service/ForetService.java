@@ -202,6 +202,7 @@ public class ForetService {
         if (foret.getPhotos() != null && foret.getPhotos().size() != 0) {
             for (ForetPhoto foretPhoto : foret.getPhotos()) {
                 PhotoModel photoModel = new PhotoModel();
+                photoModel.setId(foretPhoto.getId());
                 photoModel.setDir(foretPhoto.getDir());
                 photoModel.setFilename(foretPhoto.getFilename());
                 photoModel.setOriginname(foretPhoto.getOriginname());
