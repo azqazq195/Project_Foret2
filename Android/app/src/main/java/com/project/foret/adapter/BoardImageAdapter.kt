@@ -18,12 +18,10 @@ class BoardImageAdapter : RecyclerView.Adapter<BoardImageAdapter.BoardViewHolder
 
     private val differCallBack = object : DiffUtil.ItemCallback<Photo>() {
         override fun areItemsTheSame(oldItem: Photo, newItem: Photo): Boolean {
-            Log.e("fff", "areItemsTheSame: 4", )
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Photo, newItem: Photo): Boolean {
-            Log.e("fff", "areContentsTheSame: 4", )
             return oldItem == newItem
         }
     }
@@ -31,7 +29,6 @@ class BoardImageAdapter : RecyclerView.Adapter<BoardImageAdapter.BoardViewHolder
     val differ = AsyncListDiffer(this, differCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
-        Log.e("fff", "onCreateViewHolder: 4", )
         return BoardViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_board_image,
@@ -42,7 +39,6 @@ class BoardImageAdapter : RecyclerView.Adapter<BoardImageAdapter.BoardViewHolder
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
-        Log.e("fff", "onBindViewHolder: 4", )
         val photo = differ.currentList[position]
         holder.itemView.apply {
             if (photo != null) {

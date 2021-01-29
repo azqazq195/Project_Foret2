@@ -1,6 +1,5 @@
 package com.project.foret.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.project.foret.R
 import com.project.foret.model.Board
 
-class BoardItemAdapter : RecyclerView.Adapter<BoardItemAdapter.BoardViewHolder>() {
-    inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+class AnonymousAdapter : RecyclerView.Adapter<AnonymousAdapter.AnonymousBoardViewHolder>() {
+    inner class AnonymousBoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Board>() {
         override fun areItemsTheSame(oldItem: Board, newItem: Board): Boolean {
@@ -26,22 +26,30 @@ class BoardItemAdapter : RecyclerView.Adapter<BoardItemAdapter.BoardViewHolder>(
 
     val differ = AsyncListDiffer(this, differCallBack)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
-        return BoardViewHolder(
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AnonymousAdapter.AnonymousBoardViewHolder {
+        return AnonymousBoardViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_board,
+                R.layout.item_anonymous_board,
                 parent,
                 false
             )
         )
     }
 
-    override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: AnonymousAdapter.AnonymousBoardViewHolder,
+        position: Int
+    ) {
         val board = differ.currentList[position]
         holder.itemView.apply {
-            holder.itemView.findViewById<TextView>(R.id.tvItemForetSubject).text = board.subject
-            holder.itemView.findViewById<TextView>(R.id.tvItemForetContent).text = board.content
-            holder.itemView.findViewById<TextView>(R.id.tvItemForetRegDate).text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
+            holder.itemView.findViewById<TextView>(R.id.tvAnonySubject).text = board.subject
+            holder.itemView.findViewById<TextView>(R.id.tvAnonyWriter).text = board.member.nickname
+            holder.itemView.findViewById<TextView>(R.id.tvAnonyContent).text = board.content
+            holder.itemView.findViewById<TextView>(R.id.tvAnonyRegDate).text =
+                board.reg_date.substring(0, board.reg_date.indexOf("T"))
             setOnClickListener {
                 onItemClickListener?.let { it(board) }
             }

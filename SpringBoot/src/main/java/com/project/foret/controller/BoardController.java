@@ -1,9 +1,7 @@
 package com.project.foret.controller;
 
 import com.project.foret.entity.Board;
-import com.project.foret.entity.Comment;
 import com.project.foret.model.BoardModel;
-import com.project.foret.model.CommentModel;
 import com.project.foret.response.BoardResponse;
 import com.project.foret.service.BoardService;
 import lombok.AllArgsConstructor;
@@ -11,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -51,11 +47,17 @@ public class BoardController {
         return boardService.getBoard(id);
     }
 
-    @GetMapping("/getForetBoard")
-    public BoardResponse getForetBoard(
+    @GetMapping("/getForetBoardList")
+    public BoardResponse getForetBoardList(
             @RequestParam Long foret_id
     ) {
-        return boardService.getForetBoard(foret_id);
+        return boardService.getForetBoardList(foret_id);
+    }
+
+    @GetMapping("/getAnonymousBoardList")
+    public BoardResponse getAnonymousBoardList(
+    ) {
+        return boardService.getAnonymousBoardList();
     }
 
 

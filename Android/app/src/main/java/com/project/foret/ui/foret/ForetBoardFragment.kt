@@ -76,7 +76,6 @@ class ForetBoardFragment : Fragment(R.layout.fragment_foret_board) {
                         setForetBoardView(boardResponse)
                         boardImageAdapter.differ.submitList(boardResponse.photos)
                         commentAdapter.differ.submitList(boardResponse.comments)
-                        Log.e(TAG, "setUpRecyclerView: ${commentAdapter.differ.currentList[0].content}")
                     }
                 }
                 is Resource.Error -> {
