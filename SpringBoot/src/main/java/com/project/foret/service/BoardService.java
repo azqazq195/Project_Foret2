@@ -33,7 +33,6 @@ public class BoardService {
 
     private BoardRepository boardRepository;
     private BoardPhotoRepository boardPhotoRepository;
-    private CommentRepository commentRepository;
     private MemberRepository memberRepository;
     private ForetRepository foretRepository;
 
@@ -112,7 +111,7 @@ public class BoardService {
         } else return null;
     }
 
-    public BoardResponse getForetBoard(Long foret_id) {
+    public BoardResponse getForetBoardList(Long foret_id) {
         if (foretRepository.findById(foret_id).isPresent()) {
             List<Board> boardList = boardRepository.findTop5ByForetIdOrderByIdDesc(foret_id);
             if (boardList.size() > 0) {
@@ -127,12 +126,34 @@ public class BoardService {
                     boardModel.setHit(board.getHit());
                     boardModel.setReg_date(board.getReg_date());
                     boardModel.setEdit_date(board.getEdit_date());
-                    boardModel.setPhotos(getPhotoList(board));
+                    // boardModel.setPhotos(getPhotoList(board));
                     boardModel.setMember(getMember(board));
                     boardModels.add(boardModel);
                 }
                 return new BoardResponse(boardModels);
             } else return new BoardResponse();
+        } else return new BoardResponse();
+    }
+
+    public BoardResponse getAnonymousBoardList() {
+        List<Board> boardList = boardRepository.findByType(4);
+        if (boardList.size() > 0) {
+            List<BoardModel> boardModels = new ArrayList<>();
+            for (Board board : boardList) {
+                BoardModel boardModel = new BoardModel();
+                boardModel.setId(board.getId());
+//                boardModel.setForet_id(board.getForet().getId());
+                boardModel.setSubject(board.getSubject());
+                boardModel.setContent(board.getContent());
+                boardModel.setType(board.getType());
+                boardModel.setHit(board.getHit());
+                boardModel.setReg_date(board.getReg_date());
+                boardModel.setEdit_date(board.getEdit_date());
+                // boardModel.setPhotos(getPhotoList(board));
+                boardModel.setMember(getMember(board));
+                boardModels.add(boardModel);
+            }
+            return new BoardResponse(boardModels);
         } else return new BoardResponse();
     }
 

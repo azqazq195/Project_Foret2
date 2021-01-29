@@ -19,4 +19,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "LIMIT 5 )",
     nativeQuery = true)
     List<Board> findTop5ByForetIdOrderByIdDesc(Long foret_id);
+
+    List<Board> findByType(int type);
 }

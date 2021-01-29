@@ -15,10 +15,14 @@ interface ForetAPI {
         member_id: Long
     ) : Response<ForetResponse>
 
-    @GET("/board/getForetBoard")
-    suspend fun getForetBoard(
+    @GET("/board/getForetBoardList")
+    suspend fun getForetBoardList(
         @Query("foret_id")
         foret_id: Long
+    ) : Response<BoardListResponse>
+
+    @GET("/board/getAnonymousBoardList")
+    suspend fun getAnonymousBoardList(
     ) : Response<BoardListResponse>
 
     @GET("/board/details/{board_id}")

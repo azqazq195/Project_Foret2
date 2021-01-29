@@ -20,10 +20,10 @@ class ForetViewModel(
     fun getBoardDetails(board_id: Long) = viewModelScope.launch {
         foretBoard.postValue(Resource.Loading())
         val response = foretRepository.getBoardDetails(board_id)
-        foretBoard.postValue(handleForetBoardResponse(response))
+        foretBoard.postValue(handleBoardDetailsResponse(response))
     }
 
-    private fun handleForetBoardResponse(response: Response<Board>) : Resource<Board> {
+    private fun handleBoardDetailsResponse(response: Response<Board>) : Resource<Board> {
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)

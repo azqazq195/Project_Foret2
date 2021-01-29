@@ -16,12 +16,10 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
 
     private val differCallBack = object : DiffUtil.ItemCallback<Comment>() {
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            Log.e("test", "areItemsTheSame: 1", )
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-            Log.e("test", "areItemsTheSame: 2", )
             return oldItem == newItem
         }
     }
@@ -29,7 +27,6 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     val differ = AsyncListDiffer(this, differCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        Log.e("test", "onCreateViewHolder: 3", )
         return CommentViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_comment,
@@ -40,7 +37,6 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        Log.e("test", "onBindViewHolder: 4", )
         val comment = differ.currentList[position]
         holder.itemView.apply {
             holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member.name

@@ -127,7 +127,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvForetName">
 
                     <TextView
-                        android:id="@+id/tvForetBoardComment"
+                        android:id="@+id/tvForetNotice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="공지사항"
@@ -136,7 +136,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/ivForetBoardComment"
+                        android:id="@+id/ivForetNotice"
                         android:layout_marginLeft="6dp"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -152,6 +152,7 @@
                     android:layout_marginEnd="6dp"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
