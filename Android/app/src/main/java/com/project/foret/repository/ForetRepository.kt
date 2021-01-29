@@ -7,5 +7,5 @@ class ForetRepository {
     suspend fun getForetBoardList(foret_id: Long) = RetrofitInstance.api.getForetBoardList(foret_id)
 
     suspend fun getBoardDetails(board_id: Long) = RetrofitInstance.api.getBoardDetails(board_id)
-    suspend fun getAnonymousBoardList() = RetrofitInstance.api.getAnonymousBoardList()
+    suspend fun getAnonymousBoardList(order: Int) = RetrofitInstance.api.getAnonymousBoardList(order)
 }

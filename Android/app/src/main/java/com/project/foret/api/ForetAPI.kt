@@ -21,8 +21,10 @@ interface ForetAPI {
         foret_id: Long
     ) : Response<BoardListResponse>
 
-    @GET("/board/getAnonymousBoardList")
+    @GET("/board/getAnonymousBoardList/{order}")
     suspend fun getAnonymousBoardList(
+        @Path("order")
+        order: Int
     ) : Response<BoardListResponse>
 
     @GET("/board/details/{board_id}")

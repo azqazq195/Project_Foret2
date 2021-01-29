@@ -32,9 +32,9 @@ class AnonymousForumViewModel(
         return Resource.Error(response.message())
     }
 
-    fun getAnonymousBoardList() = viewModelScope.launch {
+    fun getAnonymousBoardList(order: Int) = viewModelScope.launch {
         anonymousBoardList.postValue(Resource.Loading())
-        val response = foretRepository.getAnonymousBoardList()
+        val response = foretRepository.getAnonymousBoardList(order)
         anonymousBoardList.postValue(handleAnonymousBoardListResponse(response))
     }
 

@@ -35,6 +35,7 @@ public class BoardService {
     private BoardPhotoRepository boardPhotoRepository;
     private MemberRepository memberRepository;
     private ForetRepository foretRepository;
+    private CommentRepository commentRepository;
 
     private MemberService memberService;
     private CommentService commentService;
@@ -135,8 +136,13 @@ public class BoardService {
         } else return new BoardResponse();
     }
 
-    public BoardResponse getAnonymousBoardList() {
-        List<Board> boardList = boardRepository.findByType(4);
+    public BoardResponse getAnonymousBoardListRecent(int order) {
+        List<Board> boardList = new ArrayList<>();
+        if (order == 1) {
+            boardList = boardRepository.findByTypeOrderById(4);
+        } else if (order == 2) {
+            boardList = boardRepository.findByTypeOrderByCommentCount(4);
+        }
         if (boardList.size() > 0) {
             List<BoardModel> boardModels = new ArrayList<>();
             for (Board board : boardList) {
@@ -151,6 +157,7 @@ public class BoardService {
                 boardModel.setEdit_date(board.getEdit_date());
                 // boardModel.setPhotos(getPhotoList(board));
                 boardModel.setMember(getMember(board));
+                boardModel.setComment_count(getCommentCount(board));
                 boardModels.add(boardModel);
             }
             return new BoardResponse(boardModels);
@@ -204,4 +211,9 @@ public class BoardService {
         return null;
     }
 
+    private int getCommentCount(Board board) {
+        if (board.getComments() != null && board.getComments().size() != 0) {
+            return board.getComments().size();
+        } else return 0;
+    }
 }
