@@ -36,4 +36,5 @@ JAR_NAME=$(ls $REPOSITORY/ |grep 'foret' | tail -n 1)
 
 echo "> JAR Name: $JAR_NAME"
 
+# nohup java -jar $REPOSITORY/$JAR_NAME &
 nohup java -jar $REPOSITORY/$JAR_NAME &
