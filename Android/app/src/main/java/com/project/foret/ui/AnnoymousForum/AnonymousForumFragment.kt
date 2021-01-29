@@ -55,7 +55,7 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         tvCommentRank = view.findViewById(R.id.tvCommentRank)
         btnAnonyBoardWrite = view.findViewById(R.id.btnAnonyBoardWrite)
 
-        viewModel.getAnonymousBoardList()
+        viewModel.getAnonymousBoardList(1)
 
         setUpRecyclerView()
         setBoardData()

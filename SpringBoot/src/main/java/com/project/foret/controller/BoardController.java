@@ -54,10 +54,10 @@ public class BoardController {
         return boardService.getForetBoardList(foret_id);
     }
 
-    @GetMapping("/getAnonymousBoardList")
-    public BoardResponse getAnonymousBoardList(
+    @GetMapping("/getAnonymousBoardList/{order}")
+    public BoardResponse getAnonymousBoardListRecent(@PathVariable int order
     ) {
-        return boardService.getAnonymousBoardList();
+        return boardService.getAnonymousBoardListRecent(order);
     }
 
 

@@ -19,4 +19,5 @@ public class BoardModel {
     private MemberModel member;
     private List<PhotoModel> photos;
     private List<CommentModel> comments;
+    private int comment_count;
 }
