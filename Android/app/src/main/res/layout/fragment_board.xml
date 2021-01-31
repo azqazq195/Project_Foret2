@@ -99,7 +99,8 @@
                     android:id="@+id/vpBoardImages"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tvForetBoardContent"
@@ -194,7 +195,15 @@
         </LinearLayout>
     </ScrollView>
 
-
+    <include
+        android:id="@+id/include"
+        layout="@layout/comment_write"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"

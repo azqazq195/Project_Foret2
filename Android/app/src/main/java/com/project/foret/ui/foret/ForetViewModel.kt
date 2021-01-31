@@ -15,20 +15,4 @@ class ForetViewModel(
     val foretRepository: ForetRepository
 ) : ViewModel() {
 
-    val foretBoard: MutableLiveData<Resource<Board>> = MutableLiveData()
-
-    fun getBoardDetails(board_id: Long) = viewModelScope.launch {
-        foretBoard.postValue(Resource.Loading())
-        val response = foretRepository.getBoardDetails(board_id)
-        foretBoard.postValue(handleBoardDetailsResponse(response))
-    }
-
-    private fun handleBoardDetailsResponse(response: Response<Board>) : Resource<Board> {
-        if(response.isSuccessful){
-            response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return Resource.Error(response.message())
-    }
 }

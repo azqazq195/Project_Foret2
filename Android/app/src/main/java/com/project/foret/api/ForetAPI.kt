@@ -1,6 +1,8 @@
 package com.project.foret.api
 
+import androidx.annotation.Nullable
 import com.project.foret.model.Board
+import com.project.foret.model.Comment
 import com.project.foret.model.WriteBoard
 import com.project.foret.response.BoardListResponse
 import com.project.foret.response.CreateResponse
@@ -42,5 +44,17 @@ interface ForetAPI {
         member_id: Long,
         @Body
         board: WriteBoard
+    ) : Response<CreateResponse>
+
+    @POST("/comment/create")
+    suspend fun createComment(
+        @Query("member_id")
+        member_id: Long,
+        @Query("board_id")
+        board_id: Long,
+        @Query("id")
+        @Nullable id: Long,
+        @Body
+        comment: Comment
     ) : Response<CreateResponse>
 }

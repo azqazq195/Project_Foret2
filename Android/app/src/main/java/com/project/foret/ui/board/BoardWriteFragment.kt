@@ -1,4 +1,4 @@
-package com.project.foret.ui
+package com.project.foret.ui.board
 
 import android.os.Bundle
 import android.util.Log
@@ -7,12 +7,9 @@ import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.project.foret.MainActivity
 import com.project.foret.R
 import com.project.foret.adapter.AnonymousAdapter
@@ -25,8 +22,7 @@ import com.project.foret.util.Resource
 
 class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
 
-    lateinit var viewModel: AnonymousForumViewModel
-    lateinit var anonymousAdapter: AnonymousAdapter
+    lateinit var viewModel: BoardViewModel
 
     lateinit var progressBar: ProgressBar
     lateinit var etContent: EditText
@@ -43,11 +39,11 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         super.onViewCreated(view, savedInstanceState)
 
         val foretRepository = ForetRepository()
-        val viewModelProviderFactory = AnonymousForumViewModelProviderFactory(foretRepository)
+        val viewModelProviderFactory = BoardViewModelProviderFactory(foretRepository)
         viewModel = ViewModelProvider(
             this,
             viewModelProviderFactory
-        ).get(AnonymousForumViewModel::class.java)
+        ).get(BoardViewModel::class.java)
 
         // layout
         progressBar = view.findViewById(R.id.progressBar)

@@ -3,6 +3,7 @@ package com.project.foret.repository
 import android.util.Log
 import com.project.foret.api.RetrofitInstance
 import com.project.foret.model.Board
+import com.project.foret.model.Comment
 import com.project.foret.model.WriteBoard
 import com.project.foret.response.CreateResponse
 import retrofit2.Response
@@ -12,9 +13,19 @@ class ForetRepository {
     suspend fun getForetBoardList(foret_id: Long) = RetrofitInstance.api.getForetBoardList(foret_id)
 
     suspend fun getBoardDetails(board_id: Long) = RetrofitInstance.api.getBoardDetails(board_id)
-    suspend fun getAnonymousBoardList(order: Int) = RetrofitInstance.api.getAnonymousBoardList(order)
+    suspend fun getAnonymousBoardList(order: Int) =
+        RetrofitInstance.api.getAnonymousBoardList(order)
 
     suspend fun createBoard(member_id: Long, board: WriteBoard): Response<CreateResponse> {
         return RetrofitInstance.api.createBoard(member_id, board)
+    }
+
+    suspend fun createComment(
+        member_id: Long,
+        board_id: Long,
+        id: Long,
+        comment: Comment
+    ): Response<CreateResponse> {
+        return RetrofitInstance.api.createComment(member_id, board_id, id, comment)
     }
 }

@@ -60,7 +60,10 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         setBoardData()
 
         anonymousAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
+            val bundle = bundleOf(
+                "boardId" to it.id,
+                "isAnonymous" to true
+            )
             view.findNavController()
                 .navigate(
                     R.id.action_anonymousForumFragment_to_foretBoardFragment,

@@ -1,11 +1,10 @@
-package com.project.foret.ui.foret
+package com.project.foret.ui.board
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,9 +21,9 @@ import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
 
-class ForetBoardFragment : Fragment(R.layout.fragment_foret_board) {
+class BoardFragment : Fragment(R.layout.fragment_board) {
 
-    lateinit var viewModel: ForetViewModel
+    lateinit var viewModel: BoardViewModel
     lateinit var boardImageAdapter: BoardImageAdapter
     lateinit var commentAdapter: CommentAdapter
 
@@ -36,18 +35,22 @@ class ForetBoardFragment : Fragment(R.layout.fragment_foret_board) {
     lateinit var tvMemberName: TextView
     lateinit var ivProfileImage: ImageView
     lateinit var vpBoardImages: ViewPager2
-    lateinit var rvComment: RecyclerView
 
-    private val TAG = "ForetBoardFragment"
+    // 댓글
+    lateinit var rvComment: RecyclerView
+    lateinit var etComment: EditText
+    lateinit var btnCommentWrite: Button
+
+    private val TAG = "BoardFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // initialize
         // ViewModel, Repository
         val foretRepository = ForetRepository()
-        val viewModelProviderFactory = ForetViewModelProviderFactory(foretRepository)
+        val viewModelProviderFactory = BoardViewModelProviderFactory(foretRepository)
         viewModel =
-            ViewModelProvider(this, viewModelProviderFactory).get(ForetViewModel::class.java)
+            ViewModelProvider(this, viewModelProviderFactory).get(BoardViewModel::class.java)
 
         val id = arguments?.getLong("boardId")
         id?.let { viewModel.getBoardDetails(it) }
@@ -61,19 +64,22 @@ class ForetBoardFragment : Fragment(R.layout.fragment_foret_board) {
         tvMemberName = view.findViewById(R.id.tvMemberName)
         ivProfileImage = view.findViewById(R.id.ivProfileImage)
         vpBoardImages = view.findViewById(R.id.vpBoardImages)
+
         rvComment = view.findViewById(R.id.rvComment)
+        etComment = view.findViewById(R.id.etComment)
+        btnCommentWrite = view.findViewById(R.id.btnCommentWrite)
 
         setUpRecyclerView()
         setBoardData()
     }
 
     private fun setBoardData() {
-        viewModel.foretBoard.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.board.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { boardResponse ->
-                        setForetBoardView(boardResponse)
+                        setBoardView(boardResponse)
                         boardImageAdapter.differ.submitList(boardResponse.photos)
                         commentAdapter.differ.submitList(boardResponse.comments)
                     }
@@ -104,29 +110,51 @@ class ForetBoardFragment : Fragment(R.layout.fragment_foret_board) {
         }
     }
 
-    private fun setForetBoardView(board: Board) {
-        tvForetBoardSubject.text = board.subject
-        tvForetBoardContent.text = board.content
-        tvBoardReg_date.text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
-        tvMemberName.text = board.member.name
-        if(board.comments != null){
-            tvForetBoardComment.text = "댓글 (${board.comments.size.toString()})"
-            tvForetBoardComment.setOnClickListener{
-//                Toast.makeText(this, "${viewModel.foretBoar}", Toast.LENGTH_SHORT).show()
+    @SuppressLint("SetTextI18n")
+    private fun setBoardView(board: Board) {
+        val isAnonymous: Boolean
+        if(arguments?.getBoolean("isAnonymous") == null){
+            isAnonymous = false
+        } else {
+            isAnonymous = arguments?.getBoolean("isAnonymous")!!
+        }
+
+        if(isAnonymous){
+            // 작성자 닉네임
+            tvMemberName.text = board.member.nickname
+            // 작성자 프로필 사진
+            ivProfileImage.visibility = View.GONE
+            vpBoardImages.visibility = View.GONE
+        } else {
+            // 작성자 이름
+            tvMemberName.text = board.member.name
+
+            // 작성자 프로필 사진
+            if(board.member.photos != null){
+                Glide.with(this)
+                    .load("${BASE_URL}${board.member.photos[0].dir}/${board.member.photos[0].filename}")
+                    .error(R.drawable.home_icon_null_image)
+                    .thumbnail(0.1f)
+                    .into(ivProfileImage)
+            } else {
+                Glide.with(this)
+                    .load(R.drawable.home_icon_null_image)
+                    .thumbnail(0.1f)
+                    .into(ivProfileImage)
             }
         }
 
-        if(board.member.photos != null){
-            Glide.with(this)
-                .load("${BASE_URL}${board.member.photos[0].dir}/${board.member.photos[0].filename}")
-                .error(R.drawable.home_icon_null_image)
-                .thumbnail(0.1f)
-                .into(ivProfileImage)
-        } else {
-            Glide.with(this)
-                .load(R.drawable.home_icon_null_image)
-                .thumbnail(0.1f)
-                .into(ivProfileImage)
+        // 작성일
+        tvBoardReg_date.text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
+        tvForetBoardSubject.text = board.subject
+        tvForetBoardContent.text = board.content
+
+        // 댓글 갯수
+        if(board.comments != null){
+            tvForetBoardComment.text = "댓글 (${board.comments.size})"
+            tvForetBoardComment.setOnClickListener{
+//                Toast.makeText(this, "${viewModel.foretBoar}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
