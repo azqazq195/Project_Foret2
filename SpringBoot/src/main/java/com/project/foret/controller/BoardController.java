@@ -21,7 +21,7 @@ public class BoardController {
     public ResponseEntity<Object> createBoard(
             @RequestParam @Nullable Long member_id,
             @RequestParam @Nullable Long foret_id,
-            Board board,
+            @RequestBody Board board,
             MultipartFile[] files
     ) throws Exception {
         return boardService.createBoard(member_id, foret_id, board, files);
@@ -55,9 +55,9 @@ public class BoardController {
     }
 
     @GetMapping("/getAnonymousBoardList/{order}")
-    public BoardResponse getAnonymousBoardListRecent(@PathVariable int order
+    public BoardResponse getAnonymousBoardList(@PathVariable int order
     ) {
-        return boardService.getAnonymousBoardListRecent(order);
+        return boardService.getAnonymousBoardList(order);
     }
 
 

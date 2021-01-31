@@ -26,6 +26,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="댓글순"
+                android:textColor="@color/textGrey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/tvDump2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,6 +62,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="공감순"
+                android:textAllCaps="false"
+                android:textColor="@color/textGrey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/tvDump1"
                 app:layout_constraintTop_toTopOf="parent" />

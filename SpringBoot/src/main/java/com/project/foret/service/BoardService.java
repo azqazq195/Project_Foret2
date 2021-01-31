@@ -2,7 +2,6 @@ package com.project.foret.service;
 
 import com.project.foret.entity.*;
 import com.project.foret.model.BoardModel;
-import com.project.foret.model.CommentModel;
 import com.project.foret.model.MemberModel;
 import com.project.foret.model.PhotoModel;
 import com.project.foret.repository.*;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
@@ -22,6 +20,7 @@ import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -41,6 +40,7 @@ public class BoardService {
     private CommentService commentService;
 
     public ResponseEntity<Object> createBoard(Long member_id, Long foret_id, Board board, MultipartFile[] files) throws Exception {
+        HashMap map = new HashMap<String, String>();
         Board newBoard = new Board();
         newBoard.setType(board.getType());
         newBoard.setSubject(board.getSubject());
@@ -50,14 +50,21 @@ public class BoardService {
                 newBoard.addPhoto(uploadPhoto(photo));
             }
         }
-        newBoard.setMember(new Member(member_id));
+        if (member_id != null) {
+            newBoard.setMember(new Member(member_id));
+        }
         if (foret_id != null) {
             newBoard.setForet(new Foret(foret_id));
         }
         Board savedBoard = boardRepository.save(newBoard);
         if (boardRepository.findById(savedBoard.getId()).isPresent()) {
-            return ResponseEntity.ok("게시글생성 성공");
-        } else return ResponseEntity.unprocessableEntity().body("게시글생성 실패");
+            map.put("result", "게시글 생성 성공");
+            map.put("id", savedBoard.getId());
+            return ResponseEntity.ok(map);
+        } else {
+            map.put("result", "게시글 생성 실패");
+            return ResponseEntity.unprocessableEntity().body(map);
+        }
     }
 
     @Transactional
@@ -98,7 +105,11 @@ public class BoardService {
             Board board = boardRepository.findById(id).get();
             BoardModel boardModel = new BoardModel();
             boardModel.setId(board.getId());
-            boardModel.setForet_id(board.getForet().getId());
+            if(board.getForet() != null){
+                boardModel.setForet_id(board.getForet().getId());
+            } else {
+                boardModel.setForet_id(null);
+            }
             boardModel.setSubject(board.getSubject());
             boardModel.setContent(board.getContent());
             boardModel.setType(board.getType());
@@ -136,7 +147,7 @@ public class BoardService {
         } else return new BoardResponse();
     }
 
-    public BoardResponse getAnonymousBoardListRecent(int order) {
+    public BoardResponse getAnonymousBoardList(int order) {
         List<Board> boardList = new ArrayList<>();
         if (order == 1) {
             boardList = boardRepository.findByTypeOrderById(4);

@@ -11,5 +11,6 @@ data class Board(
     val edit_date: String,
     val member: Member,
     val photos: MutableList<Photo>,
-    val comments: MutableList<Comment>
+    val comments: MutableList<Comment>,
+    val comment_count: Int
 )

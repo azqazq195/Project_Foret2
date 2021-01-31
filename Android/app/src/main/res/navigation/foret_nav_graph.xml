@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/foret_nav_graph"
     app:startDestination="@id/homeFragment">
 
@@ -24,7 +25,7 @@
     <!-- 익명게시판 -->
     <fragment
         android:id="@+id/anonymousForumFragment"
-        android:name="com.project.foret.ui.AnnoymousForum.AnonymousForumFragment"
+        android:name="com.project.foret.ui.annoymousForum.AnonymousForumFragment"
         android:label="AnonymousForumFragment">
         <action
             android:id="@+id/action_anonymousForumFragment_to_anonymousForumBoardFragment"
@@ -36,12 +37,15 @@
         <action
             android:id="@+id/action_anonymousForumFragment_to_foretBoardFragment"
             app:destination="@id/foretBoardFragment" />
+        <action
+            android:id="@+id/action_anonymousForumFragment_to_boardWriteFragment"
+            app:destination="@id/boardWriteFragment" />
     </fragment>
 
     <!-- 검색 -->
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.project.foret.ui.SearchFragment"
+        android:name="com.project.foret.ui.search.SearchFragment"
         android:label="SearchFragment">
         <action
             android:id="@+id/action_searchFragment_to_foretFragment"
@@ -55,13 +59,13 @@
     <!-- 채팅 -->
     <fragment
         android:id="@+id/chattingFragment"
-        android:name="com.project.foret.ui.ChattingFragment"
+        android:name="com.project.foret.ui.chat.ChattingFragment"
         android:label="ChattingFragment" />
 
     <!-- 알람 -->
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.project.foret.ui.NotificationFragment"
+        android:name="com.project.foret.ui.notification.NotificationFragment"
         android:label="NotificationFragment" />
 
     <fragment
@@ -88,7 +92,16 @@
 
     <fragment
         android:id="@+id/anonymousForumBoardFragment"
-        android:name="com.project.foret.ui.AnonymousForumBoardFragment"
+        android:name="com.project.foret.ui.annoymousForum.AnonymousForumBoardFragment"
         android:label="AnonymousForumBoardFragment" />
+    <fragment
+        android:id="@+id/boardWriteFragment"
+        android:name="com.project.foret.ui.BoardWriteFragment"
+        android:label="fragment_board_write"
+        tools:layout="@layout/fragment_board_write" >
+        <action
+            android:id="@+id/action_boardWriteFragment_to_foretBoardFragment"
+            app:destination="@id/foretBoardFragment" />
+    </fragment>
 
 </navigation>

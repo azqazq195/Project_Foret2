@@ -1,12 +1,15 @@
 package com.project.foret.api
 
 import com.project.foret.model.Board
+import com.project.foret.model.WriteBoard
 import com.project.foret.response.BoardListResponse
+import com.project.foret.response.CreateResponse
 import com.project.foret.response.ForetResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ForetAPI {
     @GET("/foret/myForets")
@@ -32,4 +35,12 @@ interface ForetAPI {
         @Path("board_id")
         board_id: Long
     ) : Response<Board>
+
+    @POST("/board/create")
+    suspend fun createBoard(
+        @Query("member_id")
+        member_id: Long,
+        @Body
+        board: WriteBoard
+    ) : Response<CreateResponse>
 }
