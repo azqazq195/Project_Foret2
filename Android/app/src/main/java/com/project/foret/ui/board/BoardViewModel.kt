@@ -25,8 +25,8 @@ class BoardViewModel(
         board.postValue(handleBoardDetailsResponse(response))
     }
 
-    private fun handleBoardDetailsResponse(response: Response<Board>) : Resource<Board> {
-        if(response.isSuccessful){
+    private fun handleBoardDetailsResponse(response: Response<Board>): Resource<Board> {
+        if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)
             }
@@ -36,11 +36,26 @@ class BoardViewModel(
 
     fun createBoard(member_id: Long, board: WriteBoard) = viewModelScope.launch {
         createBoard.postValue(Resource.Loading())
-        val response = foretRepository.createBoard(member_id,board)
+        val response = foretRepository.createBoard(member_id, board)
         createBoard.postValue(handleCreateBoardResponse(response))
     }
 
     private fun handleCreateBoardResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    fun createComment(comment: Comment) = viewModelScope.launch {
+            createBoard.postValue(Resource.Loading())
+            val response = foretRepository.createComment(comment)
+            createBoard.postValue(handleCreateCommentResponse(response))
+        }
+
+    private fun handleCreateCommentResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)

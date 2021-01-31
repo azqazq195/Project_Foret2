@@ -1,9 +1,11 @@
 package com.project.foret.ui.board
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,10 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import com.project.foret.MainActivity
 import com.project.foret.R
 import com.project.foret.adapter.BoardImageAdapter
 import com.project.foret.adapter.CommentAdapter
 import com.project.foret.model.Board
+import com.project.foret.model.Comment
+import com.project.foret.model.Member
+import com.project.foret.model.WriteBoard
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
@@ -71,6 +78,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
         setUpRecyclerView()
         setBoardData()
+        setComment()
     }
 
     private fun setBoardData() {
@@ -97,6 +105,32 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         })
     }
 
+    private fun createComment(group_id: Long?) {
+        val memberId = (activity as MainActivity).member_id
+        val member = Member(memberId)
+        val board = Board(arguments?.getLong("boardId")!!)
+        val comment = Comment(group_id, etComment.text.toString(), member, board)
+        viewModel.createComment(comment)
+    }
+
+    private fun setComment() {
+        btnCommentWrite.setOnClickListener {
+            if (etComment.text.toString().trim() == "") {
+                Snackbar.make(rvComment, "내용을 입력해 주세요", Snackbar.LENGTH_SHORT).show()
+            } else {
+                // 댓글 입력 => 댓글칸 비우기, 키보드 숨기기, 데이터 새로 불러오기
+                createComment(null)
+                etComment.setText("")
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view?.windowToken, 0)
+
+                val id = arguments?.getLong("boardId")
+                id?.let { viewModel.getBoardDetails(it) }
+            }
+        }
+    }
+
     private fun setUpRecyclerView() {
         boardImageAdapter = BoardImageAdapter()
         commentAdapter = CommentAdapter()
@@ -113,24 +147,24 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     @SuppressLint("SetTextI18n")
     private fun setBoardView(board: Board) {
         val isAnonymous: Boolean
-        if(arguments?.getBoolean("isAnonymous") == null){
+        if (arguments?.getBoolean("isAnonymous") == null) {
             isAnonymous = false
         } else {
             isAnonymous = arguments?.getBoolean("isAnonymous")!!
         }
 
-        if(isAnonymous){
+        if (isAnonymous) {
             // 작성자 닉네임
-            tvMemberName.text = board.member.nickname
+            tvMemberName.text = board.member?.nickname
             // 작성자 프로필 사진
             ivProfileImage.visibility = View.GONE
             vpBoardImages.visibility = View.GONE
         } else {
             // 작성자 이름
-            tvMemberName.text = board.member.name
+            tvMemberName.text = board.member?.name
 
             // 작성자 프로필 사진
-            if(board.member.photos != null){
+            if (board.member?.photos != null) {
                 Glide.with(this)
                     .load("${BASE_URL}${board.member.photos[0].dir}/${board.member.photos[0].filename}")
                     .error(R.drawable.home_icon_null_image)
@@ -145,14 +179,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         }
 
         // 작성일
-        tvBoardReg_date.text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
+        tvBoardReg_date.text = board.reg_date?.substring(0, board.reg_date.indexOf("T"))
         tvForetBoardSubject.text = board.subject
         tvForetBoardContent.text = board.content
 
         // 댓글 갯수
-        if(board.comments != null){
+        if (board.comments != null) {
             tvForetBoardComment.text = "댓글 (${board.comments.size})"
-            tvForetBoardComment.setOnClickListener{
+            tvForetBoardComment.setOnClickListener {
 //                Toast.makeText(this, "${viewModel.foretBoar}", Toast.LENGTH_SHORT).show()
             }
         }

@@ -83,12 +83,12 @@ class AnonymousAdapter : RecyclerView.Adapter<AnonymousAdapter.AnonymousBoardVie
             )
 
             holder.itemView.findViewById<TextView>(R.id.tvAnonySubject).text = board.subject
-            holder.itemView.findViewById<TextView>(R.id.tvAnonyWriter).text = board.member.nickname
+            holder.itemView.findViewById<TextView>(R.id.tvAnonyWriter).text = board.member?.nickname
             holder.itemView.findViewById<TextView>(R.id.tvAnonyContent).text = board.content
             holder.itemView.findViewById<TextView>(R.id.tvAnonyLike).text = spannable1
             holder.itemView.findViewById<TextView>(R.id.tvAnonyComment).text = spannable2
             holder.itemView.findViewById<TextView>(R.id.tvAnonyRegDate).text =
-                board.reg_date.substring(0, board.reg_date.indexOf("T"))
+                board.reg_date?.substring(0, board.reg_date.indexOf("T"))
             setOnClickListener {
                 onItemClickListener?.let { it(board) }
             }

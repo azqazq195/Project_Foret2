@@ -48,12 +48,6 @@ interface ForetAPI {
 
     @POST("/comment/create")
     suspend fun createComment(
-        @Query("member_id")
-        member_id: Long,
-        @Query("board_id")
-        board_id: Long,
-        @Query("id")
-        @Nullable id: Long,
         @Body
         comment: Comment
     ) : Response<CreateResponse>

@@ -20,12 +20,7 @@ class ForetRepository {
         return RetrofitInstance.api.createBoard(member_id, board)
     }
 
-    suspend fun createComment(
-        member_id: Long,
-        board_id: Long,
-        id: Long,
-        comment: Comment
-    ): Response<CreateResponse> {
-        return RetrofitInstance.api.createComment(member_id, board_id, id, comment)
+    suspend fun createComment(comment: Comment): Response<CreateResponse> {
+        return RetrofitInstance.api.createComment(comment)
     }
 }

@@ -5,6 +5,7 @@ import com.project.foret.model.CommentModel;
 import com.project.foret.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +19,9 @@ public class CommentController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(
-            @RequestParam Long member_id,
-            @RequestParam Long board_id,
-            Comment comment
+            @RequestBody Comment comment
     ) {
-        return commentService.create(member_id, board_id, comment);
+        return commentService.create(comment);
     }
 
     @PostMapping("/re/create")

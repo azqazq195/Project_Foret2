@@ -39,10 +39,10 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = differ.currentList[position]
         holder.itemView.apply {
-            holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member.name
+            holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member?.name
             holder.itemView.findViewById<TextView>(R.id.tvCommentContent).text = comment.content
             holder.itemView.findViewById<TextView>(R.id.tvCommentRegDate).text =
-                comment.reg_date.substring(0, comment.reg_date.indexOf("T"))
+                comment.reg_date?.substring(0, comment.reg_date.indexOf("T"))
             setOnClickListener {
                 onItemClickListener?.let { it(comment) }
             }
