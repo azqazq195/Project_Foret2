@@ -19,12 +19,10 @@ public class BoardController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createBoard(
-            @RequestParam @Nullable Long member_id,
-            @RequestParam @Nullable Long foret_id,
             @RequestBody Board board,
             MultipartFile[] files
     ) throws Exception {
-        return boardService.createBoard(member_id, foret_id, board, files);
+        return boardService.createBoard(board, files);
     }
 
     @PutMapping("update/{id}")
@@ -47,11 +45,19 @@ public class BoardController {
         return boardService.getBoard(id);
     }
 
-    @GetMapping("/getForetBoardList")
-    public BoardResponse getForetBoardList(
+    @GetMapping("/getHomeBoardList")
+    public BoardResponse getHomeBoardList(
             @RequestParam Long foret_id
     ) {
-        return boardService.getForetBoardList(foret_id);
+        return boardService.getHomeBoardList(foret_id);
+    }
+
+    @GetMapping("/getForetBoardList")
+    public BoardResponse getForetBoardList(
+            @RequestParam Long foret_id,
+            @RequestParam int type
+    ) {
+        return boardService.getForetBoardList(foret_id, type);
     }
 
     @GetMapping("/getAnonymousBoardList/{order}")

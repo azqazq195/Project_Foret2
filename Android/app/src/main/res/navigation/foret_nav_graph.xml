@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_homeFragment_to_foretBoardFragment"
             app:destination="@id/boardFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <!-- 익명게시판 -->
@@ -85,6 +88,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_foretFragment_to_boardWriteFragment"
+            app:destination="@id/boardWriteFragment" />
     </fragment>
 
     <fragment

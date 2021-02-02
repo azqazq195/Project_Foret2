@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -31,7 +30,7 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
     lateinit var tvLikeRank: TextView
     lateinit var tvCommentRank: TextView
     lateinit var progressBar: ProgressBar
-    lateinit var btnAnonyBoardWrite: FloatingActionButton
+    lateinit var btnBoardWrite: FloatingActionButton
 
     private val TAG = "AnonymousForumFragment"
 
@@ -52,22 +51,22 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         tvRecent = view.findViewById(R.id.tvRecent)
         tvLikeRank = view.findViewById(R.id.tvLikeRank)
         tvCommentRank = view.findViewById(R.id.tvCommentRank)
-        btnAnonyBoardWrite = view.findViewById(R.id.btnAnonyBoardWrite)
+        btnBoardWrite = view.findViewById(R.id.btnBoardWrite)
 
+        // 정렬
         orderBy(1)
 
         setUpRecyclerView()
         setBoardData()
 
         anonymousAdapter.setOnItemClickListener {
-            val bundle = bundleOf(
-                "boardId" to it.id,
-                "isAnonymous" to true
-            )
             view.findNavController()
                 .navigate(
                     R.id.action_anonymousForumFragment_to_foretBoardFragment,
-                    bundle
+                    bundleOf(
+                        "boardId" to it.id,
+                        "isAnonymous" to true
+                    )
                 )
         }
 
@@ -75,10 +74,13 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         tvCommentRank.setOnClickListener { orderBy(2) }
         tvLikeRank.setOnClickListener { orderBy(3) }
 
-        btnAnonyBoardWrite.setOnClickListener {
+        btnBoardWrite.setOnClickListener {
             view.findNavController()
                 .navigate(
-                    R.id.action_anonymousForumFragment_to_boardWriteFragment
+                    R.id.action_anonymousForumFragment_to_boardWriteFragment,
+                    bundleOf(
+                        "isAnonymous" to true
+                    )
                 )
         }
     }

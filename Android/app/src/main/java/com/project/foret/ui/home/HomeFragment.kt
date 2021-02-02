@@ -3,8 +3,10 @@ package com.project.foret.ui.home
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,10 +15,12 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.project.foret.MainActivity
 import com.project.foret.R
 import com.project.foret.adapter.BoardItemAdapter
-import com.project.foret.adapter.ForetAdapter
+import com.project.foret.adapter.ForetThumAdapter
 import com.project.foret.model.Board
+import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
@@ -24,7 +28,7 @@ import com.project.foret.util.ZoomOutPageTransformer
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     lateinit var viewModel: HomeViewModel
-    lateinit var foretAdapter: ForetAdapter
+    lateinit var foretThumAdapter: ForetThumAdapter
     lateinit var noticeAdapter: BoardItemAdapter
     lateinit var feedAdapter: BoardItemAdapter
 
@@ -33,6 +37,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     lateinit var rvFeed: RecyclerView
     lateinit var progressBar: ProgressBar
     lateinit var tvForetName: TextView
+    lateinit var tvMoreForets: TextView
+    lateinit var cvNoForet: CardView
 
     private val TAG = "HomFragment"
 
@@ -50,39 +56,36 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         rvNotice = view.findViewById(R.id.rvNotice)
         rvFeed = view.findViewById(R.id.rvFeed)
         tvForetName = view.findViewById(R.id.tvForetName)
+        tvMoreForets = view.findViewById(R.id.tvMoreForets)
+        cvNoForet = view.findViewById(R.id.cvNoForet)
 
-        viewModel.getMyForets(5L)
+        viewModel.getMyForets((activity as MainActivity).member_id)
 
         setUpRecyclerView()
         setForetData()
         setBoardData()
         setViewPagerChangeListener()
+        setClickListener()
+    }
 
-        noticeAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
-            view.findNavController()
-                .navigate(
-                    R.id.action_homeFragment_to_foretBoardFragment,
-                    bundle
-                )
-        }
-        feedAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
-            view.findNavController()
-                .navigate(
-                    R.id.action_homeFragment_to_foretBoardFragment,
-                    bundle
-                )
-        }
+    private fun showEmpty() {
+        cvNoForet.visibility = View.VISIBLE
+        vpForetImages.visibility = View.INVISIBLE
+        tvForetName.text = "가입한 포레가 없습니다!"
+    }
+
+    private fun showForets() {
+        cvNoForet.visibility = View.INVISIBLE
+        vpForetImages.visibility = View.VISIBLE
     }
 
     private fun setUpRecyclerView() {
-        foretAdapter = ForetAdapter()
+        foretThumAdapter = ForetThumAdapter()
         noticeAdapter = BoardItemAdapter()
         feedAdapter = BoardItemAdapter()
 
         vpForetImages.apply {
-            adapter = foretAdapter
+            adapter = foretThumAdapter
             setPageTransformer(ZoomOutPageTransformer())
         }
         rvNotice.apply {
@@ -95,13 +98,51 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    private fun setClickListener() {
+        foretThumAdapter.setOnItemClickListener {
+            val bundle = bundleOf("foretId" to it.id)
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_homeFragment_to_foretFragment,
+                    bundle
+                )
+        }
+        noticeAdapter.setOnItemClickListener {
+            val bundle = bundleOf("boardId" to it.id)
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_homeFragment_to_foretBoardFragment,
+                    bundle
+                )
+        }
+        feedAdapter.setOnItemClickListener {
+            val bundle = bundleOf("boardId" to it.id)
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_homeFragment_to_foretBoardFragment,
+                    bundle
+                )
+        }
+        tvMoreForets.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_homeFragment_to_searchFragment,
+                )
+        }
+    }
+
     private fun setForetData() {
         viewModel.forets.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { foretResponse ->
-                        foretAdapter.differ.submitList(foretResponse.forets)
+                        if (foretResponse.total == 0) {
+                            showEmpty()
+                        } else {
+                            foretThumAdapter.differ.submitList(foretResponse.forets)
+                            showForets()
+                        }
                     }
                 }
                 is Resource.Error -> {
@@ -118,7 +159,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setBoardData() {
-        viewModel.foretBoardList.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.homeBoardList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
@@ -155,8 +196,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         vpForetImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                tvForetName.text = foretAdapter.differ.currentList[position].name
-                viewModel.getForetBoard(foretAdapter.differ.currentList[position].id)
+                tvForetName.text = foretThumAdapter.differ.currentList[position].name
+                viewModel.getHomeBoardList(foretThumAdapter.differ.currentList[position].id!!)
             }
         })
     }

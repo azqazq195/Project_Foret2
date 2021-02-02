@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,11 +23,12 @@ import com.project.foret.adapter.CommentAdapter
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
 import com.project.foret.model.Member
-import com.project.foret.model.WriteBoard
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
+import java.util.*
+
 
 class BoardFragment : Fragment(R.layout.fragment_board) {
 
@@ -47,8 +49,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     lateinit var rvComment: RecyclerView
     lateinit var etComment: EditText
     lateinit var btnCommentWrite: Button
+    lateinit var tvReCommentTarget: TextView
+    lateinit var tvReCommentTargetCancel: TextView
+    lateinit var layoutReComment: LinearLayout
 
     private val TAG = "BoardFragment"
+
+    private var reCommentToId: Long? = null
+    private var id: Long = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,8 +67,9 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(BoardViewModel::class.java)
 
-        val id = arguments?.getLong("boardId")
-        id?.let { viewModel.getBoardDetails(it) }
+        id = arguments?.getLong("boardId")!!
+        viewModel.getBoardDetails(id)
+        viewModel.getComments(id)
 
         // layout
         progressBar = view.findViewById(R.id.progressBar)
@@ -75,10 +84,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         rvComment = view.findViewById(R.id.rvComment)
         etComment = view.findViewById(R.id.etComment)
         btnCommentWrite = view.findViewById(R.id.btnCommentWrite)
+        tvReCommentTarget = view.findViewById(R.id.tvReCommentTarget)
+        tvReCommentTargetCancel = view.findViewById(R.id.tvReCommentTargetCancel)
+        layoutReComment = view.findViewById(R.id.layoutReComment)
 
         setUpRecyclerView()
         setBoardData()
-        setComment()
+        setCommentData()
+        setCommentClickListener()
     }
 
     private fun setBoardData() {
@@ -89,7 +102,6 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                     response.data?.let { boardResponse ->
                         setBoardView(boardResponse)
                         boardImageAdapter.differ.submitList(boardResponse.photos)
-                        commentAdapter.differ.submitList(boardResponse.comments)
                     }
                 }
                 is Resource.Error -> {
@@ -105,30 +117,91 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         })
     }
 
-    private fun createComment(group_id: Long?) {
+    @SuppressLint("SetTextI18n")
+    private fun setCommentData() {
+        viewModel.commentList.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { commentResponse ->
+                        tvForetBoardComment.text = "댓글 (${commentResponse.total})"
+                        commentAdapter.differ.submitList(commentResponse.comments)
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "An error occured $message")
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+
+        viewModel.createComment.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { commentResponse ->
+                        Snackbar.make(rvComment, "댓글 입력 성공", Snackbar.LENGTH_SHORT).show()
+                        viewModel.getComments(id)
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "An error occured $message")
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+    }
+
+    private fun createComment() {
         val memberId = (activity as MainActivity).member_id
         val member = Member(memberId)
         val board = Board(arguments?.getLong("boardId")!!)
-        val comment = Comment(group_id, etComment.text.toString(), member, board)
+        val comment = Comment(reCommentToId, etComment.text.toString(), member, board)
         viewModel.createComment(comment)
+        hideKeyboard()
+        hideReComment()
+        etComment.setText("")
     }
 
-    private fun setComment() {
+    private fun setCommentClickListener() {
         btnCommentWrite.setOnClickListener {
             if (etComment.text.toString().trim() == "") {
                 Snackbar.make(rvComment, "내용을 입력해 주세요", Snackbar.LENGTH_SHORT).show()
             } else {
-                // 댓글 입력 => 댓글칸 비우기, 키보드 숨기기, 데이터 새로 불러오기
-                createComment(null)
-                etComment.setText("")
-                val imm =
-                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view?.windowToken, 0)
-
-                val id = arguments?.getLong("boardId")
-                id?.let { viewModel.getBoardDetails(it) }
+                createComment()
             }
         }
+
+        tvReCommentTargetCancel.setOnClickListener {
+            hideKeyboard()
+            hideReComment()
+        }
+
+        commentAdapter.setOnClickListener(object : CommentAdapter.OnClickListener {
+            override fun onReCommentClick(v: View, position: Int) {
+                showReComment(position)
+                showKeyboard()
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onEditCommentClick(v: View, position: Int) {
+                Log.e(TAG, "onClick: $position 수정")
+            }
+
+            override fun onDeleteCommentClick(v: View, position: Int) {
+                Log.e(TAG, "onClick: $position 삭제")
+            }
+        })
     }
 
     private fun setUpRecyclerView() {
@@ -182,14 +255,6 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         tvBoardReg_date.text = board.reg_date?.substring(0, board.reg_date.indexOf("T"))
         tvForetBoardSubject.text = board.subject
         tvForetBoardContent.text = board.content
-
-        // 댓글 갯수
-        if (board.comments != null) {
-            tvForetBoardComment.text = "댓글 (${board.comments.size})"
-            tvForetBoardComment.setOnClickListener {
-//                Toast.makeText(this, "${viewModel.foretBoar}", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun hideProgressBar() {
@@ -198,5 +263,41 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     private fun showProgressBar() {
         progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideKeyboard() {
+        val imm =
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun showKeyboard() {
+        val imm =
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(etComment, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun hideReComment() {
+        if (reCommentToId != null) {
+            reCommentToId = null
+            val text = etComment.text
+            val start = text.indexOf("@")
+            val end = text.indexOf(" ")
+            val newText = text.substring(text.substring(start, end).length + 1)
+            etComment.setText(newText)
+            layoutReComment.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showReComment(position: Int) {
+        reCommentToId = commentAdapter.differ.currentList[position].group_id
+        val target = commentAdapter.differ.currentList[position].member?.nickname.toString()
+        val text = etComment.text
+        val mention = "@$target "
+        tvReCommentTarget.text = "$target 님께 답글 작성중입니다..."
+        etComment.setText(mention + text)
+        etComment.setSelection(etComment.text.length)
+        layoutReComment.visibility = View.VISIBLE
     }
 }

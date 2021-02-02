@@ -12,11 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.project.foret.MainActivity
 import com.project.foret.R
-import com.project.foret.adapter.AnonymousAdapter
-import com.project.foret.model.WriteBoard
+import com.project.foret.model.Board
+import com.project.foret.model.Member
 import com.project.foret.repository.ForetRepository
-import com.project.foret.ui.annoymousForum.AnonymousForumViewModel
-import com.project.foret.ui.annoymousForum.AnonymousForumViewModelProviderFactory
 import com.project.foret.util.Resource
 
 
@@ -55,7 +53,7 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         layoutImages = view.findViewById(R.id.layoutImages)
         toolbar = view.findViewById(R.id.cosutom_toolbar)
 
-        setDefault()
+        setAnonymousBoardWrite()
         setCreateBoardResponse(view)
 
         toolbar.findViewById<TextView>(R.id.item_complete).setOnClickListener {
@@ -64,9 +62,10 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
     }
 
     private fun createBoard() {
-        val member_id = (activity as MainActivity).member_id
-        val board = WriteBoard(4, "제목1", "내용1")
-        viewModel.createBoard(member_id, board)
+        val memberId = (activity as MainActivity).member_id
+        val member = Member(memberId)
+        val board = Board(null,4,"제목1","내용1",member)
+        viewModel.createBoard(board)
     }
 
     private fun setCreateBoardResponse(view: View) {
@@ -75,7 +74,7 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { createResponse ->
-                        val bundle = bundleOf("boardId" to createResponse.id)
+                        val bundle = bundleOf("boardId" to createResponse.id.toLong())
                         view.findNavController()
                             .navigate(
                                 R.id.action_boardWriteFragment_to_foretBoardFragment,
@@ -96,7 +95,7 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         })
     }
 
-    private fun setDefault() {
+    private fun setAnonymousBoardWrite() {
         tvWriter.text = ""
         ArrayAdapter.createFromResource(
             activity as MainActivity,
@@ -109,6 +108,10 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         }
         btnUpload.visibility = View.GONE
         layoutImages.visibility = View.GONE
+
+    }
+
+    private fun setForetBoardWrite() {
 
     }
 

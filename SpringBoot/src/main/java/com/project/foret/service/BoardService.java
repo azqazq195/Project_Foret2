@@ -39,27 +39,17 @@ public class BoardService {
     private MemberService memberService;
     private CommentService commentService;
 
-    public ResponseEntity<Object> createBoard(Long member_id, Long foret_id, Board board, MultipartFile[] files) throws Exception {
-        HashMap map = new HashMap<String, String>();
-        Board newBoard = new Board();
-        newBoard.setType(board.getType());
-        newBoard.setSubject(board.getSubject());
-        newBoard.setContent(board.getContent());
+    public ResponseEntity<Object> createBoard(Board board, MultipartFile[] files) throws Exception {
+        HashMap<String, String> map = new HashMap<>();
         if (files != null) {
             for (MultipartFile photo : files) {
-                newBoard.addPhoto(uploadPhoto(photo));
+                board.addPhoto(uploadPhoto(photo));
             }
         }
-        if (member_id != null) {
-            newBoard.setMember(new Member(member_id));
-        }
-        if (foret_id != null) {
-            newBoard.setForet(new Foret(foret_id));
-        }
-        Board savedBoard = boardRepository.save(newBoard);
+        Board savedBoard = boardRepository.save(board);
         if (boardRepository.findById(savedBoard.getId()).isPresent()) {
             map.put("result", "게시글 생성 성공");
-            map.put("id", savedBoard.getId());
+            map.put("id", savedBoard.getId().toString());
             return ResponseEntity.ok(map);
         } else {
             map.put("result", "게시글 생성 실패");
@@ -118,12 +108,11 @@ public class BoardService {
             boardModel.setEdit_date(board.getEdit_date());
             boardModel.setPhotos(getPhotoList(board));
             boardModel.setMember(getMember(board));
-            boardModel.setComments(commentService.getComments(id));
             return boardModel;
         } else return null;
     }
 
-    public BoardResponse getForetBoardList(Long foret_id) {
+    public BoardResponse getHomeBoardList(Long foret_id) {
         if (foretRepository.findById(foret_id).isPresent()) {
             List<Board> boardList = boardRepository.findTop5ByForetIdOrderByIdDesc(foret_id);
             if (boardList.size() > 0) {
@@ -146,6 +135,31 @@ public class BoardService {
             } else return new BoardResponse();
         } else return new BoardResponse();
     }
+
+    public BoardResponse getForetBoardList(Long foret_id, int type) {
+        if (foretRepository.findById(foret_id).isPresent()) {
+            List<Board> boardList = boardRepository.findByForetIdAndTypeOrderById(foret_id, type);
+            if (boardList.size() > 0) {
+                List<BoardModel> boardModels = new ArrayList<>();
+                for (Board board : boardList) {
+                    BoardModel boardModel = new BoardModel();
+                    boardModel.setId(board.getId());
+                    boardModel.setForet_id(board.getForet().getId());
+                    boardModel.setSubject(board.getSubject());
+                    boardModel.setContent(board.getContent());
+                    boardModel.setType(board.getType());
+                    boardModel.setHit(board.getHit());
+                    boardModel.setReg_date(board.getReg_date());
+                    boardModel.setEdit_date(board.getEdit_date());
+                    // boardModel.setPhotos(getPhotoList(board));
+                    boardModel.setMember(getMember(board));
+                    boardModels.add(boardModel);
+                }
+                return new BoardResponse(boardModels);
+            } else return new BoardResponse();
+        } else return new BoardResponse();
+    }
+
 
     public BoardResponse getAnonymousBoardList(int order) {
         List<Board> boardList = new ArrayList<>();

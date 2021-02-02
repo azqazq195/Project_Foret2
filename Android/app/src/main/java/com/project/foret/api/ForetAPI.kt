@@ -1,15 +1,12 @@
 package com.project.foret.api
 
-import androidx.annotation.Nullable
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
-import com.project.foret.model.WriteBoard
+import com.project.foret.model.Foret
 import com.project.foret.response.BoardListResponse
+import com.project.foret.response.CommentsResponse
 import com.project.foret.response.CreateResponse
 import com.project.foret.response.ForetResponse
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -20,10 +17,18 @@ interface ForetAPI {
         member_id: Long
     ) : Response<ForetResponse>
 
+    @GET("/board/getHomeBoardList")
+    suspend fun getHomeBoardList(
+        @Query("foret_id")
+        foret_id: Long
+    ) : Response<BoardListResponse>
+
     @GET("/board/getForetBoardList")
     suspend fun getForetBoardList(
         @Query("foret_id")
-        foret_id: Long
+        foret_id: Long,
+        @Query("type")
+        type: Int
     ) : Response<BoardListResponse>
 
     @GET("/board/getAnonymousBoardList/{order}")
@@ -38,12 +43,22 @@ interface ForetAPI {
         board_id: Long
     ) : Response<Board>
 
+    @GET("/foret/details/{foret_id}")
+    suspend fun getForetDetails(
+        @Path("foret_id")
+        foret_id: Long
+    ) : Response<Foret>
+
+    @GET("/comment/getComments")
+    suspend fun getComments(
+        @Query("board_id")
+        board_id: Long
+    ) : Response<CommentsResponse>
+
     @POST("/board/create")
     suspend fun createBoard(
-        @Query("member_id")
-        member_id: Long,
         @Body
-        board: WriteBoard
+        board: Board
     ) : Response<CreateResponse>
 
     @POST("/comment/create")

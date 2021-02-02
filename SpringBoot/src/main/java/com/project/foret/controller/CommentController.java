@@ -2,6 +2,7 @@ package com.project.foret.controller;
 
 import com.project.foret.entity.Comment;
 import com.project.foret.model.CommentModel;
+import com.project.foret.response.CommentResponse;
 import com.project.foret.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +23,6 @@ public class CommentController {
             @RequestBody Comment comment
     ) {
         return commentService.create(comment);
-    }
-
-    @PostMapping("/re/create")
-    public ResponseEntity<Object> createRe(
-            @RequestParam Long id,
-            @RequestParam Long member_id,
-            @RequestParam Long board_id,
-            Comment comment
-    ) {
-        return commentService.createRe(id, member_id, board_id, comment);
     }
 
     @PutMapping("/update/{id}")
@@ -58,7 +49,7 @@ public class CommentController {
     }
 
     @GetMapping("/getComments")
-    public List<CommentModel> getComments(
+    public CommentResponse getComments(
             @RequestParam Long board_id
     ) {
         return commentService.getComments(board_id);

@@ -15,7 +15,7 @@ class HomeViewModel(
 ) : ViewModel() {
 
     val forets: MutableLiveData<Resource<ForetResponse>> = MutableLiveData()
-    val foretBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
+    val homeBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
 
     fun getMyForets(member_id: Long) = viewModelScope.launch {
         forets.postValue(Resource.Loading())
@@ -32,10 +32,10 @@ class HomeViewModel(
         return Resource.Error(response.message())
     }
 
-    fun getForetBoard(foret_id: Long) = viewModelScope.launch {
-        foretBoardList.postValue(Resource.Loading())
-        val response = foretRepository.getForetBoardList(foret_id)
-        foretBoardList.postValue(handleForetBoardListResponse(response))
+    fun getHomeBoardList(foret_id: Long) = viewModelScope.launch {
+        homeBoardList.postValue(Resource.Loading())
+        val response = foretRepository.getHomeBoardList(foret_id)
+        homeBoardList.postValue(handleForetBoardListResponse(response))
     }
 
     private fun handleForetBoardListResponse(response: Response<BoardListResponse>) : Resource<BoardListResponse>{

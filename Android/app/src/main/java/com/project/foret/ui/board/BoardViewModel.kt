@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
-import com.project.foret.model.WriteBoard
 import com.project.foret.repository.ForetRepository
+import com.project.foret.response.CommentsResponse
 import com.project.foret.response.CreateResponse
 import com.project.foret.util.Resource
 import kotlinx.coroutines.launch
@@ -17,7 +17,12 @@ class BoardViewModel(
 ) : ViewModel() {
 
     val board: MutableLiveData<Resource<Board>> = MutableLiveData()
+
+    val commentList: MutableLiveData<Resource<CommentsResponse>> = MutableLiveData()
+    var commentsResponse: CommentsResponse? = null
+
     val createBoard: MutableLiveData<Resource<CreateResponse>> = MutableLiveData()
+    val createComment: MutableLiveData<Resource<CreateResponse>> = MutableLiveData()
 
     fun getBoardDetails(board_id: Long) = viewModelScope.launch {
         board.postValue(Resource.Loading())
@@ -34,9 +39,24 @@ class BoardViewModel(
         return Resource.Error(response.message())
     }
 
-    fun createBoard(member_id: Long, board: WriteBoard) = viewModelScope.launch {
+    fun getComments(board_id: Long) = viewModelScope.launch {
+        commentList.postValue(Resource.Loading())
+        val response = foretRepository.getComments(board_id)
+        commentList.postValue(handleCommentsResponse(response))
+    }
+
+    private fun handleCommentsResponse(response: Response<CommentsResponse>): Resource<CommentsResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    fun createBoard(board: Board) = viewModelScope.launch {
         createBoard.postValue(Resource.Loading())
-        val response = foretRepository.createBoard(member_id, board)
+        val response = foretRepository.createBoard(board)
         createBoard.postValue(handleCreateBoardResponse(response))
     }
 
@@ -50,10 +70,10 @@ class BoardViewModel(
     }
 
     fun createComment(comment: Comment) = viewModelScope.launch {
-            createBoard.postValue(Resource.Loading())
-            val response = foretRepository.createComment(comment)
-            createBoard.postValue(handleCreateCommentResponse(response))
-        }
+        createComment.postValue(Resource.Loading())
+        val response = foretRepository.createComment(comment)
+        createComment.postValue(handleCreateCommentResponse(response))
+    }
 
     private fun handleCreateCommentResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
         if (response.isSuccessful) {

@@ -10,6 +10,7 @@ import com.project.foret.model.MemberModel;
 import com.project.foret.repository.BoardRepository;
 import com.project.foret.repository.CommentRepository;
 import com.project.foret.repository.MemberRepository;
+import com.project.foret.response.CommentResponse;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -82,7 +83,7 @@ public class CommentService {
         } else return null;
     }
 
-    public List<CommentModel> getComments(Long board_id) {
+    public CommentResponse getComments(Long board_id) {
         List<Comment> commentList = commentRepository.findAllByBoardIdOrderByGroupIdAscIdAsc(board_id);
         if (commentList.size() > 0) {
             List<CommentModel> commentModels = new ArrayList<>();
@@ -95,12 +96,17 @@ public class CommentService {
                 commentModel.setMember(getMember(comment));
                 commentModels.add(commentModel);
             }
-            return commentModels;
-        } else return null;
+            return new CommentResponse(commentModels);
+        } else return new CommentResponse();
     }
 
     private MemberModel getMember(Comment comment) {
-        return memberService.getMember(comment.getMember().getId());
+        // return memberService.getMember(comment.getMember().getId());
+        MemberModel member = memberService.getMember(comment.getMember().getId());
+        MemberModel newMember = new MemberModel();
+        newMember.setName(member.getName());
+        newMember.setNickname(member.getNickname());
+        return newMember;
     }
 
 }

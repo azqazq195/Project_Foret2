@@ -16,4 +16,6 @@ data class Board(
 ) {
     constructor(id: Long)
             : this(id, null, null, null, null, null, null, null, null, null, null, null)
+    constructor(foret_id: Long?, type: Int, subject: String, content: String, member: Member)
+            : this(null,foret_id, type, null, subject, content, null, null, member, null, null, null)
 }
