@@ -1,9 +1,10 @@
-package com.project.foret.ui.AnnoymousForum
+package com.project.foret.ui.annoymousForum
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -16,14 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.foret.R
 import com.project.foret.adapter.AnonymousAdapter
-import com.project.foret.adapter.BoardItemAdapter
-import com.project.foret.adapter.ForetAdapter
-import com.project.foret.model.Board
 import com.project.foret.repository.ForetRepository
-import com.project.foret.ui.home.HomeViewModel
-import com.project.foret.ui.home.HomeViewModelProviderFactory
 import com.project.foret.util.Resource
-import com.project.foret.util.ZoomOutPageTransformer
 
 class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
 
@@ -35,7 +30,7 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
     lateinit var tvLikeRank: TextView
     lateinit var tvCommentRank: TextView
     lateinit var progressBar: ProgressBar
-    lateinit var btnAnonyBoardWrite: FloatingActionButton
+    lateinit var btnBoardWrite: FloatingActionButton
 
     private val TAG = "AnonymousForumFragment"
 
@@ -45,7 +40,10 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         // ViewModel, Repository
         val foretRepository = ForetRepository()
         val viewModelProviderFactory = AnonymousForumViewModelProviderFactory(foretRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(AnonymousForumViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            viewModelProviderFactory
+        ).get(AnonymousForumViewModel::class.java)
 
         // layout
         progressBar = view.findViewById(R.id.progressBar)
@@ -53,23 +51,70 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         tvRecent = view.findViewById(R.id.tvRecent)
         tvLikeRank = view.findViewById(R.id.tvLikeRank)
         tvCommentRank = view.findViewById(R.id.tvCommentRank)
-        btnAnonyBoardWrite = view.findViewById(R.id.btnAnonyBoardWrite)
+        btnBoardWrite = view.findViewById(R.id.btnBoardWrite)
 
-        viewModel.getAnonymousBoardList(1)
+        // 정렬
+        orderBy(1)
 
         setUpRecyclerView()
         setBoardData()
 
         anonymousAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
             view.findNavController()
                 .navigate(
                     R.id.action_anonymousForumFragment_to_foretBoardFragment,
-                    bundle
+                    bundleOf(
+                        "boardId" to it.id,
+                        "isAnonymous" to true
+                    )
                 )
         }
 
-        btnAnonyBoardWrite.setOnClickListener{
+        tvRecent.setOnClickListener { orderBy(1) }
+        tvCommentRank.setOnClickListener { orderBy(2) }
+        tvLikeRank.setOnClickListener { orderBy(3) }
+
+        btnBoardWrite.setOnClickListener {
+            view.findNavController()
+                .navigate(
+                    R.id.action_anonymousForumFragment_to_boardWriteFragment,
+                    bundleOf(
+                        "isAnonymous" to true
+                    )
+                )
+        }
+    }
+
+    private fun orderBy(order: Int) {
+        // viewModel.getAnonymousBoardList(order)
+        when (order) {
+            1 -> {
+                viewModel.getAnonymousBoardList(1)
+                tvRecent.setTextColor(Color.parseColor("#FF22997b"))
+                tvRecent.setTypeface(tvRecent.typeface, Typeface.BOLD)
+                tvCommentRank.setTextColor(Color.parseColor("#bbbbbb"))
+                tvCommentRank.setTypeface(tvCommentRank.typeface, Typeface.NORMAL)
+                tvLikeRank.setTextColor(Color.parseColor("#bbbbbb"))
+                tvLikeRank.setTypeface(tvLikeRank.typeface, Typeface.NORMAL)
+            }
+            2 -> {
+                viewModel.getAnonymousBoardList(2)
+                tvRecent.setTextColor(Color.parseColor("#bbbbbb"))
+                tvRecent.setTypeface(tvRecent.typeface, Typeface.NORMAL)
+                tvCommentRank.setTextColor(Color.parseColor("#FF22997b"))
+                tvCommentRank.setTypeface(tvCommentRank.typeface, Typeface.BOLD)
+                tvLikeRank.setTextColor(Color.parseColor("#bbbbbb"))
+                tvLikeRank.setTypeface(tvLikeRank.typeface, Typeface.NORMAL)
+            }
+            3 -> {
+                viewModel.getAnonymousBoardList(1)
+                tvRecent.setTextColor(Color.parseColor("#bbbbbb"))
+                tvRecent.setTypeface(tvRecent.typeface, Typeface.NORMAL)
+                tvCommentRank.setTextColor(Color.parseColor("#bbbbbb"))
+                tvCommentRank.setTypeface(tvCommentRank.typeface, Typeface.NORMAL)
+                tvLikeRank.setTextColor(Color.parseColor("#FF22997b"))
+                tvLikeRank.setTypeface(tvLikeRank.typeface, Typeface.BOLD)
+            }
         }
     }
 

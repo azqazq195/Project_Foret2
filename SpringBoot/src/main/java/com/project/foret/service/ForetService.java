@@ -126,6 +126,7 @@ public class ForetService {
             foretModel.setRegions(getRegionList(foret));
             foretModel.setPhotos(getPhotoList(foret));
             foretModel.setMembers(getMemberList(foret));
+            foretModel.setLeader(memberService.getMember(foret.getLeader().getId()));
             return foretModel;
         } else return null;
     }

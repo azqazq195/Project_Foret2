@@ -10,6 +10,7 @@ import com.project.foret.model.MemberModel;
 import com.project.foret.repository.BoardRepository;
 import com.project.foret.repository.CommentRepository;
 import com.project.foret.repository.MemberRepository;
+import com.project.foret.response.CommentResponse;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -30,29 +32,20 @@ public class CommentService {
     MemberRepository memberRepository;
     MemberService memberService;
 
-    public ResponseEntity<Object> create(Long member_id, Long board_id, Comment comment) {
-        Comment newComment = new Comment();
-        newComment.setContent(comment.getContent());
-        newComment.setBoard(new Board(board_id));
-        newComment.setMember(new Member(member_id));
-        Comment saveComment = commentRepository.save(newComment);
+    public ResponseEntity<Object> create(Comment comment) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        Comment saveComment = commentRepository.save(comment);
         if (commentRepository.findById(saveComment.getId()).isPresent()) {
-            saveComment.setGroup_id(saveComment.getId());
+            if(comment.getGroup_id() == null){
+                saveComment.setGroup_id(saveComment.getId());
+            }
             commentRepository.save(saveComment);
-            return ResponseEntity.ok("댓글생성 성공");
-        } else return ResponseEntity.unprocessableEntity().body("댓글생성 실패");
-    }
-
-    public ResponseEntity<Object> createRe(Long id, Long member_id, Long board_id, Comment comment) {
-        Comment newComment = new Comment();
-        newComment.setGroup_id(id);
-        newComment.setContent(comment.getContent());
-        newComment.setBoard(new Board(board_id));
-        newComment.setMember(new Member(member_id));
-        Comment saveComment = commentRepository.save(newComment);
-        if (commentRepository.findById(saveComment.getId()).isPresent()) {
-            return ResponseEntity.ok("대댓글생성 성공");
-        } else return ResponseEntity.unprocessableEntity().body("대댓글생성 실패");
+            hashMap.put("result", "OK");
+            return ResponseEntity.ok(hashMap);
+        } else {
+            hashMap.put("result", "FAIL");
+            return ResponseEntity.unprocessableEntity().body(hashMap);
+        }
     }
 
     public ResponseEntity<Object> update(Long id, Long member_id, Comment comment) {
@@ -90,11 +83,11 @@ public class CommentService {
         } else return null;
     }
 
-    public List<CommentModel> getComments(Long board_id) {
+    public CommentResponse getComments(Long board_id) {
         List<Comment> commentList = commentRepository.findAllByBoardIdOrderByGroupIdAscIdAsc(board_id);
-        if(commentList.size() > 0){
+        if (commentList.size() > 0) {
             List<CommentModel> commentModels = new ArrayList<>();
-            for(Comment comment : commentList){
+            for (Comment comment : commentList) {
                 CommentModel commentModel = new CommentModel();
                 commentModel.setId(comment.getId());
                 commentModel.setContent(comment.getContent());
@@ -103,12 +96,17 @@ public class CommentService {
                 commentModel.setMember(getMember(comment));
                 commentModels.add(commentModel);
             }
-            return commentModels;
-        } else return null;
+            return new CommentResponse(commentModels);
+        } else return new CommentResponse();
     }
 
     private MemberModel getMember(Comment comment) {
-        return memberService.getMember(comment.getMember().getId());
+        // return memberService.getMember(comment.getMember().getId());
+        MemberModel member = memberService.getMember(comment.getMember().getId());
+        MemberModel newMember = new MemberModel();
+        newMember.setName(member.getName());
+        newMember.setNickname(member.getNickname());
+        return newMember;
     }
 
 }

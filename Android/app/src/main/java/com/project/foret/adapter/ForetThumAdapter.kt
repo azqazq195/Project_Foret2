@@ -11,7 +11,7 @@ import com.project.foret.R
 import com.project.foret.model.Foret
 import com.project.foret.util.Constants.Companion.BASE_URL
 
-class ForetAdapter : RecyclerView.Adapter<ForetAdapter.ForetViewHolder>() {
+class ForetThumAdapter : RecyclerView.Adapter<ForetThumAdapter.ForetViewHolder>() {
     inner class ForetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Foret>() {
@@ -39,7 +39,7 @@ class ForetAdapter : RecyclerView.Adapter<ForetAdapter.ForetViewHolder>() {
     override fun onBindViewHolder(holder: ForetViewHolder, position: Int) {
         val foret = differ.currentList[position]
         holder.itemView.apply {
-            if(foret.photos != null){
+            if (foret.photos != null) {
                 Glide.with(this)
                     .load("${BASE_URL}${foret.photos[0].dir}/${foret.photos[0].filename}")
                     .error(R.drawable.home_icon_null_image)

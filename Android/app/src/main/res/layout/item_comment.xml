@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,17 +23,6 @@
         android:text="글 내용"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="#000000" />
-
-    <EditText
-        android:id="@+id/etCommentContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:imeOptions="actionSend"
-        android:inputType="text"
-        android:visibility="gone"
-        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/tvCommentRegDate"
@@ -63,7 +53,7 @@
                 android:src="@drawable/comment_icon" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/tvReComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
@@ -81,7 +71,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tvEditComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="6dp"
@@ -92,7 +82,7 @@
                 android:textSize="10dp" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/tvDeleteComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/comment_background"

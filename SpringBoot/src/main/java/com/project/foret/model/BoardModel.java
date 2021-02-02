@@ -1,6 +1,5 @@
 package com.project.foret.model;
 
-import com.project.foret.entity.Member;
 import lombok.Data;
 
 import java.util.Date;

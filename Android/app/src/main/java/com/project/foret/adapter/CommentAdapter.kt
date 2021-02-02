@@ -1,6 +1,5 @@
 package com.project.foret.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Comment>() {
+
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
             return oldItem.id == newItem.id
         }
@@ -25,6 +25,10 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     }
 
     val differ = AsyncListDiffer(this, differCallBack)
+
+    fun replaceTo(comments: List<Comment>){
+        differ.submitList(comments)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         return CommentViewHolder(
@@ -39,23 +43,34 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = differ.currentList[position]
         holder.itemView.apply {
-            holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member.name
+            holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member?.name
             holder.itemView.findViewById<TextView>(R.id.tvCommentContent).text = comment.content
             holder.itemView.findViewById<TextView>(R.id.tvCommentRegDate).text =
-                comment.reg_date.substring(0, comment.reg_date.indexOf("T"))
-            setOnClickListener {
-                onItemClickListener?.let { it(comment) }
+                comment.reg_date?.substring(0, comment.reg_date.indexOf("T"))
+            holder.itemView.findViewById<TextView>(R.id.tvReComment).setOnClickListener {
+                onClickListener.onReCommentClick(it, position)
+            }
+            holder.itemView.findViewById<TextView>(R.id.tvEditComment).setOnClickListener {
+                onClickListener.onEditCommentClick(it, position)
+            }
+            holder.itemView.findViewById<TextView>(R.id.tvDeleteComment).setOnClickListener {
+                onClickListener.onDeleteCommentClick(it, position)
             }
         }
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
+    interface OnClickListener {
+        fun onReCommentClick(v: View, position: Int)
+        fun onEditCommentClick(v: View, position: Int)
+        fun onDeleteCommentClick(v: View, position: Int)
     }
 
-    private var onItemClickListener: ((Comment) -> Unit)? = null
+    private lateinit var onClickListener: OnClickListener
 
-    fun setOnItemClickListener(listener: (Comment) -> Unit) {
-        onItemClickListener = listener
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
     }
+
+    override fun getItemCount(): Int = differ.currentList.size
+
 }

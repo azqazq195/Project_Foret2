@@ -1,7 +1,0 @@
-package com.project.foret.ui
-
-import androidx.fragment.app.Fragment
-import com.project.foret.R
-
-class AnonymousForumBoardFragment : Fragment(R.layout.fragment_anonymousforum_board) {
-}

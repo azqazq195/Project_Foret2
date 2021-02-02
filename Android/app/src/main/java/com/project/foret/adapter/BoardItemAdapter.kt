@@ -41,7 +41,7 @@ class BoardItemAdapter : RecyclerView.Adapter<BoardItemAdapter.BoardViewHolder>(
         holder.itemView.apply {
             holder.itemView.findViewById<TextView>(R.id.tvItemForetSubject).text = board.subject
             holder.itemView.findViewById<TextView>(R.id.tvItemForetContent).text = board.content
-            holder.itemView.findViewById<TextView>(R.id.tvItemForetRegDate).text = board.reg_date.substring(0, board.reg_date.indexOf("T"))
+            holder.itemView.findViewById<TextView>(R.id.tvItemForetRegDate).text = board.reg_date?.substring(0, board.reg_date.indexOf("T"))
             setOnClickListener {
                 onItemClickListener?.let { it(board) }
             }

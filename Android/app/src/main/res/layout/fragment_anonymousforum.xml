@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".HomeFragment" >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +25,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="댓글순"
+                android:textColor="@color/textGrey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/tvDump2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,6 +61,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="공감순"
+                android:textAllCaps="false"
+                android:textColor="@color/textGrey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/tvDump1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -99,7 +101,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnAnonyBoardWrite"
+        android:id="@+id/btnBoardWrite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="26dp"

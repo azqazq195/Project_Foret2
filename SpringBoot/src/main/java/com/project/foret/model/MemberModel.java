@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class MemberModel {
+    private Long id;
     private String name;
     private String email;
     private String nickname;

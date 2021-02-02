@@ -1,4 +1,4 @@
-package com.project.foret.ui.AnnoymousForum
+package com.project.foret.ui.annoymousForum
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

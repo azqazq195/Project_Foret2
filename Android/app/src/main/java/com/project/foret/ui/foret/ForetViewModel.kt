@@ -1,10 +1,9 @@
 package com.project.foret.ui.foret
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.foret.model.Board
+import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
 import com.project.foret.response.BoardListResponse
 import com.project.foret.util.Resource
@@ -15,15 +14,17 @@ class ForetViewModel(
     val foretRepository: ForetRepository
 ) : ViewModel() {
 
-    val foretBoard: MutableLiveData<Resource<Board>> = MutableLiveData()
+    val foret: MutableLiveData<Resource<Foret>> = MutableLiveData()
+    val noticeBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
+    val feedBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
 
-    fun getBoardDetails(board_id: Long) = viewModelScope.launch {
-        foretBoard.postValue(Resource.Loading())
-        val response = foretRepository.getBoardDetails(board_id)
-        foretBoard.postValue(handleBoardDetailsResponse(response))
+    fun getForetDetails(foret_id: Long) = viewModelScope.launch {
+        foret.postValue(Resource.Loading())
+        val response = foretRepository.getForetDetails(foret_id)
+        foret.postValue(handleForetResponse(response))
     }
 
-    private fun handleBoardDetailsResponse(response: Response<Board>) : Resource<Board> {
+    private fun handleForetResponse(response: Response<Foret>) : Resource<Foret>{
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)
@@ -31,4 +32,31 @@ class ForetViewModel(
         }
         return Resource.Error(response.message())
     }
+
+    fun getBoardList(foret_id: Long, type: Int) = viewModelScope.launch {
+        when(type){
+            1 -> {
+                noticeBoardList.postValue(Resource.Loading())
+                val response = foretRepository.getForetBoardList(foret_id, type)
+                noticeBoardList.postValue(handleBoardListResponse(response))
+            }
+            3 -> {
+                feedBoardList.postValue(Resource.Loading())
+                val response = foretRepository.getForetBoardList(foret_id, type)
+                feedBoardList.postValue(handleBoardListResponse(response))
+            }
+        }
+
+    }
+
+    private fun handleBoardListResponse(response: Response<BoardListResponse>) : Resource<BoardListResponse>{
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+
 }

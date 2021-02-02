@@ -118,6 +118,7 @@ public class MemberService {
         if (memberRepository.findById(id).isPresent()) {
             Member member = memberRepository.findById(id).get();
             MemberModel memberModel = new MemberModel();
+            memberModel.setId(member.getId());
             memberModel.setName(member.getName());
             memberModel.setEmail(member.getEmail());
             memberModel.setNickname(member.getNickname());

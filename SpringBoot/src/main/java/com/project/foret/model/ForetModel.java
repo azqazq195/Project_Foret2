@@ -1,5 +1,6 @@
 package com.project.foret.model;
 
+import com.project.foret.entity.Member;
 import lombok.Data;
 
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 @Data
 public class ForetModel {
     private Long id;
+    private MemberModel leader;
     private String name;
     private String introduce;
     private int max_member;
