@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var foretNavHostFragment: Fragment
 
     val member_id = 5L
+    val member_name = "문성하"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

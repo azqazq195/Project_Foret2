@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.project.foret.MainActivity
 import com.project.foret.R
 import com.project.foret.model.Board
+import com.project.foret.model.Foret
 import com.project.foret.model.Member
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Resource
@@ -32,6 +34,8 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
     lateinit var toolbar: Toolbar
 
     val TAG = "BoardWriteFragment"
+
+    var isAnonymous = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,18 +57,47 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         layoutImages = view.findViewById(R.id.layoutImages)
         toolbar = view.findViewById(R.id.cosutom_toolbar)
 
-        setAnonymousBoardWrite()
+        isAnonymous = arguments?.getBoolean("isAnonymous")!!
+
+        if (isAnonymous) {
+            setAnonymousBoardWrite()
+        } else {
+            setForetBoardWrite()
+        }
+
         setCreateBoardResponse(view)
 
         toolbar.findViewById<TextView>(R.id.item_complete).setOnClickListener {
             createBoard()
         }
+        Log.e(TAG, "onViewCreated: ${arguments?.getLong("foretId")}")
     }
 
     private fun createBoard() {
         val memberId = (activity as MainActivity).member_id
         val member = Member(memberId)
-        val board = Board(null,4,"제목1","내용1",member)
+        val subject = etSubject.text.toString()
+        val content = etContent.text.toString()
+        val board: Board
+        if (isAnonymous) {
+            board = Board(4, subject, content, member, null)
+        } else {
+            var type = 0
+            val foret = Foret(arguments?.getLong("foretId")!!)
+            when (spBoardType.selectedItem) {
+                "선택" -> {
+                    Snackbar.make(spBoardType, "게시글 타입을 선택해주세요!", Snackbar.LENGTH_LONG).show()
+                    return
+                }
+                "공지" -> {
+                    type = 1
+                }
+                "일반" -> {
+                    type = 3
+                }
+            }
+            board = Board(type, subject, content, member, foret)
+        }
         viewModel.createBoard(board)
     }
 
@@ -99,7 +132,7 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         tvWriter.text = ""
         ArrayAdapter.createFromResource(
             activity as MainActivity,
-            R.array.spBoard,
+            R.array.spAnonymousBoard,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -108,11 +141,18 @@ class BoardWriteFragment : Fragment(R.layout.fragment_board_write) {
         }
         btnUpload.visibility = View.GONE
         layoutImages.visibility = View.GONE
-
     }
 
     private fun setForetBoardWrite() {
-
+        tvWriter.text = (activity as MainActivity).member_name
+        ArrayAdapter.createFromResource(
+            activity as MainActivity,
+            R.array.spForetBoard,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spBoardType.adapter = adapter
+        }
     }
 
     private fun hideProgressBar() {

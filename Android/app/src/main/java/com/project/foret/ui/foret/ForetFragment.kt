@@ -15,18 +15,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.foret.MainActivity
 import com.project.foret.R
 import com.project.foret.adapter.BoardItemAdapter
-import com.project.foret.adapter.ForetThumAdapter
-import com.project.foret.model.Board
 import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
-import com.project.foret.ui.home.HomeViewModel
-import com.project.foret.ui.home.HomeViewModelProviderFactory
 import com.project.foret.util.Resource
-import com.project.foret.util.ZoomOutPageTransformer
-import java.util.*
 
 class ForetFragment : Fragment(R.layout.fragment_foret) {
 
@@ -49,6 +44,7 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
     lateinit var tvForetIntroduce: TextView
     lateinit var rvNotice: RecyclerView
     lateinit var rvFeed: RecyclerView
+    lateinit var btnBoardWrite: FloatingActionButton
 
     private val TAG = "ForetFragment"
 
@@ -77,6 +73,7 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         tvForetIntroduce = view.findViewById(R.id.tvForetIntroduce)
         rvNotice = view.findViewById(R.id.rvNotice)
         rvFeed = view.findViewById(R.id.rvFeed)
+        btnBoardWrite = view.findViewById(R.id.btnBoardWrite)
 
         id = arguments?.getLong("foretId")!!
         viewModel.getForetDetails(id)
@@ -91,19 +88,27 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
 
     private fun setClickListener() {
         noticeAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
             view?.findNavController()
                 ?.navigate(
-                    R.id.action_foretFragment_to_foretBoardFragment,
-                    bundle
+                    R.id.action_foretFragment_to_boardFragment,
+                    bundleOf("boardId" to it.id)
                 )
         }
         feedAdapter.setOnItemClickListener {
-            val bundle = bundleOf("boardId" to it.id)
             view?.findNavController()
                 ?.navigate(
-                    R.id.action_foretFragment_to_foretBoardFragment,
-                    bundle
+                    R.id.action_foretFragment_to_boardFragment,
+                    bundleOf("boardId" to it.id)
+                )
+        }
+        btnBoardWrite.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_foretFragment_to_boardWriteFragment,
+                    bundleOf(
+                        "foretId" to id,
+                        "isAnonymous" to false
+                    )
                 )
         }
     }

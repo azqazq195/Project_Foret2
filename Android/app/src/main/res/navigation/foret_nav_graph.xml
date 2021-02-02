@@ -33,13 +33,6 @@
         android:label="AnonymousForumFragment"
         tools:layout="@layout/fragment_anonymousforum" >
         <action
-            android:id="@+id/action_anonymousForumFragment_to_anonymousForumBoardFragment"
-            app:destination="@id/anonymousForumBoardFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
             android:id="@+id/action_anonymousForumFragment_to_foretBoardFragment"
             app:destination="@id/boardFragment" />
         <action
@@ -82,7 +75,7 @@
         android:label="ForetFragment"
         tools:layout="@layout/fragment_foret" >
         <action
-            android:id="@+id/action_foretFragment_to_foretBoardFragment"
+            android:id="@+id/action_foretFragment_to_boardFragment"
             app:destination="@id/boardFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -91,6 +84,9 @@
         <action
             android:id="@+id/action_foretFragment_to_boardWriteFragment"
             app:destination="@id/boardWriteFragment" />
+        <argument
+            android:name="foretId"
+            app:argType="long" />
     </fragment>
 
     <fragment
@@ -104,11 +100,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/anonymousForumBoardFragment"
-        android:name="com.project.foret.ui.annoymousForum.AnonymousForumBoardFragment"
-        android:label="AnonymousForumBoardFragment"
-        tools:layout="@layout/fragment_anonymousforum_board"/>
-    <fragment
         android:id="@+id/boardWriteFragment"
         android:name="com.project.foret.ui.board.BoardWriteFragment"
         android:label="fragment_board_write"
@@ -116,6 +107,12 @@
         <action
             android:id="@+id/action_boardWriteFragment_to_foretBoardFragment"
             app:destination="@id/boardFragment" />
+        <argument
+            android:name="isAnonymous"
+            app:argType="boolean" />
+        <argument
+            android:name="foretId"
+            app:argType="long" />
     </fragment>
 
 </navigation>

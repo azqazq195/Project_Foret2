@@ -12,4 +12,7 @@ data class Foret (
     val photos: MutableList<Photo>?,
     val tags: MutableList<Tag>?,
     val regions: MutableList<Region>?
-)
+) {
+    constructor(id: Long) :
+            this(id, null, null, null, null, null, null, null, null)
+}

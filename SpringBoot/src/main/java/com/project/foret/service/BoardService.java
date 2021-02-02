@@ -164,7 +164,7 @@ public class BoardService {
     public BoardResponse getAnonymousBoardList(int order) {
         List<Board> boardList = new ArrayList<>();
         if (order == 1) {
-            boardList = boardRepository.findByTypeOrderById(4);
+            boardList = boardRepository.findByTypeOrderByIdDesc(4);
         } else if (order == 2) {
             boardList = boardRepository.findByTypeOrderByCommentCount(4);
         }
