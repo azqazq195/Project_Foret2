@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -19,7 +18,7 @@ import com.project.foret.R
 import com.project.foret.model.Board
 
 
-class AnonymousAdapter : RecyclerView.Adapter<AnonymousAdapter.AnonymousBoardViewHolder>() {
+class AnonymousBoardAdapter : RecyclerView.Adapter<AnonymousBoardAdapter.AnonymousBoardViewHolder>() {
     inner class AnonymousBoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Board>() {
@@ -37,7 +36,7 @@ class AnonymousAdapter : RecyclerView.Adapter<AnonymousAdapter.AnonymousBoardVie
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AnonymousAdapter.AnonymousBoardViewHolder {
+    ): AnonymousBoardAdapter.AnonymousBoardViewHolder {
         return AnonymousBoardViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_anonymous_board,
@@ -49,7 +48,7 @@ class AnonymousAdapter : RecyclerView.Adapter<AnonymousAdapter.AnonymousBoardVie
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(
-        holder: AnonymousAdapter.AnonymousBoardViewHolder,
+        holder: AnonymousBoardAdapter.AnonymousBoardViewHolder,
         position: Int
     ) {
         val board = differ.currentList[position]

@@ -6,6 +6,7 @@ import com.project.foret.model.MemberModel;
 import com.project.foret.model.PhotoModel;
 import com.project.foret.repository.*;
 import com.project.foret.response.BoardResponse;
+import com.project.foret.response.CreateResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,11 @@ public class BoardService {
     private BoardPhotoRepository boardPhotoRepository;
     private MemberRepository memberRepository;
     private ForetRepository foretRepository;
-    private CommentRepository commentRepository;
 
     private MemberService memberService;
-    private CommentService commentService;
 
     public ResponseEntity<Object> createBoard(Board board, MultipartFile[] files) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
+        CreateResponse response = new CreateResponse();
         if (files != null) {
             for (MultipartFile photo : files) {
                 board.addPhoto(uploadPhoto(photo));
@@ -48,12 +47,12 @@ public class BoardService {
         }
         Board savedBoard = boardRepository.save(board);
         if (boardRepository.findById(savedBoard.getId()).isPresent()) {
-            map.put("result", "게시글 생성 성공");
-            map.put("id", savedBoard.getId().toString());
-            return ResponseEntity.ok(map);
+            response.setMessage("게시글 생성 성공");
+            response.setId(savedBoard.getId());
+            return ResponseEntity.ok(response);
         } else {
-            map.put("result", "게시글 생성 실패");
-            return ResponseEntity.unprocessableEntity().body(map);
+            response.setMessage("게시글 생성 실패");
+            return ResponseEntity.unprocessableEntity().body(response);
         }
     }
 
@@ -138,7 +137,7 @@ public class BoardService {
 
     public BoardResponse getForetBoardList(Long foret_id, int type) {
         if (foretRepository.findById(foret_id).isPresent()) {
-            List<Board> boardList = boardRepository.findByForetIdAndTypeOrderById(foret_id, type);
+            List<Board> boardList = boardRepository.findByForetIdAndTypeOrderByIdDesc(foret_id, type);
             if (boardList.size() > 0) {
                 List<BoardModel> boardModels = new ArrayList<>();
                 for (Board board : boardList) {
@@ -159,7 +158,6 @@ public class BoardService {
             } else return new BoardResponse();
         } else return new BoardResponse();
     }
-
 
     public BoardResponse getAnonymousBoardList(int order) {
         List<Board> boardList = new ArrayList<>();

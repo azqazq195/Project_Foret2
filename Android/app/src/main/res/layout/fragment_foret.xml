@@ -195,7 +195,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:id="@+id/tvForetNotice"
+                        android:id="@+id/tvFavoriteTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="공지사항"
@@ -212,7 +212,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvNotice"
+                    android:id="@+id/rvForetTag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -237,7 +237,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvNotice">
+                    app:layout_constraintTop_toBottomOf="@+id/rvForetTag">
 
                     <TextView
                         android:id="@+id/tvFeed"
@@ -281,7 +281,7 @@
         android:layout_marginEnd="26dp"
         android:layout_marginBottom="26dp"
         android:clickable="true"
-        android:src="@drawable/forum_icon_write"
+        android:src="@drawable/icon_write"
         app:backgroundTint="#FFFFFF"
         app:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"

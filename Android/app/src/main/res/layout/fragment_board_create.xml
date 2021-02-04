@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ui.board.BoardWriteFragment">
+    tools:context=".ui.board.CreateBoardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -71,7 +71,7 @@
             tools:listitem="@android:layout/test_list_item" />
 
         <Button
-            android:id="@+id/btnUpload"
+            android:id="@+id/btnPickImage"
             android:layout_width="110dp"
             android:layout_height="38dp"
             android:layout_marginTop="15dp"
@@ -97,7 +97,7 @@
             android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnUpload">
+            app:layout_constraintTop_toBottomOf="@+id/btnPickImage">
 
             <ImageView
                 android:id="@+id/ivBoardImage1"

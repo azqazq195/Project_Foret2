@@ -3,7 +3,12 @@ package com.project.foret.repository
 import com.project.foret.api.RetrofitInstance
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
+import com.project.foret.model.Foret
 import com.project.foret.response.CreateResponse
+import com.project.foret.response.UploadResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 
 class ForetRepository {
@@ -28,10 +33,16 @@ class ForetRepository {
     suspend fun getComments(board_id: Long) =
         RetrofitInstance.api.getComments(board_id)
 
-    suspend fun createBoard(board: Board): Response<CreateResponse> =
-        RetrofitInstance.api.createBoard(board)
+//    suspend fun createBoard(board: Board): Response<CreateResponse> =
+//        RetrofitInstance.api.createBoard(board)
 
     suspend fun createComment(comment: Comment): Response<CreateResponse> =
         RetrofitInstance.api.createComment(comment)
+
+    fun createForet(files: MultipartBody.Part, foret: RequestBody): Call<UploadResponse> =
+        RetrofitInstance.api.createForet(files, foret)
+
+    fun createBoard(files: List<MultipartBody.Part>?, foret: RequestBody): Call<UploadResponse> =
+        RetrofitInstance.api.createBoard(files, foret)
 
 }

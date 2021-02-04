@@ -43,7 +43,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "bb.id DESC", nativeQuery = true)
     List<Board> findByTypeOrderByCommentCount(int type);
 
-    List<Board> findByForetIdAndTypeOrderById(Long foret_id, int type);
+    List<Board> findByForetIdAndTypeOrderByIdDesc(Long foret_id, int type);
 
     List<Board> findByTypeOrderByIdDesc(int type);
 

@@ -1,6 +1,5 @@
 package com.project.foret.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.project.foret.R
 import com.project.foret.model.Board
 
-class BoardItemAdapter : RecyclerView.Adapter<BoardItemAdapter.BoardViewHolder>() {
+class BoardAdapter : RecyclerView.Adapter<BoardAdapter.BoardViewHolder>() {
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Board>() {

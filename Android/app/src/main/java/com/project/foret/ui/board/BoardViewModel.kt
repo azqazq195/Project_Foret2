@@ -54,20 +54,20 @@ class BoardViewModel(
         return Resource.Error(response.message())
     }
 
-    fun createBoard(board: Board) = viewModelScope.launch {
-        createBoard.postValue(Resource.Loading())
-        val response = foretRepository.createBoard(board)
-        createBoard.postValue(handleCreateBoardResponse(response))
-    }
-
-    private fun handleCreateBoardResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
-        if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return Resource.Error(response.message())
-    }
+//    fun createBoard(board: Board) = viewModelScope.launch {
+//        createBoard.postValue(Resource.Loading())
+//        val response = foretRepository.createBoard(board)
+//        createBoard.postValue(handleCreateBoardResponse(response))
+//    }
+//
+//    private fun handleCreateBoardResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
+//        if (response.isSuccessful) {
+//            response.body()?.let { resultResponse ->
+//                return Resource.Success(resultResponse)
+//            }
+//        }
+//        return Resource.Error(response.message())
+//    }
 
     fun createComment(comment: Comment) = viewModelScope.launch {
         createComment.postValue(Resource.Loading())

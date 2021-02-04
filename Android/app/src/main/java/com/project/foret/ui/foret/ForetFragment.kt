@@ -1,6 +1,7 @@
 package com.project.foret.ui.foret
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,16 +20,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.foret.MainActivity
 import com.project.foret.R
-import com.project.foret.adapter.BoardItemAdapter
+import com.project.foret.adapter.BoardAdapter
 import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
+import com.project.foret.ui.board.CreateBoardActivity
 import com.project.foret.util.Resource
+import com.project.foret.util.snackbar
 
 class ForetFragment : Fragment(R.layout.fragment_foret) {
 
     lateinit var viewModel: ForetViewModel
-    lateinit var noticeAdapter: BoardItemAdapter
-    lateinit var feedAdapter: BoardItemAdapter
+    lateinit var noticeAdapter: BoardAdapter
+    lateinit var feedAdapter: BoardAdapter
 
     lateinit var progressBar: ProgressBar
 
@@ -71,7 +75,7 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         tvForetMaster = view.findViewById(R.id.tvForetMaster)
         tvForetRegDate = view.findViewById(R.id.tvForetRegDate)
         tvForetIntroduce = view.findViewById(R.id.tvForetIntroduce)
-        rvNotice = view.findViewById(R.id.rvNotice)
+        rvNotice = view.findViewById(R.id.rvForetTag)
         rvFeed = view.findViewById(R.id.rvFeed)
         btnBoardWrite = view.findViewById(R.id.btnBoardWrite)
 
@@ -102,20 +106,35 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                 )
         }
         btnBoardWrite.setOnClickListener {
-            view?.findNavController()
-                ?.navigate(
-                    R.id.action_foretFragment_to_boardWriteFragment,
-                    bundleOf(
-                        "foretId" to id,
-                        "isAnonymous" to false
-                    )
-                )
+            val intent = Intent(context, CreateBoardActivity::class.java)
+            intent.putExtra("isAnonymous", false)
+            intent.putExtra("foretId", id)
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 0){
+            when(resultCode){
+                AppCompatActivity.RESULT_OK -> {
+                    val bundle = bundleOf("boardId" to data?.getLongExtra("boardId", 0L))
+                    view?.findNavController()
+                        ?.navigate(
+                            R.id.action_foretFragment_to_boardFragment,
+                            bundle
+                        )
+                }
+                AppCompatActivity.RESULT_CANCELED -> {
+                    (activity as MainActivity).mainLayoutRoot.snackbar("게시글 생성 취소!")
+                }
+            }
         }
     }
 
     private fun setUpRecyclerView() {
-        noticeAdapter = BoardItemAdapter()
-        feedAdapter = BoardItemAdapter()
+        noticeAdapter = BoardAdapter()
+        feedAdapter = BoardAdapter()
 
         rvNotice.apply {
             adapter = noticeAdapter

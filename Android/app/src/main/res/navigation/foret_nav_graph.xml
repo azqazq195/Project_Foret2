@@ -33,11 +33,11 @@
         android:label="AnonymousForumFragment"
         tools:layout="@layout/fragment_anonymousforum" >
         <action
-            android:id="@+id/action_anonymousForumFragment_to_foretBoardFragment"
+            android:id="@+id/action_anonymousForumFragment_to_boardFragment"
             app:destination="@id/boardFragment" />
         <action
-            android:id="@+id/action_anonymousForumFragment_to_boardWriteFragment"
-            app:destination="@id/boardWriteFragment" />
+            android:id="@+id/action_anonymousForumFragment_to_createBoardActivity"
+            app:destination="@id/createBoardActivity" />
     </fragment>
 
     <!-- 검색 -->
@@ -53,6 +53,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_searchFragment_to_createForetActivity"
+            app:destination="@id/createForetActivity" />
     </fragment>
 
     <!-- 채팅 -->
@@ -81,12 +84,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_foretFragment_to_boardWriteFragment"
-            app:destination="@id/boardWriteFragment" />
         <argument
             android:name="foretId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_foretFragment_to_createBoardActivity"
+            app:destination="@id/createBoardActivity" />
     </fragment>
 
     <fragment
@@ -99,20 +102,15 @@
             app:argType="long" />
     </fragment>
 
-    <fragment
-        android:id="@+id/boardWriteFragment"
-        android:name="com.project.foret.ui.board.BoardWriteFragment"
-        android:label="fragment_board_write"
-        tools:layout="@layout/fragment_board_write" >
-        <action
-            android:id="@+id/action_boardWriteFragment_to_foretBoardFragment"
-            app:destination="@id/boardFragment" />
-        <argument
-            android:name="isAnonymous"
-            app:argType="boolean" />
-        <argument
-            android:name="foretId"
-            app:argType="long" />
-    </fragment>
+    <activity
+        android:id="@+id/createForetActivity"
+        android:name="com.project.foret.ui.foret.CreateForetActivity"
+        android:label="activity_create_foret"
+        tools:layout="@layout/activity_create_foret" />
+    <activity
+        android:id="@+id/createBoardActivity"
+        android:name="com.project.foret.ui.board.CreateBoardActivity"
+        android:label="CreateBoardActivity"
+        tools:layout="@layout/activity_create_board"/>
 
 </navigation>

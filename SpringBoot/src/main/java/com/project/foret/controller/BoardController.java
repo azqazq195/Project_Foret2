@@ -1,6 +1,7 @@
 package com.project.foret.controller;
 
 import com.project.foret.entity.Board;
+import com.project.foret.entity.Foret;
 import com.project.foret.model.BoardModel;
 import com.project.foret.response.BoardResponse;
 import com.project.foret.service.BoardService;
@@ -19,7 +20,7 @@ public class BoardController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createBoard(
-            @RequestBody Board board,
+            @RequestPart Board board,
             MultipartFile[] files
     ) throws Exception {
         return boardService.createBoard(board, files);

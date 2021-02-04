@@ -3,7 +3,6 @@ package com.project.foret.ui.home
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -17,10 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.project.foret.MainActivity
 import com.project.foret.R
-import com.project.foret.adapter.BoardItemAdapter
+import com.project.foret.adapter.BoardAdapter
 import com.project.foret.adapter.ForetThumAdapter
 import com.project.foret.model.Board
-import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
@@ -29,8 +27,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     lateinit var viewModel: HomeViewModel
     lateinit var foretThumAdapter: ForetThumAdapter
-    lateinit var noticeAdapter: BoardItemAdapter
-    lateinit var feedAdapter: BoardItemAdapter
+    lateinit var noticeAdapter: BoardAdapter
+    lateinit var feedAdapter: BoardAdapter
 
     lateinit var vpForetImages: ViewPager2
     lateinit var rvNotice: RecyclerView
@@ -53,7 +51,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         // layout
         progressBar = view.findViewById(R.id.progressBar)
         vpForetImages = view.findViewById(R.id.vpForetImages)
-        rvNotice = view.findViewById(R.id.rvNotice)
+        rvNotice = view.findViewById(R.id.rvForetTag)
         rvFeed = view.findViewById(R.id.rvFeed)
         tvForetName = view.findViewById(R.id.tvForetName)
         tvMoreForets = view.findViewById(R.id.tvMoreForets)
@@ -81,8 +79,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setUpRecyclerView() {
         foretThumAdapter = ForetThumAdapter()
-        noticeAdapter = BoardItemAdapter()
-        feedAdapter = BoardItemAdapter()
+        noticeAdapter = BoardAdapter()
+        feedAdapter = BoardAdapter()
 
         vpForetImages.apply {
             adapter = foretThumAdapter

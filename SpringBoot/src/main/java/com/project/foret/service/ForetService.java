@@ -3,6 +3,7 @@ package com.project.foret.service;
 import com.project.foret.entity.*;
 import com.project.foret.model.*;
 import com.project.foret.repository.*;
+import com.project.foret.response.CreateResponse;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,11 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -34,10 +35,35 @@ public class ForetService {
 
     private MemberService memberService;
 
+//    public ResponseEntity<Object> photo(MultipartFile[] files, Foret foret) throws Exception{
+//        CreateResponse response = new CreateResponse();
+//        Foret newForet = new Foret();
+//        if(foret != null){
+//            newForet.setName(foret.getName());
+//            newForet.setIntroduce(foret.getIntroduce());
+//            newForet.setMax_member(foret.getMax_member());
+//        }
+//        if (files != null) {
+//            for (MultipartFile photo : files) {
+//                newForet.addPhoto(uploadPhoto(photo));
+//            }
+//        }
+//        Foret savedForet = foretRepository.save(newForet);
+//        if (foretRepository.findById(savedForet.getId()).isPresent()) {
+//            response.setMessage("포레 생성 성공");
+//            response.setId(savedForet.getId());
+//            return ResponseEntity.ok(response);
+//        } else {
+//            response.setMessage("포레 생성 실패");
+//            return ResponseEntity.unprocessableEntity().body(response);
+//        }
+//    }
+
     public ResponseEntity<Object> createForet(
-            Long member_id,
             Foret model,
             MultipartFile[] files) throws Exception {
+        CreateResponse response = new CreateResponse();
+        Long member_id = model.getLeader().getId();
         if (memberRepository.findById(member_id).isPresent()) {
             Foret newForet = new Foret();
             newForet.setName(model.getName());
@@ -62,10 +88,16 @@ public class ForetService {
             newForet.addMember(memberRepository.findById(member_id).get());
             Foret savedForet = foretRepository.save(newForet);
             if (foretRepository.findById(savedForet.getId()).isPresent()) {
-                return ResponseEntity.ok("포레생성 성공");
-            } else return ResponseEntity.unprocessableEntity().body("포레생성 실패");
+                response.setMessage("포레 생성 성공");
+                response.setId(savedForet.getId());
+                return ResponseEntity.ok(response);
+            } else {
+                response.setMessage("포레 생성 실패");
+                return ResponseEntity.unprocessableEntity().body(response);
+            }
         } else {
-            return ResponseEntity.badRequest().body("존재하지 않는 회원입니다.");
+            response.setMessage("존재하지 않는 회원입니다.");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
@@ -74,7 +106,7 @@ public class ForetService {
         if (foretRepository.findById(id).isPresent()) {
             Foret updateForet = foretRepository.findById(id).get();
             foretPhotoRepository.deleteByForetId(id);
-            if (updateForet.getLeader().getId().equals(member_id)){
+            if (updateForet.getLeader().getId().equals(member_id)) {
                 updateForet.setName(model.getName());
                 updateForet.setIntroduce(model.getIntroduce());
                 updateForet.setMax_member(model.getMax_member());

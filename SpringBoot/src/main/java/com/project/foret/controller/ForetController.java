@@ -6,6 +6,7 @@ import com.project.foret.response.ForetResponse;
 import com.project.foret.service.ForetService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,12 +20,19 @@ public class ForetController {
 
     private ForetService foretService;
 
+//    @PostMapping("/photo")
+//    public ResponseEntity<Object> photo(
+//            @RequestPart @Nullable Foret foret,
+//            MultipartFile[] files) throws Exception {
+//        return foretService.photo(files, foret);
+//    }
+
     @PostMapping("/create")
     public ResponseEntity<Object> createForet(
-            @RequestParam Long member_id,
-            Foret foret,
-            MultipartFile[] files) throws Exception {
-        return foretService.createForet(member_id, foret, files);
+            @RequestPart Foret foret,
+            MultipartFile[] files
+    ) throws Exception {
+        return foretService.createForet(foret, files);
     }
 
     @PutMapping("update/{id}")

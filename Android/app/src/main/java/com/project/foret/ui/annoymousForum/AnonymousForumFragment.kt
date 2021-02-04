@@ -1,5 +1,6 @@
 package com.project.foret.ui.annoymousForum
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,15 +17,18 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.project.foret.MainActivity
 import com.project.foret.R
-import com.project.foret.adapter.AnonymousAdapter
+import com.project.foret.adapter.AnonymousBoardAdapter
 import com.project.foret.repository.ForetRepository
+import com.project.foret.ui.board.CreateBoardActivity
 import com.project.foret.util.Resource
+import com.project.foret.util.snackbar
 
 class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
 
     lateinit var viewModel: AnonymousForumViewModel
-    lateinit var anonymousAdapter: AnonymousAdapter
+    lateinit var anonymousBoardAdapter: AnonymousBoardAdapter
 
     lateinit var rvAnonyBoard: RecyclerView
     lateinit var tvRecent: TextView
@@ -58,11 +63,14 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
 
         setUpRecyclerView()
         setBoardData()
+        setOnClickListener()
+    }
 
-        anonymousAdapter.setOnItemClickListener {
-            view.findNavController()
-                .navigate(
-                    R.id.action_anonymousForumFragment_to_foretBoardFragment,
+    private fun setOnClickListener() {
+        anonymousBoardAdapter.setOnItemClickListener {
+            view?.findNavController()
+                ?.navigate(
+                    R.id.action_anonymousForumFragment_to_boardFragment,
                     bundleOf(
                         "boardId" to it.id,
                         "isAnonymous" to true
@@ -73,15 +81,29 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         tvRecent.setOnClickListener { orderBy(1) }
         tvCommentRank.setOnClickListener { orderBy(2) }
         tvLikeRank.setOnClickListener { orderBy(3) }
-
         btnBoardWrite.setOnClickListener {
-            view.findNavController()
-                .navigate(
-                    R.id.action_anonymousForumFragment_to_boardWriteFragment,
-                    bundleOf(
-                        "isAnonymous" to true
-                    )
-                )
+            val intent = Intent(context, CreateBoardActivity::class.java)
+            intent.putExtra("isAnonymous", true)
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 0){
+            when(resultCode){
+                AppCompatActivity.RESULT_OK -> {
+                    val bundle = bundleOf("boardId" to data?.getLongExtra("boardId", 0L))
+                    view?.findNavController()
+                        ?.navigate(
+                            R.id.action_anonymousForumFragment_to_boardFragment,
+                            bundle
+                        )
+                }
+                AppCompatActivity.RESULT_CANCELED -> {
+                    (activity as MainActivity).mainLayoutRoot.snackbar("게시글 생성 취소!")
+                }
+            }
         }
     }
 
@@ -119,10 +141,10 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
     }
 
     private fun setUpRecyclerView() {
-        anonymousAdapter = AnonymousAdapter()
+        anonymousBoardAdapter = AnonymousBoardAdapter()
 
         rvAnonyBoard.apply {
-            adapter = anonymousAdapter
+            adapter = anonymousBoardAdapter
             layoutManager = LinearLayoutManager(activity)
         }
     }
@@ -133,7 +155,7 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { boardResponse ->
-                        anonymousAdapter.differ.submitList(boardResponse.boards)
+                        anonymousBoardAdapter.differ.submitList(boardResponse.boards)
                     }
                 }
                 is Resource.Error -> {
