@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +26,6 @@ import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
-import java.util.*
 
 
 class BoardFragment : Fragment(R.layout.fragment_board) {
@@ -57,6 +55,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     private var reCommentToId: Long? = null
     private var id: Long = 0
+    private var isAnonymous: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,9 +67,21 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
             ViewModelProvider(this, viewModelProviderFactory).get(BoardViewModel::class.java)
 
         id = arguments?.getLong("boardId")!!
+        isAnonymous = arguments?.getBoolean("isAnonymous")!!
+
         viewModel.getBoardDetails(id)
         viewModel.getComments(id)
 
+        findViewById(view)
+
+        setUpRecyclerView()
+        setBoardView()
+        getBoardData()
+        getCommentData()
+        setClickListener()
+    }
+
+    private fun findViewById(view: View) {
         // layout
         progressBar = view.findViewById(R.id.progressBar)
         tvForetBoardSubject = view.findViewById(R.id.tvForetBoardSubject)
@@ -87,20 +98,15 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         tvReCommentTarget = view.findViewById(R.id.tvReCommentTarget)
         tvReCommentTargetCancel = view.findViewById(R.id.tvReCommentTargetCancel)
         layoutReComment = view.findViewById(R.id.layoutReComment)
-
-        setUpRecyclerView()
-        setBoardData()
-        setCommentData()
-        setCommentClickListener()
     }
 
-    private fun setBoardData() {
+    private fun getBoardData() {
         viewModel.board.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { boardResponse ->
-                        setBoardView(boardResponse)
+                        setBoardData(boardResponse)
                         boardImageAdapter.differ.submitList(boardResponse.photos)
                     }
                 }
@@ -118,7 +124,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setCommentData() {
+    private fun getCommentData() {
         viewModel.commentList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
@@ -173,7 +179,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         etComment.setText("")
     }
 
-    private fun setCommentClickListener() {
+    private fun setClickListener() {
         btnCommentWrite.setOnClickListener {
             if (etComment.text.toString().trim() == "") {
                 Snackbar.make(rvComment, "내용을 입력해 주세요", Snackbar.LENGTH_SHORT).show()
@@ -206,7 +212,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     private fun setUpRecyclerView() {
         boardImageAdapter = BoardImageAdapter()
-        commentAdapter = CommentAdapter()
+        commentAdapter = CommentAdapter(isAnonymous)
         vpBoardImages.apply {
             adapter = boardImageAdapter
             setPageTransformer(ZoomOutPageTransformer())
@@ -218,20 +224,10 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setBoardView(board: Board) {
-        val isAnonymous: Boolean
-        if (arguments?.getBoolean("isAnonymous") == null) {
-            isAnonymous = false
-        } else {
-            isAnonymous = arguments?.getBoolean("isAnonymous")!!
-        }
-
+    private fun setBoardData(board: Board) {
         if (isAnonymous) {
             // 작성자 닉네임
             tvMemberName.text = board.member?.nickname
-            // 작성자 프로필 사진
-            ivProfileImage.visibility = View.GONE
-            vpBoardImages.visibility = View.GONE
         } else {
             // 작성자 이름
             tvMemberName.text = board.member?.name
@@ -255,6 +251,13 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         tvBoardReg_date.text = board.reg_date?.substring(0, board.reg_date.indexOf("T"))
         tvForetBoardSubject.text = board.subject
         tvForetBoardContent.text = board.content
+    }
+
+    private fun setBoardView() {
+        if(isAnonymous){
+            ivProfileImage.visibility = View.GONE
+            vpBoardImages.visibility = View.GONE
+        }
     }
 
     private fun hideProgressBar() {
@@ -292,11 +295,12 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     @SuppressLint("SetTextI18n")
     private fun showReComment(position: Int) {
         reCommentToId = commentAdapter.differ.currentList[position].group_id
-        val target = commentAdapter.differ.currentList[position].member?.nickname.toString()
-        val text = etComment.text
+        val target =
+            if(isAnonymous) commentAdapter.differ.currentList[position].member?.nickname.toString()
+            else commentAdapter.differ.currentList[position].member?.name.toString()
         val mention = "@$target "
         tvReCommentTarget.text = "$target 님께 답글 작성중입니다..."
-        etComment.setText(mention + text)
+        etComment.setText(mention)
         etComment.setSelection(etComment.text.length)
         layoutReComment.visibility = View.VISIBLE
     }

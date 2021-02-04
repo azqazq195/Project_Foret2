@@ -95,20 +95,26 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
             view?.findNavController()
                 ?.navigate(
                     R.id.action_foretFragment_to_boardFragment,
-                    bundleOf("boardId" to it.id)
+                    bundleOf(
+                        "boardId" to it.id,
+                        "isAnonymous" to false
+                    )
                 )
         }
         feedAdapter.setOnItemClickListener {
             view?.findNavController()
                 ?.navigate(
                     R.id.action_foretFragment_to_boardFragment,
-                    bundleOf("boardId" to it.id)
+                    bundleOf(
+                        "boardId" to it.id,
+                        "isAnonymous" to false
+                    )
                 )
         }
         btnBoardWrite.setOnClickListener {
             val intent = Intent(context, CreateBoardActivity::class.java)
-            intent.putExtra("isAnonymous", false)
             intent.putExtra("foretId", id)
+            intent.putExtra("isAnonymous", false)
             startActivityForResult(intent, 0)
         }
     }
