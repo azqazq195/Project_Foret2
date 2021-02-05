@@ -45,6 +45,7 @@ class CommentAdapter(val isAnonymous: Boolean) : RecyclerView.Adapter<CommentAda
         holder.itemView.apply {
             if(isAnonymous)
                 holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member?.nickname
+
             else
                 holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member?.name
             holder.itemView.findViewById<TextView>(R.id.tvCommentContent).text = comment.content
@@ -63,7 +64,7 @@ class CommentAdapter(val isAnonymous: Boolean) : RecyclerView.Adapter<CommentAda
     }
 
     interface OnClickListener {
-        fun onReCommentClick(v: View, position: Int)
+        fun onReCommentClick(v: View, position: Int)        // == onClickListener
         fun onEditCommentClick(v: View, position: Int)
         fun onDeleteCommentClick(v: View, position: Int)
     }

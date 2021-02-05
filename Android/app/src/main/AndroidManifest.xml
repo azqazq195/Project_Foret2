@@ -14,16 +14,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foret"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.board.CreateBoardActivity"></activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_foret_create">
+        <activity android:name=".ui.login.SignUp2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity android:name=".ui.login.SignUp">
+
+        </activity>
+
+
+        <activity android:name=".ui.board.CreateBoardActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_foret_create"></activity>
         <activity android:name=".ui.foret.CreateForetActivity" />
     </application>
 
