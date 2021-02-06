@@ -22,7 +22,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/etInput"
+            android:id="@+id/etName"
             android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -35,7 +35,7 @@
             android:textSize="24sp" />
 
         <ImageView
-            android:id="@+id/ivCheck"
+            android:id="@+id/ivCheckName"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"

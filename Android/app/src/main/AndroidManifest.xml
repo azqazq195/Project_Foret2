@@ -14,20 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foret"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.login.SignUp2">
+        <activity android:name=".ui.login.SignUpInfoActivity"></activity>
+        <activity android:name=".ui.login.SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".ui.login.SignUp">
-
-        </activity>
-
-
+        <activity android:name=".ui.login.SignUp2" />
+        <activity android:name=".ui.login.SignUp" />
         <activity android:name=".ui.board.CreateBoardActivity" />
         <activity
             android:name=".MainActivity"
