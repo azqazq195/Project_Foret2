@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.login.SignUpActivity">
+    tools:context=".ui.entrance.signUp.SignUpActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -19,7 +19,7 @@
             android:layout_width="300dp"
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="60dp"
             app:srcCompat="@drawable/foret_logo" />
 
         <TextView
@@ -35,7 +35,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layoutName"
+        android:id="@+id/layoutTag"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -44,7 +44,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvNameError"
+            android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView" />
@@ -73,7 +73,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -117,7 +117,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -161,7 +161,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -205,7 +205,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -249,7 +249,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -293,7 +293,7 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/check" />
+                app:srcCompat="@drawable/icon_check" />
         </LinearLayout>
     </LinearLayout>
 
@@ -315,7 +315,9 @@
                 android:id="@+id/tvPrevious"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="24dp"
                 android:gravity="left"
                 android:text="\u003C\u003C"
                 android:textColor="@color/textForet"
@@ -332,7 +334,9 @@
                 android:id="@+id/tvNext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="24dp"
                 android:gravity="right"
                 android:text="\u003E\u003E"
                 android:textColor="@color/textForet"

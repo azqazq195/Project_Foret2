@@ -6,6 +6,7 @@ import com.project.foret.repository.MemberPhotoRepository;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
+import com.project.foret.response.CreateResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +34,19 @@ public class MemberService {
     private RegionRepository regionRepository;
 
     public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
+        CreateResponse response = new CreateResponse();
         Member newMember = new Member();
         if (memberRepository.findByEmail(model.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("이미 사용중인 이메일 입니다. 회원가입 실패");
+            response.setMessage("이미 사용중인 이메일 입니다. 회원가입 실패");
+            return ResponseEntity.badRequest().body(response);
         } else {
             newMember.setName(model.getName());
             newMember.setEmail(model.getEmail());
             newMember.setPassword(model.getPassword());
             newMember.setNickname(model.getNickname());
             newMember.setBirth(model.getBirth());
-            newMember.setDeviceToken(model.getDeviceToken());
+            // newMember.setDeviceToken(model.getDeviceToken());
+            newMember.setDeviceToken("token");
             if (model.getTags() != null) {
                 for (Tag tag : model.getTags()) {
                     newMember.addTag(tagRepository.findByTagName(tag.getTagName()).get());
@@ -60,9 +64,15 @@ public class MemberService {
             }
             // 포레
             Member savedMember = memberRepository.save(newMember);
-            if (memberRepository.findById(savedMember.getId()).isPresent())
-                return ResponseEntity.ok("회원가입 성공");
-            else return ResponseEntity.unprocessableEntity().body("회원가입 실패");
+            if (memberRepository.findById(savedMember.getId()).isPresent()){
+                response.setMessage("회원가입 성공");
+                response.setId(savedMember.getId());
+                return ResponseEntity.ok(response);
+            }
+            else {
+                response.setMessage("회원가입 실패");
+                return ResponseEntity.unprocessableEntity().body(response);
+            }
         }
     }
 

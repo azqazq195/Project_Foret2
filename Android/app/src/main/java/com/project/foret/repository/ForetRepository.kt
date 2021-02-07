@@ -42,7 +42,10 @@ class ForetRepository {
     fun createForet(files: MultipartBody.Part, foret: RequestBody): Call<UploadResponse> =
         RetrofitInstance.api.createForet(files, foret)
 
-    fun createBoard(files: List<MultipartBody.Part>?, foret: RequestBody): Call<UploadResponse> =
-        RetrofitInstance.api.createBoard(files, foret)
+    fun createBoard(files: List<MultipartBody.Part>?, board: RequestBody): Call<UploadResponse> =
+        RetrofitInstance.api.createBoard(files, board)
+
+    suspend fun createMember(files: MultipartBody.Part, member: RequestBody): Response<UploadResponse> =
+        RetrofitInstance.api.createMember(files, member)
 
 }

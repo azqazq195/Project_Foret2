@@ -54,7 +54,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_my_foret" />
+                        android:src="@drawable/icon_my_foret" />
                 </LinearLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -167,7 +167,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_notice" />
+                        android:src="@drawable/icon_notice" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -213,7 +213,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_new_feed" />
+                        android:src="@drawable/icon_new_feed" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

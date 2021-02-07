@@ -5,7 +5,7 @@
     android:id="@+id/createForetLayoutRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.foret.CreateForetActivity">
+    tools:context=".ui.main.foret.CreateForetActivity">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"

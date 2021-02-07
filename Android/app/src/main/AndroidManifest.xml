@@ -14,21 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foret"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.login.SignUpInfoActivity"></activity>
-        <activity android:name=".ui.login.SignUpActivity">
+        <activity android:name="com.project.foret.ui.entrance.signIn.SignInActivity"></activity>
+        <activity android:name="com.project.foret.ui.entrance.signUp.SignUpActivity">
+
+        </activity>
+        <activity android:name="com.project.foret.ui.entrance.signUp.SignUpInfoActivity" />
+        <activity android:name="com.project.foret.ui.main.board.CreateBoardActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="@string/title_activity_foret_create" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.login.SignUp2" />
-        <activity android:name=".ui.login.SignUp" />
-        <activity android:name=".ui.board.CreateBoardActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_foret_create"></activity>
-        <activity android:name=".ui.foret.CreateForetActivity" />
+        <activity android:name="com.project.foret.ui.main.foret.CreateForetActivity" />
     </application>
 
 </manifest>

@@ -40,7 +40,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:visibility="invisible"
-            app:srcCompat="@drawable/check" />
+            app:srcCompat="@drawable/icon_check" />
 
     </LinearLayout>
 

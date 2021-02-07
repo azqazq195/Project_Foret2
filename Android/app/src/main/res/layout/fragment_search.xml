@@ -117,12 +117,12 @@
                     android:paddingRight="5dp"
                     android:text="많이 찾는 태그2"
                     android:textColor="@color/textForet"
-                    app:layout_constraintEnd_toStartOf="@+id/button3"
+                    app:layout_constraintEnd_toStartOf="@+id/btnFindPassword"
                     app:layout_constraintStart_toEndOf="@+id/button1"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/btnFindPassword"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
@@ -138,7 +138,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/btnSignUp"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="80dp"
@@ -206,7 +206,7 @@
                     android:layout_width="127dp"
                     android:layout_height="68dp"
                     android:layout_marginEnd="16dp"
-                    android:src="@drawable/cloud"
+                    android:src="@drawable/icon_cloud"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

@@ -66,4 +66,11 @@ interface ForetAPI {
         @Part files: List<MultipartBody.Part>?,
         @Part("board") board: RequestBody
     ): Call<UploadResponse>
+
+    @Multipart
+    @POST("/member/create")
+    suspend fun createMember(
+        @Part files: MultipartBody.Part,
+        @Part("member") member: RequestBody
+    ): Response<UploadResponse>
 }

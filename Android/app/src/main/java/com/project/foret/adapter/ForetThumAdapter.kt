@@ -42,11 +42,11 @@ class ForetThumAdapter : RecyclerView.Adapter<ForetThumAdapter.ForetViewHolder>(
             if (foret.photos != null) {
                 Glide.with(this)
                     .load("${BASE_URL}${foret.photos[0].dir}/${foret.photos[0].filename}")
-                    .error(R.drawable.home_icon_null_image)
+                    .error(R.drawable.icon_null_image)
                     .into(holder.itemView.findViewById(R.id.ivItemForetImage))
             } else {
                 Glide.with(this)
-                    .load(R.drawable.home_icon_null_image)
+                    .load(R.drawable.icon_null_image)
                     .into(holder.itemView.findViewById(R.id.ivItemForetImage))
             }
 

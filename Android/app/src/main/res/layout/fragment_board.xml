@@ -135,7 +135,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:background="@drawable/like_selector"
-                            android:src="@drawable/home_icon_notice"
+                            android:src="@drawable/icon_notice"
                             android:textOff=""
                             android:textOn="" />
 
@@ -181,7 +181,7 @@
                             android:id="@+id/ivForetBoardComment"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/home_icon_notice" />
+                            android:src="@drawable/icon_notice" />
 
                         <TextView
                             android:id="@+id/tvForetBoardComment"
