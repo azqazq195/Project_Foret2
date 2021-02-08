@@ -24,6 +24,7 @@ import com.project.foret.model.Member
 import com.project.foret.model.Region
 import com.project.foret.model.Tag
 import com.project.foret.repository.ForetRepository
+import com.project.foret.ui.main.MainActivity
 import com.project.foret.util.Resource
 import com.project.foret.util.UploadRequestBody
 import com.project.foret.util.getFileName
@@ -401,12 +402,13 @@ class SignUpInfoActivity : AppCompatActivity(), UploadRequestBody.UploadCallback
                 is Resource.Success -> {
                     hideProgressBar()
                     // 멤버 생성 성공
-                    response.data
-                    layoutRoot.snackbar("${response.data?.id} 생성 완료!")
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("id", response.data?.id)
+                    startActivity(intent)
+                    finish()
                 }
                 is Resource.Error -> {
                     hideProgressBar()
-                    layoutRoot.snackbar("${response.data?.message} 생성 완료!")
                 }
                 is Resource.Loading -> {
                     showProgressBar()

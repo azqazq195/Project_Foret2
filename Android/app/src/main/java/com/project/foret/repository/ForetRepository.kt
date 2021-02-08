@@ -4,7 +4,9 @@ import com.project.foret.api.RetrofitInstance
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
 import com.project.foret.model.Foret
+import com.project.foret.model.Member
 import com.project.foret.response.CreateResponse
+import com.project.foret.response.SignInResponse
 import com.project.foret.response.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -47,5 +49,11 @@ class ForetRepository {
 
     suspend fun createMember(files: MultipartBody.Part, member: RequestBody): Response<UploadResponse> =
         RetrofitInstance.api.createMember(files, member)
+
+    suspend fun signIn(member: HashMap<String, String>): Response<SignInResponse> =
+        RetrofitInstance.api.signIn(member)
+
+    suspend fun getMember(member_id: Long) =
+        RetrofitInstance.api.getMember(member_id)
 
 }

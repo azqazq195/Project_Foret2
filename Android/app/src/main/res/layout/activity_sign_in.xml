@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f2ffed">
@@ -85,7 +86,7 @@
             android:textAlignment="center">
 
             <TextView
-                android:id="@+id/btnSignUp"
+                android:id="@+id/tvSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -108,7 +109,7 @@
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/btnFindPassword"
+                android:id="@+id/tvFindPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

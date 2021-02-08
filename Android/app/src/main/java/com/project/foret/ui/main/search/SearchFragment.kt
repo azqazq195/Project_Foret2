@@ -2,10 +2,15 @@ package com.project.foret.ui.main.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -32,8 +37,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(SearchViewModel::class.java)
 
-        ivCreateForet = view.findViewById(R.id.ivCreateForet)
+        setToolbar()
+        setFindViewById(view)
+        setOnClickListener()
+    }
 
+    private fun setFindViewById(view: View){
+        ivCreateForet = view.findViewById(R.id.ivCreateForet)
+    }
+
+    private fun setOnClickListener() {
         ivCreateForet.setOnClickListener{
             val intent = Intent(context, CreateForetActivity::class.java)
             startActivityForResult(intent, 0)
@@ -57,5 +70,28 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }
         }
+    }
+
+    private fun setToolbar() {
+        setHasOptionsMenu(true)
+        val mContext = (activity as MainActivity)
+        mContext.toolbar.setBackgroundColor(
+            ContextCompat.getColor(mContext, R.color.white)
+        )
+        mContext.ivToolbar.setImageDrawable(
+            ContextCompat.getDrawable(mContext, R.drawable.foret_logo)
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_anonymous, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.drawer_menu) {
+            (activity as MainActivity).drawerLayout.openDrawer(GravityCompat.END)
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

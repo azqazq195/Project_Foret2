@@ -4,13 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -63,6 +68,23 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(ForetViewModel::class.java)
 
+
+
+        id = arguments?.getLong("foretId")!!
+        viewModel.getForetDetails(id)
+
+        viewModel.getBoardList(id, 1)
+        viewModel.getBoardList(id, 3)
+
+        setFindViewById(view)
+        setUpRecyclerView()
+        setBoardData()
+        setForetData()
+        setClickListener()
+        setToolbar()
+    }
+
+    private fun setFindViewById(view: View){
         progressBar = view.findViewById(R.id.progressBar)
         ivForet = view.findViewById(R.id.ivForet)
         btnForetSignIn = view.findViewById(R.id.btnForetSignIn)
@@ -78,16 +100,17 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         rvNotice = view.findViewById(R.id.rvForetTag)
         rvFeed = view.findViewById(R.id.rvFeed)
         btnBoardWrite = view.findViewById(R.id.btnBoardWrite)
+    }
 
-        id = arguments?.getLong("foretId")!!
-        viewModel.getForetDetails(id)
-
-        viewModel.getBoardList(id, 1)
-        viewModel.getBoardList(id, 3)
-        setUpRecyclerView()
-        setBoardData()
-        setForetData()
-        setClickListener()
+    private fun setToolbar() {
+        setHasOptionsMenu(true)
+        val mContext = (activity as MainActivity)
+        mContext.toolbar.setBackgroundColor(
+            ContextCompat.getColor(mContext, R.color.textForet)
+        )
+        mContext.ivToolbar.setImageDrawable(
+            ContextCompat.getDrawable(mContext, R.drawable.foret_logo_white)
+        )
     }
 
     private fun setClickListener() {
@@ -259,5 +282,17 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
 
     private fun showProgressBar() {
         progressBar.visibility = View.VISIBLE
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_foret, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.drawer_menu) {
+            (activity as MainActivity).drawerLayout.openDrawer(GravityCompat.END)
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

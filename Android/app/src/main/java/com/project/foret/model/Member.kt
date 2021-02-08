@@ -26,4 +26,9 @@ data class Member(
         tags: MutableList<Tag>,
         regions: MutableList<Region>,
     ) : this(null, name, nickname, email, birth, password, null, tags, regions, null)
+
+    constructor(
+        email:String,
+        password: String
+    ) : this(null, null, null, email, null, password, null, null,null,null)
 }

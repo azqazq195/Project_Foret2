@@ -117,12 +117,12 @@
                     android:paddingRight="5dp"
                     android:text="많이 찾는 태그2"
                     android:textColor="@color/textForet"
-                    app:layout_constraintEnd_toStartOf="@+id/btnFindPassword"
+                    app:layout_constraintEnd_toStartOf="@+id/tvFindPassword"
                     app:layout_constraintStart_toEndOf="@+id/button1"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <Button
-                    android:id="@+id/btnFindPassword"
+                    android:id="@+id/tvFindPassword"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
@@ -138,7 +138,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <Button
-                    android:id="@+id/btnSignUp"
+                    android:id="@+id/tvSignUp"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="80dp"

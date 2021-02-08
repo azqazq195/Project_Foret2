@@ -3,6 +3,7 @@ package com.project.foret.api
 import com.project.foret.model.Board
 import com.project.foret.model.Comment
 import com.project.foret.model.Foret
+import com.project.foret.model.Member
 import com.project.foret.response.*
 import okhttp3.MultipartBody
 import okhttp3.Request
@@ -73,4 +74,14 @@ interface ForetAPI {
         @Part files: MultipartBody.Part,
         @Part("member") member: RequestBody
     ): Response<UploadResponse>
+
+    @GET("/member/signIn")
+    suspend fun signIn(
+        @QueryMap member: HashMap<String, String>
+    ): Response<SignInResponse>
+
+    @GET("/member/{id}")
+    suspend fun getMember(
+        @Path("id") id: Long
+    ): Response<MemberResponse>
 }

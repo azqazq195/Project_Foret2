@@ -4,9 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -79,6 +84,30 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         getBoardData()
         getCommentData()
         setClickListener()
+        setToolbar()
+    }
+
+    private fun setToolbar() {
+        setHasOptionsMenu(true)
+        val mContext = (activity as MainActivity)
+        mContext.toolbar.setBackgroundColor(
+            ContextCompat.getColor(mContext, R.color.white)
+        )
+        mContext.ivToolbar.setImageDrawable(
+            ContextCompat.getDrawable(mContext, R.drawable.foret_logo)
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_anonymous, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.drawer_menu) {
+            (activity as MainActivity).drawerLayout.openDrawer(GravityCompat.END)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun findViewById(view: View) {

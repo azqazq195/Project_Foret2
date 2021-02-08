@@ -7,6 +7,7 @@ import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
 import com.project.foret.response.CreateResponse;
+import com.project.foret.response.SignInResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,24 @@ public class MemberService {
     private MemberPhotoRepository memberPhotoRepository;
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
+
+    public ResponseEntity<Object> signIn(String email, String password) {
+        SignInResponse response = new SignInResponse();
+        if(memberRepository.findByEmail(email).isPresent()){
+            if(memberRepository.findByEmailAndPassword(email, password).isPresent()){
+                Long id = memberRepository.findByEmailAndPassword(email, password).get().getId();
+                response.setId(id);
+                response.setMessage("로그인 성공");
+                return ResponseEntity.ok().body(response);
+            } else {
+                response.setMessage("비밀번호가 다릅니다.");
+                return ResponseEntity.ok().body(response);
+            }
+        } else {
+            response.setMessage("존재하지 않는 이메일입니다.");
+            return ResponseEntity.ok().body(response);
+        }
+    }
 
     public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
         CreateResponse response = new CreateResponse();
