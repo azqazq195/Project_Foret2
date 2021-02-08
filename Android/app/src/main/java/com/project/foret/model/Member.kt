@@ -3,7 +3,7 @@ package com.project.foret.model
 import java.util.*
 
 data class Member(
-    val id: Long?,
+    var id: Long?,
     val name: String?,
     val nickname: String?,
     val email: String?,

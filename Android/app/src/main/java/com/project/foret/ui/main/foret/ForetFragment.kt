@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.foret.ui.main.MainActivity
 import com.project.foret.R
@@ -29,6 +30,7 @@ import com.project.foret.adapter.BoardAdapter
 import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
 import com.project.foret.ui.main.board.CreateBoardActivity
+import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
 import com.project.foret.util.snackbar
 
@@ -67,8 +69,6 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         val viewModelProviderFactory = ForetViewModelProviderFactory(foretRepository)
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(ForetViewModel::class.java)
-
-
 
         id = arguments?.getLong("foretId")!!
         viewModel.getForetDetails(id)
@@ -138,6 +138,8 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
             val intent = Intent(context, CreateBoardActivity::class.java)
             intent.putExtra("foretId", id)
             intent.putExtra("isAnonymous", false)
+            intent.putExtra("memberId", (activity as MainActivity).member?.id)
+            intent.putExtra("memberName", (activity as MainActivity).member?.name)
             startActivityForResult(intent, 0)
         }
     }
@@ -199,6 +201,12 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                         tvForetMaster.text = foretResponse.leader?.name.toString()
                         tvForetRegDate.text = foretResponse.reg_date.toString()
                         tvForetIntroduce.text = foretResponse.introduce
+                        if(foretResponse.photos != null){
+                            Glide.with(this)
+                                .load("${BASE_URL}${foretResponse.photos[0].dir}/${foretResponse.photos[0].filename}")
+                                .into(ivForet)
+                        }
+
                         checkMyStatus(foretResponse)
                     }
                 }
@@ -262,7 +270,7 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
         btnForetStatus.visibility = View.INVISIBLE
         btnForetModify.visibility = View.INVISIBLE
 
-        val memberId = (activity as MainActivity).member_id
+        val memberId = (activity as MainActivity).member?.id
         val foretLeaderId = foret.leader?.id
 
         if (memberId == foretLeaderId) {

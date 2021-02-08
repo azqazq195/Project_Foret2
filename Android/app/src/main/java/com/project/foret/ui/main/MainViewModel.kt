@@ -15,15 +15,15 @@ class MainViewModel(
     val foretRepository: ForetRepository
 ) : ViewModel() {
 
-    val member: MutableLiveData<Resource<MemberResponse>> = MutableLiveData()
+    val member: MutableLiveData<Resource<Member>> = MutableLiveData()
 
-    fun member(member_id: Long) = viewModelScope.launch {
+    fun getMember(member_id: Long) = viewModelScope.launch {
         member.postValue(Resource.Loading())
         val response = foretRepository.getMember(member_id)
         member.postValue(handleMemberResponse(response))
     }
 
-    private fun handleMemberResponse(response: Response<MemberResponse>) : Resource<MemberResponse> {
+    private fun handleMemberResponse(response: Response<Member>) : Resource<Member> {
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)

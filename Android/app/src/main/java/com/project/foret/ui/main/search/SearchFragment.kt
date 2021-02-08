@@ -49,6 +49,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun setOnClickListener() {
         ivCreateForet.setOnClickListener{
             val intent = Intent(context, CreateForetActivity::class.java)
+            intent.putExtra("memberId", (activity as MainActivity).member?.id)
             startActivityForResult(intent, 0)
         }
     }

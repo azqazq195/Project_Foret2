@@ -80,8 +80,8 @@ interface ForetAPI {
         @QueryMap member: HashMap<String, String>
     ): Response<SignInResponse>
 
-    @GET("/member/{id}")
+    @GET("/member/details/{id}")
     suspend fun getMember(
         @Path("id") id: Long
-    ): Response<MemberResponse>
+    ): Response<Member>
 }

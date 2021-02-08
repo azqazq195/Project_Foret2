@@ -53,6 +53,8 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
 
     private var selectedImage = mutableListOf<Uri?>()
     var isAnonymous = true
+    var memberId = 0L
+    var memberName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,7 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
 
         findViewById()
 
+        getIntentData()
         setBoardViewType()
         setOnClickListener()
     }
@@ -94,8 +97,6 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
 
     private fun setOnClickListener() {
         toolbar.findViewById<TextView>(R.id.item_complete).setOnClickListener {
-            Log.e(TAG, "setOnClickListener: ${selectedImage.toString()}", )
-            Log.e(TAG, "setOnClickListener: ${selectedImage.size}", )
         }
 
         btnCreateBoard.setOnClickListener {
@@ -171,7 +172,6 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
         }
 
         // 게시글 처리
-        val memberId = MainActivity().member_id
         val member = Member(memberId)
         val subject = etSubject.text.toString()
         val content = etContent.text.toString()
@@ -246,6 +246,12 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
         }
     }
 
+    private fun getIntentData() {
+        isAnonymous = intent.getBooleanExtra("isAnonymous", true)
+        memberId = intent.getLongExtra("memberId", 0L)
+        memberName = intent.getStringExtra("memberName").toString()
+    }
+
     private fun setAnonymousBoardWriteView() {
         tvWriter.text = ""
         ArrayAdapter.createFromResource(
@@ -262,7 +268,7 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
     }
 
     private fun setForetBoardWriteView() {
-        tvWriter.text = MainActivity().member_name
+        tvWriter.text = memberName
         ArrayAdapter.createFromResource(
             this,
             R.array.spForetBoard,

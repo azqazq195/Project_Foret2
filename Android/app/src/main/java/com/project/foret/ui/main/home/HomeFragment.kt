@@ -53,7 +53,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val viewModelProviderFactory = HomeViewModelProviderFactory(foretRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(HomeViewModel::class.java)
 
-        // layout
+        setFindViewById(view)
+
+        (activity as MainActivity).viewModel.member.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    viewModel.getMyForets((activity as MainActivity).member?.id!!)
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+
+        setToolbar()
+        setUpRecyclerView()
+        setViewPagerChangeListener()
+        setClickListener()
+
+        setForetData()
+        setBoardData()
+    }
+
+    private fun setFindViewById(view: View) {
         progressBar = view.findViewById(R.id.progressBar)
         vpForetImages = view.findViewById(R.id.vpForetImages)
         rvNotice = view.findViewById(R.id.rvForetTag)
@@ -61,15 +87,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         tvForetName = view.findViewById(R.id.tvForetName)
         tvMoreForets = view.findViewById(R.id.tvMoreForets)
         cvNoForet = view.findViewById(R.id.cvNoForet)
-
-        viewModel.getMyForets((activity as MainActivity).member_id)
-
-        setToolbar()
-        setUpRecyclerView()
-        setForetData()
-        setBoardData()
-        setViewPagerChangeListener()
-        setClickListener()
     }
 
     private fun setToolbar() {

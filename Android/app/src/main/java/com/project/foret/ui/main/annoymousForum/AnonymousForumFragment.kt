@@ -102,6 +102,8 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         btnBoardWrite.setOnClickListener {
             val intent = Intent(context, CreateBoardActivity::class.java)
             intent.putExtra("isAnonymous", true)
+            intent.putExtra("memberId", (activity as MainActivity).member?.id)
+            intent.putExtra("memberName", (activity as MainActivity).member?.name)
             startActivityForResult(intent, 0)
         }
     }
@@ -111,7 +113,10 @@ class AnonymousForumFragment : Fragment(R.layout.fragment_anonymousforum) {
         if (requestCode == 0) {
             when (resultCode) {
                 AppCompatActivity.RESULT_OK -> {
-                    val bundle = bundleOf("boardId" to data?.getLongExtra("boardId", 0L))
+                    val bundle = bundleOf(
+                        "boardId" to data?.getLongExtra("boardId", 0L),
+                        "isAnonymous" to true
+                    )
                     view?.findNavController()
                         ?.navigate(
                             R.id.action_anonymousForumFragment_to_boardFragment,

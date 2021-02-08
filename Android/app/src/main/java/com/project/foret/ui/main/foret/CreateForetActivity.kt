@@ -49,10 +49,19 @@ class CreateForetActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
 
     private var selectedImage: Uri? = null
 
+    var memberId = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_foret)
 
+        memberId = intent.getLongExtra("memberId", 0L)
+
+        setFindViewById()
+        setOnClickListener()
+    }
+
+    private fun setFindViewById() {
         createForetLayoutRoot = findViewById(R.id.createForetLayoutRoot)
         layoutRoot = findViewById(R.id.layoutRoot)
         ivCancel = findViewById(R.id.ivCancel)
@@ -64,8 +73,6 @@ class CreateForetActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
         etNumberOfMembers = findViewById(R.id.etNumberOfMembers)
         tvRegionSelect = findViewById(R.id.tvRegionSelect)
         tvTagSelect = findViewById(R.id.tvTagSelect)
-
-        setOnClickListener()
     }
 
     private fun setOnClickListener() {
@@ -303,7 +310,7 @@ class CreateForetActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
         val body = UploadRequestBody(file, "image", this)
 
         // 포레 처리
-        val leader = Member(MainActivity().member_id)
+        val leader = Member(memberId)
         val tag = Tag(tvTagSelect.text.toString())
         val regionString = tvRegionSelect.text.toString()
         val regionSi = regionString.substring(0, regionString.indexOf(" "))

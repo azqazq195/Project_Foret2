@@ -198,8 +198,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     }
 
     private fun createComment() {
-        val memberId = (activity as MainActivity).member_id
-        val member = Member(memberId)
+        val memberId = (activity as MainActivity).member?.id
+        val member = Member(memberId!!)
         val board = Board(arguments?.getLong("boardId")!!)
         val comment = Comment(reCommentToId, etComment.text.toString(), member, board)
         viewModel.createComment(comment)
