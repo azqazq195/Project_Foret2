@@ -7,6 +7,8 @@ import com.project.foret.response.CreateResponse;
 import com.project.foret.response.ForetResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -161,6 +163,29 @@ public class ForetService {
             foretModel.setLeader(memberService.getMember(foret.getLeader().getId()));
             return foretModel;
         } else return null;
+    }
+
+    public ForetResponse getForetsByPage(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+        List<Foret> foretList = foretRepository.findAll(pageRequest).getContent();
+
+        if (foretList.size() > 0) {
+            List<ForetModel> foretModels = new ArrayList<>();
+            for (Foret foret : foretList) {
+                ForetModel foretModel = new ForetModel();
+                foretModel.setId(foret.getId());
+                foretModel.setName(foret.getName());
+                foretModel.setIntroduce(foret.getIntroduce());
+                foretModel.setMax_member(foret.getMax_member());
+                foretModel.setReg_date(foret.getReg_date());
+                foretModel.setTags(getTagList(foret));
+                foretModel.setRegions(getRegionList(foret));
+                foretModel.setPhotos(getPhotoList(foret));
+                foretModel.setMembers(getMemberList(foret));
+                foretModels.add(foretModel);
+            }
+            return new ForetResponse(foretModels);
+        } else return new ForetResponse();
     }
 
     public ForetResponse getForets() {

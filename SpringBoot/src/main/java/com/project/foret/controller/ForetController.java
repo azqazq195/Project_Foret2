@@ -63,4 +63,12 @@ public class ForetController {
     public ForetResponse getMyForets(@RequestParam Long member_id){
         return foretService.getMyForets(member_id);
     }
+
+    @GetMapping("/page")
+    public ForetResponse getForetsByPage(
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        return foretService.getForetsByPage(page, size);
+    }
 }

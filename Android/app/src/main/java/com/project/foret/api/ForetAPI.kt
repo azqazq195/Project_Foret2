@@ -13,6 +13,16 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ForetAPI {
+    @GET("/foret/all")
+    suspend fun getForets(
+    ): Response<ForetResponse>
+
+    @GET("/foret/page")
+    suspend fun getForetsByPage(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<ForetResponse>
+
     @GET("/foret/myForets")
     suspend fun getMyForets(
         @Query("member_id") member_id: Long

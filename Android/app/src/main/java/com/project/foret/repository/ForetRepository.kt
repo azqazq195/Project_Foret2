@@ -14,6 +14,12 @@ import retrofit2.Call
 import retrofit2.Response
 
 class ForetRepository {
+    suspend fun getForets() =
+        RetrofitInstance.api.getForets()
+
+    suspend fun getForetsByPage(page: Int, size: Int) =
+        RetrofitInstance.api.getForetsByPage(page, size)
+
     suspend fun getMyForets(member_id: Long) =
         RetrofitInstance.api.getMyForets(member_id)
 
