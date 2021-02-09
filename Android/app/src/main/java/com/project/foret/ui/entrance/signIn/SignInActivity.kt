@@ -51,7 +51,7 @@ class SignInActivity : AppCompatActivity() {
         setOnClickListener()
         setSignInResponse()
 
-        // autoLogin()
+        autoLogin()
     }
 
     private fun autoLogin() {

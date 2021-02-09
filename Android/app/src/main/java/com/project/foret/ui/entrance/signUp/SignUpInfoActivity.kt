@@ -156,7 +156,7 @@ class SignUpInfoActivity : AppCompatActivity(), UploadRequestBody.UploadCallback
     }
 
     private fun setFinishText() {
-        val name = "성하"
+        val name = intent.getStringExtra("name").toString()
         val spannableString = SpannableString("${name}님")
         spannableString.setSpan(
             ForegroundColorSpan(

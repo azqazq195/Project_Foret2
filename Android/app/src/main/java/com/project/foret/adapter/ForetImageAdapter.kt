@@ -11,7 +11,7 @@ import com.project.foret.R
 import com.project.foret.model.Foret
 import com.project.foret.util.Constants.Companion.BASE_URL
 
-class ForetThumAdapter : RecyclerView.Adapter<ForetThumAdapter.ForetViewHolder>() {
+class ForetImageAdapter : RecyclerView.Adapter<ForetImageAdapter.ForetViewHolder>() {
     inner class ForetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Foret>() {

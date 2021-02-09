@@ -35,7 +35,7 @@
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/drawer_profile"
+                    android:id="@+id/ivDrawerProfile"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_marginRight="15dp"
@@ -60,7 +60,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/drawer_text2"
+                        android:id="@+id/tvDrawerMemberEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -71,7 +71,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/drawer_text3"
+                        android:id="@+id/tvDrawerMemberName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -91,7 +91,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/drawer_text4"
+                    android:id="@+id/tvDrawerMemberRegDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"

@@ -1,5 +1,6 @@
 package com.project.foret.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,17 +20,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.project.foret.R
 import com.project.foret.model.Member
 import com.project.foret.repository.ForetRepository
 import com.project.foret.ui.entrance.signIn.SignInActivity
-import com.project.foret.ui.entrance.signIn.SignInViewModel
-import com.project.foret.ui.entrance.signIn.SignInViewModelProviderFactory
-import com.project.foret.ui.entrance.signUp.SignUpInfoActivity
+import com.project.foret.util.Constants.Companion.BASE_URL
 import com.project.foret.util.Resource
-import com.project.foret.util.snackbar
+import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,16 +71,35 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.foretNavHostFragment) as NavHostFragment
         bottomNavigationView.setupWithNavController(foretNavHostFragment.findNavController())
         setOnClickListener()
-        setMember()
+        setMemberData()
     }
 
-    private fun setMember() {
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
+    private fun setDrawerMember() {
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        val reg_date: String = format.format(member?.reg_date)
+
+        val header: View = drawerNavigationView.getHeaderView(0)
+        header.findViewById<TextView>(R.id.tvDrawerMemberEmail).text = member?.email
+        header.findViewById<TextView>(R.id.tvDrawerMemberName).text = member?.name
+        header.findViewById<TextView>(R.id.tvDrawerMemberRegDate).text = "포레 가입일: $reg_date"
+        if(member?.photos != null) {
+            Glide.with(this)
+                .load("${BASE_URL}${member?.photos?.get(0)?.dir}/${member?.photos?.get(0)?.filename}")
+                .thumbnail(0.1f)
+                .into(header.findViewById(R.id.ivDrawerProfile))
+        }
+
+    }
+
+    private fun setMemberData() {
         viewModel.member.observe(this, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     member = response.data!!
                     member?.id = intent.getLongExtra("id", 0L)
+                    setDrawerMember()
                 }
                 is Resource.Error -> {
                     hideProgressBar()
@@ -131,7 +150,7 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.END)
         }
         tvLogout.setOnClickListener {
-            Log.e("TAG", "setOnClickListener: logout", )
+            Log.e("TAG", "setOnClickListener: logout")
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish()

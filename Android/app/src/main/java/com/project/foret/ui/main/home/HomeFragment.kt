@@ -22,7 +22,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.project.foret.ui.main.MainActivity
 import com.project.foret.R
 import com.project.foret.adapter.BoardAdapter
-import com.project.foret.adapter.ForetThumAdapter
+import com.project.foret.adapter.ForetImageAdapter
 import com.project.foret.model.Board
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Resource
@@ -31,7 +31,7 @@ import com.project.foret.util.ZoomOutPageTransformer
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     lateinit var viewModel: HomeViewModel
-    lateinit var foretThumAdapter: ForetThumAdapter
+    lateinit var foretImageAdapter: ForetImageAdapter
     lateinit var noticeAdapter: BoardAdapter
     lateinit var feedAdapter: BoardAdapter
 
@@ -112,12 +112,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setUpRecyclerView() {
-        foretThumAdapter = ForetThumAdapter()
+        foretImageAdapter = ForetImageAdapter()
         noticeAdapter = BoardAdapter()
         feedAdapter = BoardAdapter()
 
         vpForetImages.apply {
-            adapter = foretThumAdapter
+            adapter = foretImageAdapter
             setPageTransformer(ZoomOutPageTransformer())
         }
         rvNotice.apply {
@@ -131,7 +131,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setClickListener() {
-        foretThumAdapter.setOnItemClickListener {
+        foretImageAdapter.setOnItemClickListener {
             val bundle = bundleOf("foretId" to it.id)
             view?.findNavController()
                 ?.navigate(
@@ -172,7 +172,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         if (foretResponse.total == 0) {
                             showEmpty()
                         } else {
-                            foretThumAdapter.differ.submitList(foretResponse.forets)
+                            foretImageAdapter.differ.submitList(foretResponse.forets)
                             showForets()
                         }
                     }
@@ -228,8 +228,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         vpForetImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                tvForetName.text = foretThumAdapter.differ.currentList[position].name
-                viewModel.getHomeBoardList(foretThumAdapter.differ.currentList[position].id!!)
+                tvForetName.text = foretImageAdapter.differ.currentList[position].name
+                viewModel.getHomeBoardList(foretImageAdapter.differ.currentList[position].id!!)
             }
         })
     }

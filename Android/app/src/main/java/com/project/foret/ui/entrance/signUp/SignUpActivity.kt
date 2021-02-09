@@ -14,7 +14,7 @@ import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
 
-    private val DELAY = 700L
+    private val DELAY = 1000L
 
     private val explainText =
         arrayOf(
