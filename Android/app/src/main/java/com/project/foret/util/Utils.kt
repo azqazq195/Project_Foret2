@@ -1,15 +1,17 @@
 package com.project.foret.util
 
+import android.app.Dialog
 import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View
+import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.snackbar.Snackbar
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import com.project.foret.R
 
-fun View.snackbar(message: String){
+fun View.snackbar(message: String) {
     Snackbar.make(
         this,
         message,
@@ -25,5 +27,18 @@ fun ContentResolver.getFileName(uri: Uri): String {
         name = cursor.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
     }
     return name
+}
+
+fun showLoadingDialog(context: Context): Dialog {
+    val progressDialog = Dialog(context)
+
+    progressDialog.let {
+        it.show()
+        it.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        it.setContentView(R.layout.dialog_loading)
+        it.setCancelable(false)
+        it.setCanceledOnTouchOutside(false)
+        return it
+    }
 }
 

@@ -96,9 +96,6 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
     }
 
     private fun setOnClickListener() {
-        toolbar.findViewById<TextView>(R.id.item_complete).setOnClickListener {
-        }
-
         btnCreateBoard.setOnClickListener {
             createCheckDialog()
         }
@@ -119,6 +116,30 @@ class CreateBoardActivity : AppCompatActivity(), UploadRequestBody.UploadCallbac
                 setPickImageView()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        cancelDialog()
+    }
+
+    private fun cancelDialog() {
+        val alertDialog: AlertDialog = let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setMessage("작성 중인 내용은 저장되지 않습니다!\n\n종료하시겠습니까?")
+                setPositiveButton("종료",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // 생성 취소
+                        setResult(RESULT_CANCELED)
+                        finish()
+                    })
+                setNegativeButton("취소",
+                    DialogInterface.OnClickListener { dialog, id ->
+                    })
+            }
+            builder.create()
+        }
+        alertDialog.show()
     }
 
     private fun setPickImageView() {

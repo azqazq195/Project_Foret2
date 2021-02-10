@@ -1,11 +1,9 @@
 package com.project.foret.repository
 
 import com.project.foret.api.RetrofitInstance
-import com.project.foret.model.Board
 import com.project.foret.model.Comment
-import com.project.foret.model.Foret
-import com.project.foret.model.Member
 import com.project.foret.response.CreateResponse
+import com.project.foret.response.EmailCheckResponse
 import com.project.foret.response.SignInResponse
 import com.project.foret.response.UploadResponse
 import okhttp3.MultipartBody
@@ -16,6 +14,12 @@ import retrofit2.Response
 class ForetRepository {
     suspend fun getForets() =
         RetrofitInstance.api.getForets()
+
+    suspend fun checkEmail(email: String): Response<EmailCheckResponse> =
+        RetrofitInstance.api.checkEmail(email)
+
+    suspend fun signUpForet(foret_id: Long, member_id: Long): Response<UploadResponse> =
+        RetrofitInstance.api.signUpForet(foret_id, member_id)
 
     suspend fun getForetsByPage(page: Int, size: Int) =
         RetrofitInstance.api.getForetsByPage(page, size)

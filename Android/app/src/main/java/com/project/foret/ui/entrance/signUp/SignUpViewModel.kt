@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.foret.repository.ForetRepository
+import com.project.foret.response.EmailCheckResponse
 import com.project.foret.response.UploadResponse
 import com.project.foret.util.Resource
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ class SignUpViewModel(
     val foretRepository: ForetRepository
 ) : ViewModel() {
 
+    val checkEmail: MutableLiveData<Resource<EmailCheckResponse>> = MutableLiveData()
     val createMember: MutableLiveData<Resource<UploadResponse>> = MutableLiveData()
 
     fun createMember(files: MultipartBody.Part, member: RequestBody) = viewModelScope.launch {
@@ -24,6 +26,21 @@ class SignUpViewModel(
     }
 
     private fun handleCreateMemberResponse(response: Response<UploadResponse>) : Resource<UploadResponse> {
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    fun checkEmail(email: String) = viewModelScope.launch {
+        checkEmail.postValue(Resource.Loading())
+        val response = foretRepository.checkEmail(email)
+        checkEmail.postValue(handleCheckEmailResponse(response))
+    }
+
+    private fun handleCheckEmailResponse(response: Response<EmailCheckResponse>) : Resource<EmailCheckResponse> {
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)

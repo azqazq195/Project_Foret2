@@ -13,9 +13,11 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,10 +43,11 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
     lateinit var feedAdapter: BoardAdapter
 
     lateinit var progressBar: ProgressBar
+    lateinit var layoutRoot: ConstraintLayout
 
     lateinit var ivForet: ImageView
     lateinit var btnForetSignIn: Button
-    lateinit var btnForetStatus: Button
+    lateinit var btnForetSignUp: Button
     lateinit var btnForetModify: Button
     lateinit var tvForetName: TextView
     lateinit var tvForetTag: TextView
@@ -71,24 +74,24 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
             ViewModelProvider(this, viewModelProviderFactory).get(ForetViewModel::class.java)
 
         id = arguments?.getLong("foretId")!!
-        viewModel.getForetDetails(id)
 
+        viewModel.getForetDetails(id)
         viewModel.getBoardList(id, 1)
         viewModel.getBoardList(id, 3)
 
         setFindViewById(view)
         setUpRecyclerView()
-        setBoardData()
-        setForetData()
+        setDataObserve()
         setClickListener()
         setToolbar()
     }
 
-    private fun setFindViewById(view: View){
+    private fun setFindViewById(view: View) {
+        layoutRoot = view.findViewById(R.id.layoutRoot)
         progressBar = view.findViewById(R.id.progressBar)
         ivForet = view.findViewById(R.id.ivForet)
         btnForetSignIn = view.findViewById(R.id.btnForetSignIn)
-        btnForetStatus = view.findViewById(R.id.btnForetStatus)
+        btnForetSignUp = view.findViewById(R.id.btnForetSignUp)
         btnForetModify = view.findViewById(R.id.btnForetModify)
         tvForetName = view.findViewById(R.id.tvForetName)
         tvForetTag = view.findViewById(R.id.tvForetTag)
@@ -142,12 +145,16 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
             intent.putExtra("memberName", (activity as MainActivity).member?.name)
             startActivityForResult(intent, 0)
         }
+        btnForetSignUp.setOnClickListener {
+            viewModel.signUp(id, (activity as MainActivity).member?.id!!)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 0){
-            when(resultCode){
+        if (requestCode == 0) {
+            when (resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     val bundle = bundleOf("boardId" to data?.getLongExtra("boardId", 0L))
                     view?.findNavController()
@@ -178,7 +185,7 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setForetData() {
+    private fun setDataObserve() {
         viewModel.foret.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
@@ -197,16 +204,16 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                         }
                         regionList = regionList.substring(0, regionList.length - 2)
                         tvForetRegion.text = regionList
-                        tvForetMember.text = "최대 인원 ${foretResponse.max_member.toString()}"
+                        tvForetMember.text =
+                            "최대 인원 ${foretResponse.members?.size} / ${foretResponse.max_member.toString()}"
                         tvForetMaster.text = foretResponse.leader?.name.toString()
                         tvForetRegDate.text = foretResponse.reg_date.toString()
                         tvForetIntroduce.text = foretResponse.introduce
-                        if(foretResponse.photos != null){
+                        if (foretResponse.photos != null) {
                             Glide.with(this)
                                 .load("${BASE_URL}${foretResponse.photos[0].dir}/${foretResponse.photos[0].filename}")
                                 .into(ivForet)
                         }
-
                         checkMyStatus(foretResponse)
                     }
                 }
@@ -221,9 +228,6 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                 }
             }
         })
-    }
-
-    private fun setBoardData() {
         viewModel.noticeBoardList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
@@ -243,7 +247,6 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                 }
             }
         })
-
         viewModel.feedBoardList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
@@ -263,11 +266,31 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
                 }
             }
         })
+        viewModel.signUp.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { uploadResponse ->
+                        layoutRoot.snackbar(uploadResponse.message)
+                        viewModel.getForetDetails(id)
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "An error occured $message")
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
     }
 
     private fun checkMyStatus(foret: Foret) {
         btnForetSignIn.visibility = View.INVISIBLE
-        btnForetStatus.visibility = View.INVISIBLE
+        btnForetSignUp.visibility = View.INVISIBLE
         btnForetModify.visibility = View.INVISIBLE
 
         val memberId = (activity as MainActivity).member?.id
@@ -275,13 +298,15 @@ class ForetFragment : Fragment(R.layout.fragment_foret) {
 
         if (memberId == foretLeaderId) {
             btnForetModify.visibility = View.VISIBLE
-//        } else if() {
-//            btnForetStatus.visibility = View.INVISIBLE
-        } else {
-            btnForetSignIn.visibility = View.VISIBLE
+            return
         }
-
-
+        for(i in foret.members!!) {
+            if(memberId == i.id) {
+                btnForetSignIn.visibility = View.VISIBLE
+                return
+            }
+        }
+        btnForetSignUp.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {

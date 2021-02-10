@@ -61,6 +61,36 @@ public class ForetService {
 //        }
 //    }
 
+    public CreateResponse signUpForet(Long foret_id, Long member_id) {
+        CreateResponse response = new CreateResponse();
+        if (!memberRepository.findById(member_id).isPresent()) {
+            response.setMessage("존재하지 않는 회원입니다.");
+            return response;
+        }
+        if (!foretRepository.findById(foret_id).isPresent()) {
+            response.setMessage("존재하지 않는 포레입니다.");
+            return response;
+        }
+        if (foretRepository.findByIdAndMembersId(foret_id, member_id).isPresent()) {
+            response.setMessage("이미 가입한 회원입니다.");
+            return response;
+        }
+        Foret foret = foretRepository.findById(foret_id).get();
+        if (foret.getMembers().size() >= foret.getMax_member()) {
+            response.setMessage("정원이 초과되었습니다.");
+            return response;
+        }
+        foret.addMember(memberRepository.findById(member_id).get());
+        Foret savedForet = foretRepository.save(foret);
+        if (foretRepository.findById(savedForet.getId()).isPresent()) {
+            response.setMessage("포레 가입 성공");
+            return response;
+        } else {
+            response.setMessage("포레 가입 성공");
+            return response;
+        }
+    }
+
     public ResponseEntity<Object> createForet(
             Foret model,
             MultipartFile[] files) throws Exception {
@@ -155,6 +185,7 @@ public class ForetService {
             foretModel.setName(foret.getName());
             foretModel.setIntroduce(foret.getIntroduce());
             foretModel.setMax_member(foret.getMax_member());
+            foretModel.setCurrent_member(foret.getMembers().size());
             foretModel.setReg_date(foret.getReg_date());
             foretModel.setTags(getTagList(foret));
             foretModel.setRegions(getRegionList(foret));
@@ -163,6 +194,28 @@ public class ForetService {
             foretModel.setLeader(memberService.getMember(foret.getLeader().getId()));
             return foretModel;
         } else return null;
+    }
+
+    public ForetResponse searchForet(String name){
+        if(name.equals("")) return new ForetResponse();
+        List<Foret> foretList = foretRepository.findByContainingName(name);
+        if (foretList.size() > 0) {
+            List<ForetModel> foretModels = new ArrayList<>();
+            for (Foret foret : foretList) {
+                ForetModel foretModel = new ForetModel();
+                foretModel.setId(foret.getId());
+                foretModel.setName(foret.getName());
+                foretModel.setIntroduce(foret.getIntroduce());
+                foretModel.setMax_member(foret.getMax_member());
+                foretModel.setReg_date(foret.getReg_date());
+                foretModel.setTags(getTagList(foret));
+                foretModel.setRegions(getRegionList(foret));
+                foretModel.setPhotos(getPhotoList(foret));
+                foretModel.setMembers(getMemberList(foret));
+                foretModels.add(foretModel);
+            }
+            return new ForetResponse(foretModels);
+        } else return new ForetResponse();
     }
 
     public ForetResponse getForetsByPage(int page, int size) {

@@ -13,6 +13,17 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ForetAPI {
+    @GET("/member/checkEmail")
+    suspend fun checkEmail(
+        @Query("email") email: String,
+    ): Response<EmailCheckResponse>
+
+    @POST("/foret/signUp")
+    suspend fun signUpForet(
+        @Query("foret_id") foret_id: Long,
+        @Query("member_id") member_id: Long
+    ): Response<UploadResponse>
+
     @GET("/foret/all")
     suspend fun getForets(
     ): Response<ForetResponse>

@@ -274,7 +274,7 @@ class SignUpInfoActivity : AppCompatActivity(), UploadRequestBody.UploadCallback
                 var regionSi = R.array.spRegionGu
                 when (parent?.getItemAtPosition(position)) {
                     " 시/도 " -> regionSi = R.array.spRegionGu
-                    "서울시" -> regionSi = R.array.seuol
+                    "서울" -> regionSi = R.array.seuol
                     "인천" -> regionSi = R.array.incheon
                     "세종" -> regionSi = R.array.sejong
                     "대전" -> regionSi = R.array.daejeon
@@ -282,15 +282,15 @@ class SignUpInfoActivity : AppCompatActivity(), UploadRequestBody.UploadCallback
                     "대구" -> regionSi = R.array.daegu
                     "울산" -> regionSi = R.array.ulsan
                     "부산" -> regionSi = R.array.busan
-                    "경기도" -> regionSi = R.array.gyeonggi
-                    "강원도" -> regionSi = R.array.gangwon
-                    "충청북도" -> regionSi = R.array.chungbuk
-                    "충청남도" -> regionSi = R.array.chungnam
-                    "전라북도" -> regionSi = R.array.jeonbuk
-                    "전라남도" -> regionSi = R.array.jeonnam
-                    "경상북도" -> regionSi = R.array.gyeongbuk
-                    "경상남도" -> regionSi = R.array.gyeongnam
-                    "제주도" -> regionSi = R.array.jeju
+                    "경기" -> regionSi = R.array.gyeonggi
+                    "강원" -> regionSi = R.array.gangwon
+                    "충북" -> regionSi = R.array.chungbuk
+                    "충남" -> regionSi = R.array.chungnam
+                    "전북" -> regionSi = R.array.jeonbuk
+                    "전남" -> regionSi = R.array.jeonnam
+                    "경북" -> regionSi = R.array.gyeongbuk
+                    "경남" -> regionSi = R.array.gyeongnam
+                    "제주" -> regionSi = R.array.jeju
                 }
 
                 // 구 스피너

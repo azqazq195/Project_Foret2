@@ -1,6 +1,7 @@
 package com.project.foret.ui.main
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +49,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ivDrawerCancel: ImageView
     private lateinit var tvLogout: TextView
 
-    var pressedTime: Long = 0
-
     var member: Member? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +71,33 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(foretNavHostFragment.findNavController())
         setOnClickListener()
         setMemberData()
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END)
+            return
+        }
+        cancelDialog()
+    }
+
+    private fun cancelDialog() {
+        val alertDialog: AlertDialog = let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setMessage("Foret을 종료하시겠습니까?")
+                setPositiveButton("종료",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        super.onBackPressed()
+                        finish()
+                    })
+                setNegativeButton("취소",
+                    DialogInterface.OnClickListener { dialog, id ->
+                    })
+            }
+            builder.create()
+        }
+        alertDialog.show()
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
@@ -122,27 +148,6 @@ class MainActivity : AppCompatActivity() {
 
         ivDrawerCancel = findViewById(R.id.ivDrawerCancel)
         tvLogout = findViewById(R.id.tvLogout)
-    }
-
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END)
-            return
-        }
-
-        if (pressedTime == 0L) {
-            Toast.makeText(this@MainActivity, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
-            pressedTime = System.currentTimeMillis()
-        } else {
-            val seconds = (System.currentTimeMillis() - pressedTime) as Int
-            if (seconds > 2000) {
-                Toast.makeText(this@MainActivity, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
-                pressedTime = 0
-            } else {
-                super.onBackPressed()
-                finish()
-            }
-        }
     }
 
     private fun setOnClickListener() {

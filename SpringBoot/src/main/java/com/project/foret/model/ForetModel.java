@@ -13,6 +13,7 @@ public class ForetModel {
     private String name;
     private String introduce;
     private int max_member;
+    private int current_member;
     private Date reg_date;
     private List<TagModel> tags;
     private List<RegionModel> regions;

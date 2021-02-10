@@ -2,6 +2,7 @@ package com.project.foret.controller;
 
 import com.project.foret.entity.Foret;
 import com.project.foret.model.ForetModel;
+import com.project.foret.response.CreateResponse;
 import com.project.foret.response.ForetResponse;
 import com.project.foret.service.ForetService;
 import lombok.AllArgsConstructor;
@@ -70,5 +71,20 @@ public class ForetController {
             @RequestParam int size
     ) {
         return foretService.getForetsByPage(page, size);
+    }
+
+    @PostMapping("/signUp")
+    public CreateResponse signUpForet(
+            @RequestParam Long foret_id,
+            @RequestParam Long member_id
+    ) {
+        return foretService.signUpForet(foret_id, member_id);
+    }
+
+    @GetMapping("/search")
+    public ForetResponse searchForet(
+            @RequestParam String name
+    ) {
+        return foretService.searchForet(name);
     }
 }

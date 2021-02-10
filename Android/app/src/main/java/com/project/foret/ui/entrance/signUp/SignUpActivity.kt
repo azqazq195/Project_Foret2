@@ -5,11 +5,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.project.foret.R
+import com.project.foret.repository.ForetRepository
+import com.project.foret.util.Resource
+import com.project.foret.util.snackbar
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -105,10 +112,16 @@ class SignUpActivity : AppCompatActivity() {
     private var position = 0
     private var prevPosition = 0
     private var isFirst = true
+    lateinit var viewModel: SignUpViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
+
+        val foretRepository = ForetRepository()
+        val viewModelProviderFactory = SignUpViewModelProviderFactory(foretRepository)
+        viewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(SignUpViewModel::class.java)
 
         setFindViewById()
         setDefaultView()
@@ -116,6 +129,7 @@ class SignUpActivity : AppCompatActivity() {
         setOnClickListener()
         setText()
         addTextChangedListener()
+        setCheckEmailObserve()
     }
 
     private fun setAnimation() {
@@ -290,11 +304,21 @@ class SignUpActivity : AppCompatActivity() {
                             runOnUiThread {
                                 if (s.matches(validation[i])) {
                                     if (etInputs[i] != etPassword2) {
-                                        tvErrors[i].visibility = View.INVISIBLE
-                                        ivChecks[i].visibility = View.VISIBLE
-                                        setExplainText()
-                                        requestFocus()
+                                        // 평소
+                                        if (etInputs[i] == etEmail) {
+                                            // 이메일
+                                            Log.e("ss", "run: emailcheck")
+                                            viewModel.checkEmail(etEmail.text.toString().trim())
+                                        } else {
+                                            // 나머지
+                                            tvErrors[i].visibility = View.INVISIBLE
+                                            ivChecks[i].visibility = View.VISIBLE
+                                            setExplainText()
+                                            requestFocus()
+                                        }
+
                                     } else {
+                                        // 비번 확인
                                         if (etPassword1.text.toString() == etPassword2.text.toString()) {
                                             tvErrors[i].visibility = View.INVISIBLE
                                             ivChecks[i].visibility = View.VISIBLE
@@ -333,6 +357,42 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    private fun setCheckEmailObserve() {
+        viewModel.checkEmail.observe(this, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { createResponse ->
+                        if (createResponse.result == "OK") {
+                            tvEmailError.visibility = View.INVISIBLE
+                            ivCheckEmail.visibility = View.VISIBLE
+                            setExplainText()
+                            requestFocus()
+                            layoutRoot.snackbar(createResponse.message)
+                        } else {
+                            tvExplain.text = createResponse.message
+                            tvExplain.setTextColor(
+                                ContextCompat.getColor(
+                                    this,
+                                    R.color.textWarring
+                                )
+                            )
+                            layoutRoot.snackbar(createResponse.message)
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+
+
+    }
+
     private fun isComplete(): Boolean {
         for (i in ivChecks) {
             if (i.visibility == View.INVISIBLE) return false
@@ -341,10 +401,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setText() {
-        for(i in tvErrors.indices){
+        for (i in tvErrors.indices) {
             tvErrors[i].text = errorText[i]
         }
-        for(i in etInputs.indices){
+        for (i in etInputs.indices) {
             etInputs[i].hint = hintText[i]
         }
         tvExplain.text = explainText[0]
@@ -352,7 +412,10 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setExplainText() {
         if (isComplete()) tvExplain.text = "다음 버튼을 눌러주세요."
-        else tvExplain.text = explainText[position]
+        else {
+            tvExplain.text = explainText[position]
+        }
+        tvExplain.setTextColor(ContextCompat.getColor(this, R.color.textForet))
     }
 
     private fun requestFocus() {
@@ -370,5 +433,8 @@ class SignUpActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun showProgressBar() {}
+    private fun hideProgressBar() {}
 }
 

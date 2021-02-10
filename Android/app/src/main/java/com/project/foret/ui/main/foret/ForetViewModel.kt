@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.project.foret.model.Foret
 import com.project.foret.repository.ForetRepository
 import com.project.foret.response.BoardListResponse
+import com.project.foret.response.UploadResponse
 import com.project.foret.util.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -15,8 +16,24 @@ class ForetViewModel(
 ) : ViewModel() {
 
     val foret: MutableLiveData<Resource<Foret>> = MutableLiveData()
+    val signUp: MutableLiveData<Resource<UploadResponse>> = MutableLiveData()
     val noticeBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
     val feedBoardList: MutableLiveData<Resource<BoardListResponse>> = MutableLiveData()
+
+    fun signUp(foret_id: Long, member_id: Long) = viewModelScope.launch {
+        signUp.postValue(Resource.Loading())
+        val response = foretRepository.signUpForet(foret_id, member_id)
+        signUp.postValue(handleSignUpResponse(response))
+    }
+
+    private fun handleSignUpResponse(response: Response<UploadResponse>) : Resource<UploadResponse>{
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
 
     fun getForetDetails(foret_id: Long) = viewModelScope.launch {
         foret.postValue(Resource.Loading())

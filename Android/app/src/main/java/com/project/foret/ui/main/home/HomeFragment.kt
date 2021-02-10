@@ -1,14 +1,15 @@
 package com.project.foret.ui.main.home
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -27,6 +28,7 @@ import com.project.foret.model.Board
 import com.project.foret.repository.ForetRepository
 import com.project.foret.util.Resource
 import com.project.foret.util.ZoomOutPageTransformer
+import com.project.foret.util.showLoadingDialog
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -38,10 +40,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     lateinit var vpForetImages: ViewPager2
     lateinit var rvNotice: RecyclerView
     lateinit var rvFeed: RecyclerView
-    lateinit var progressBar: ProgressBar
+    // lateinit var progressBar: ProgressBar
+    lateinit var progressBar: Dialog
     lateinit var tvForetName: TextView
     lateinit var tvMoreForets: TextView
     lateinit var cvNoForet: CardView
+    lateinit var layoutRoot: ConstraintLayout
 
     private val TAG = "HomFragment"
 
@@ -73,20 +77,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setToolbar()
         setUpRecyclerView()
         setViewPagerChangeListener()
-        setClickListener()
+        setOnClickListener()
 
-        setForetData()
-        setBoardData()
+        setDataObserve()
     }
 
     private fun setFindViewById(view: View) {
-        progressBar = view.findViewById(R.id.progressBar)
+        // progressBar = view.findViewById(R.id.progressBar)
+        progressBar = showLoadingDialog(activity as MainActivity)
         vpForetImages = view.findViewById(R.id.vpForetImages)
         rvNotice = view.findViewById(R.id.rvForetTag)
         rvFeed = view.findViewById(R.id.rvFeed)
         tvForetName = view.findViewById(R.id.tvForetName)
         tvMoreForets = view.findViewById(R.id.tvMoreForets)
         cvNoForet = view.findViewById(R.id.cvNoForet)
+        layoutRoot = view.findViewById(R.id.layoutRoot)
     }
 
     private fun setToolbar() {
@@ -130,7 +135,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun setClickListener() {
+    private fun setOnClickListener() {
         foretImageAdapter.setOnItemClickListener {
             val bundle = bundleOf("foretId" to it.id)
             view?.findNavController()
@@ -162,12 +167,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 )
         }
     }
+    var isLoadedForet = false
+    var isLoadedBoard = false
 
-    private fun setForetData() {
+    private fun setDataObserve() {
         viewModel.forets.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-                    hideProgressBar()
                     response.data?.let { foretResponse ->
                         if (foretResponse.total == 0) {
                             showEmpty()
@@ -176,6 +182,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                             showForets()
                         }
                     }
+                    isLoadedForet = true
+                    hideProgressBar()
                 }
                 is Resource.Error -> {
                     hideProgressBar()
@@ -188,13 +196,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         })
-    }
-
-    private fun setBoardData() {
         viewModel.homeBoardList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
-                    hideProgressBar()
                     response.data?.let { boardResponse ->
                         val noticeBoard: MutableList<Board> = mutableListOf()
                         val feedBoard: MutableList<Board> = mutableListOf()
@@ -210,6 +214,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         noticeAdapter.differ.submitList(noticeBoard)
                         feedAdapter.differ.submitList(feedBoard)
                     }
+                    isLoadedBoard = true
+                    hideProgressBar()
                 }
                 is Resource.Error -> {
                     hideProgressBar()
@@ -235,11 +241,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun hideProgressBar() {
-        progressBar.visibility = View.INVISIBLE
+        // progressBar.visibility = View.INVISIBLE
+        if(isLoadedBoard && isLoadedForet){
+            layoutRoot.visibility = View.VISIBLE
+            progressBar.cancel()
+        }
     }
 
     private fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
+        // progressBar.visibility = View.VISIBLE
+        layoutRoot.visibility = View.INVISIBLE
+        progressBar.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

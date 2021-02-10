@@ -19,6 +19,11 @@ public class MemberController {
 
     private MemberService memberService;
 
+    @GetMapping("/checkEmail")
+    public ResponseEntity<Object> checkEmail(@RequestParam String email) throws Exception {
+        return memberService.checkEmail(email);
+    }
+
     @GetMapping("/signIn")
     public ResponseEntity<Object> signIn(@RequestParam String email, @RequestParam String password) throws Exception {
         return memberService.signIn(email, password);
