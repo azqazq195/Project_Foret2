@@ -21,8 +21,11 @@ class ForetRepository {
     suspend fun signUpForet(foret_id: Long, member_id: Long): Response<UploadResponse> =
         RetrofitInstance.api.signUpForet(foret_id, member_id)
 
-    suspend fun getForetsByPage(page: Int, size: Int) =
-        RetrofitInstance.api.getForetsByPage(page, size)
+    suspend fun getSearchForets(name: String) =
+        RetrofitInstance.api.getSearchForets(name)
+
+    suspend fun getRankForetsByPage(page: Int, size: Int) =
+        RetrofitInstance.api.getRankForetsByPage(page, size)
 
     suspend fun getMyForets(member_id: Long) =
         RetrofitInstance.api.getMyForets(member_id)

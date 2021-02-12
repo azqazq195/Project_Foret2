@@ -38,6 +38,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     lateinit var foretAdapter: ForetAdapter
     lateinit var rvForetRank: RecyclerView
     lateinit var ivCreateForet: ImageView
+    lateinit var tvNullSearchResult: TextView
 
     lateinit var clMyTag: ConstraintLayout
     lateinit var clTagRank: ConstraintLayout
@@ -61,7 +62,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory).get(SearchViewModel::class.java)
 
-        viewModel.getForetsByPage(0, 5)
+        viewModel.getRankForetsByPage(0, 5)
 
         setFindViewById(view)
         setToolbar()
@@ -72,12 +73,38 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun setDataObserve() {
-        viewModel.forets.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.rankForets.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     // hideProgressBar()
                     response.data?.let { foretResponse ->
                         foretAdapter.differ.submitList(foretResponse.forets)
+                    }
+                }
+                is Resource.Error -> {
+                    // hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "An error occured $message")
+                    }
+                }
+                is Resource.Loading -> {
+                    // showProgressBar()
+                }
+            }
+        })
+        viewModel.searchForets.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    // hideProgressBar()
+                    response.data?.let { foretResponse ->
+                        if (foretResponse.total == 0) {
+                            tvNullSearchResult.visibility = View.VISIBLE
+                            rvForetRank.visibility = View.GONE
+                        } else {
+                            tvNullSearchResult.visibility = View.GONE
+                            rvForetRank.visibility = View.VISIBLE
+                            foretAdapter.differ.submitList(foretResponse.forets)
+                        }
                     }
                 }
                 is Resource.Error -> {
@@ -106,6 +133,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         ivCreateForet = view.findViewById(R.id.ivCreateForet)
         rvForetRank = view.findViewById(R.id.rvForetRank)
         tvForetRank = view.findViewById(R.id.tvForetRank)
+        tvNullSearchResult = view.findViewById(R.id.tvNullSearchResult)
 
         clMyTag = view.findViewById(R.id.clMyTag)
         clTagRank = view.findViewById(R.id.clTagRank)
@@ -178,7 +206,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val menuItem = menu.findItem(R.id.action_search)
         val searchView = menuItem.actionView as SearchView
         searchView.queryHint = "포레의 이름으로 찾기"
-        
+
         menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 // 검색 누를 때
@@ -203,7 +231,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 clTagRank.startAnimation(animInRight)
                 clCreateForet.startAnimation(animInRight)
                 tvForetRank.text = "인기 포레"
-                viewModel.getForetsByPage(0, 5)
+                viewModel.getRankForetsByPage(0, 5)
                 return true
             }
         })
@@ -212,6 +240,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             override fun onQueryTextSubmit(query: String): Boolean {
                 tvForetRank.text = "\"${query}\" 검색결과"
                 foretAdapter.differ.submitList(null)
+                viewModel.getSearchForets(query)
                 return false
             }
 
@@ -220,7 +249,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             }
         })
 
-        
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

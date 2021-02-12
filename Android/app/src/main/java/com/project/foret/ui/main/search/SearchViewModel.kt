@@ -12,15 +12,31 @@ import retrofit2.Response
 class SearchViewModel(
     val foretRepository: ForetRepository
 ) : ViewModel() {
-    val forets: MutableLiveData<Resource<ForetResponse>> = MutableLiveData()
+    val rankForets: MutableLiveData<Resource<ForetResponse>> = MutableLiveData()
+    val searchForets: MutableLiveData<Resource<ForetResponse>> = MutableLiveData()
 
-    fun getForetsByPage(page: Int, size: Int) = viewModelScope.launch {
-        forets.postValue(Resource.Loading())
-        val response = foretRepository.getForetsByPage(page, size)
-        forets.postValue(handleForetResponse(response))
+    fun getRankForetsByPage(page: Int, size: Int) = viewModelScope.launch {
+        rankForets.postValue(Resource.Loading())
+        val response = foretRepository.getRankForetsByPage(page, size)
+        rankForets.postValue(handleRankForetResponse(response))
     }
 
-    private fun handleForetResponse(response: Response<ForetResponse>) : Resource<ForetResponse>{
+    private fun handleRankForetResponse(response: Response<ForetResponse>) : Resource<ForetResponse>{
+        if(response.isSuccessful){
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    fun getSearchForets(name: String) = viewModelScope.launch {
+        searchForets.postValue(Resource.Loading())
+        val response = foretRepository.getSearchForets(name)
+        searchForets.postValue(handleSearchForetResponse(response))
+    }
+
+    private fun handleSearchForetResponse(response: Response<ForetResponse>) : Resource<ForetResponse>{
         if(response.isSuccessful){
             response.body()?.let { resultResponse ->
                 return Resource.Success(resultResponse)

@@ -28,8 +28,13 @@ interface ForetAPI {
     suspend fun getForets(
     ): Response<ForetResponse>
 
+    @GET("/foret/search")
+    suspend fun getSearchForets(
+        @Query("name") name: String
+    ): Response<ForetResponse>
+
     @GET("/foret/page")
-    suspend fun getForetsByPage(
+    suspend fun getRankForetsByPage(
         @Query("page") page: Int,
         @Query("size") size: Int
     ): Response<ForetResponse>

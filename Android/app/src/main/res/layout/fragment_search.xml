@@ -241,6 +241,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/clCreateForet">
 
+                <TextView
+                    android:id="@+id/tvNullSearchResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:text="검색 결과 없음"
+                    android:textSize="24sp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+
                 <View
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
@@ -280,7 +293,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvForetRank"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="6dp"
