@@ -12,6 +12,7 @@ import com.project.foret.repository.CommentRepository;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.response.CommentResponse;
 import com.project.foret.response.ForetResponse;
+import com.project.foret.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -62,12 +63,23 @@ public class CommentService {
     }
 
     public ResponseEntity<Object> delete(Long id) {
+        Response response = new Response();
         if (commentRepository.findById(id).isPresent()) {
             commentRepository.deleteById(id);
-            if (commentRepository.findById(id).isPresent())
+            if (commentRepository.findById(id).isPresent()){
+                response.setResult("FAIL");
+                response.setMessage("댓글삭제 실패");
                 return ResponseEntity.unprocessableEntity().body("댓글삭제 실패");
-            else return ResponseEntity.ok().body("댓글삭제 성공");
-        } else return ResponseEntity.badRequest().body("댓글을 찾을 수 없습니다.");
+            }
+            else {
+                response.setResult("OK");
+                response.setMessage("댓글삭제 성공");
+                return ResponseEntity.ok().body(response);
+            }
+        } else {
+            response.setMessage("댓글을 찾을 수 없습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     public CommentModel getComment(Long id) {
@@ -104,6 +116,7 @@ public class CommentService {
         // return memberService.getMember(comment.getMember().getId());
         MemberModel member = memberService.getMember(comment.getMember().getId());
         MemberModel newMember = new MemberModel();
+        newMember.setId(member.getId());
         newMember.setName(member.getName());
         newMember.setNickname(member.getNickname());
         return newMember;

@@ -12,10 +12,12 @@ data class Board(
     val foret: Foret?,
     val photos: MutableList<Photo>?,
     val comments: MutableList<Comment>?,
-    val comment_count: Int?
+    val likes: MutableList<Member>?,
+    val comment_count: Int?,
+    val like_count: Int?
 ) {
     constructor(id: Long)
-            : this(id, null, null, null, null, null, null, null, null, null, null, null)
+            : this(id, null, null, null, null, null, null, null, null, null, null, null, null, null)
     constructor(type: Int, subject: String, content: String, member: Member, foret: Foret?)
-            : this(null,type, null, subject, content, null, null, member, foret, null, null, null)
+            : this(null,type, null, subject, content, null, null, member, foret, null,  null,null, null, null)
 }

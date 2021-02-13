@@ -2,6 +2,7 @@ package com.project.foret.ui.main.board
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -81,8 +83,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
         setUpRecyclerView()
         setBoardView()
-        getBoardData()
-        getCommentData()
+        setDataObserve()
         setClickListener()
         setToolbar()
     }
@@ -129,7 +130,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         layoutReComment = view.findViewById(R.id.layoutReComment)
     }
 
-    private fun getBoardData() {
+    private fun setDataObserve() {
         viewModel.board.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
@@ -150,16 +151,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                 }
             }
         })
-    }
 
-    @SuppressLint("SetTextI18n")
-    private fun getCommentData() {
         viewModel.commentList.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { commentResponse ->
                         tvForetBoardComment.text = "댓글 (${commentResponse.total})"
+                        commentAdapter.differ.submitList(null)
                         commentAdapter.differ.submitList(commentResponse.comments)
                     }
                 }
@@ -174,13 +173,32 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                 }
             }
         })
-
         viewModel.createComment.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?.let { commentResponse ->
                         Snackbar.make(rvComment, "댓글 입력 성공", Snackbar.LENGTH_SHORT).show()
+                        viewModel.getComments(id)
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Log.e(TAG, "An error occured $message")
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+        viewModel.deleteComment.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { defaultResponse ->
+                        Snackbar.make(rvComment, "댓글 삭제 성공", Snackbar.LENGTH_SHORT).show()
                         viewModel.getComments(id)
                     }
                 }
@@ -208,6 +226,30 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         etComment.setText("")
     }
 
+    private fun deleteComment(position: Int) {
+        val comment_id = commentAdapter.differ.currentList[position].id
+        comment_id?.let { viewModel.deleteComment(it) }
+    }
+
+    private fun deleteCommentDialog(position: Int) {
+        val alertDialog: AlertDialog = let {
+            val builder = AlertDialog.Builder((activity as MainActivity))
+            builder.apply {
+                setMessage("댓글을 삭제하시겠습니까?")
+                setPositiveButton("삭제",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // 생성 취소
+                        deleteComment(position)
+                    })
+                setNegativeButton("취소",
+                    DialogInterface.OnClickListener { dialog, id ->
+                    })
+            }
+            builder.create()
+        }
+        alertDialog.show()
+    }
+
     private fun setClickListener() {
         btnCommentWrite.setOnClickListener {
             if (etComment.text.toString().trim() == "") {
@@ -230,18 +272,18 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
             @SuppressLint("SetTextI18n")
             override fun onEditCommentClick(v: View, position: Int) {
-                Log.e(TAG, "onClick: $position 수정")
+                Snackbar.make(rvComment, "수정? 어림도 없지", Snackbar.LENGTH_SHORT).show()
             }
 
             override fun onDeleteCommentClick(v: View, position: Int) {
-                Log.e(TAG, "onClick: $position 삭제")
+                deleteCommentDialog(position)
             }
         })
     }
 
     private fun setUpRecyclerView() {
         boardImageAdapter = BoardImageAdapter()
-        commentAdapter = CommentAdapter(isAnonymous)
+        commentAdapter = CommentAdapter(isAnonymous, (activity as MainActivity).member?.id!!)
         vpBoardImages.apply {
             adapter = boardImageAdapter
             setPageTransformer(ZoomOutPageTransformer())

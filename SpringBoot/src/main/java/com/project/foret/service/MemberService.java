@@ -7,7 +7,7 @@ import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
 import com.project.foret.response.CreateResponse;
-import com.project.foret.response.EmailCheckResponse;
+import com.project.foret.response.Response;
 import com.project.foret.response.SignInResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class MemberService {
     private RegionRepository regionRepository;
 
     public ResponseEntity<Object> checkEmail(String email) {
-        EmailCheckResponse response = new EmailCheckResponse();
+        Response response = new Response();
         if(memberRepository.findByEmail(email).isPresent()){
             response.setResult("FAIL");
             response.setMessage("이미 존재하는 이메일 입니다.");

@@ -51,13 +51,14 @@ class SignInActivity : AppCompatActivity() {
         setOnClickListener()
         setSignInResponse()
 
-        autoLogin()
+        autoLogin1()
     }
-
-    private fun autoLogin() {
-//        etEmail.setText("qwe")
-//        etPassword.setText("qwe")
-
+    private fun autoLogin1() {
+        etEmail.setText("q@f.kk")
+        etPassword.setText("qwe123")
+        signIn()
+    }
+    private fun autoLogin2() {
         etEmail.setText("suth@gmail.com")
         etPassword.setText("qwe123")
         signIn()

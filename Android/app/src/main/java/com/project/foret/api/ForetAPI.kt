@@ -6,7 +6,6 @@ import com.project.foret.model.Foret
 import com.project.foret.model.Member
 import com.project.foret.response.*
 import okhttp3.MultipartBody
-import okhttp3.Request
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
@@ -16,7 +15,7 @@ interface ForetAPI {
     @GET("/member/checkEmail")
     suspend fun checkEmail(
         @Query("email") email: String,
-    ): Response<EmailCheckResponse>
+    ): Response<DefaultResponse>
 
     @POST("/foret/signUp")
     suspend fun signUpForet(
@@ -70,15 +69,7 @@ interface ForetAPI {
         @Path("foret_id") foret_id: Long
     ): Response<Foret>
 
-    @GET("/comment/getComments")
-    suspend fun getComments(
-        @Query("board_id") board_id: Long
-    ): Response<CommentsResponse>
 
-    @POST("/comment/create")
-    suspend fun createComment(
-        @Body comment: Comment
-    ): Response<CreateResponse>
 
     @Multipart
     @POST("/foret/create")
@@ -110,4 +101,20 @@ interface ForetAPI {
     suspend fun getMember(
         @Path("id") id: Long
     ): Response<Member>
+
+    // 댓글
+    @GET("/comment/getComments")
+    suspend fun getComments(
+        @Query("board_id") board_id: Long
+    ): Response<CommentsResponse>
+
+    @POST("/comment/create")
+    suspend fun createComment(
+        @Body comment: Comment
+    ): Response<CreateResponse>
+
+    @DELETE("/comment/delete/{comment_id}")
+    suspend fun deleteComment(
+        @Path("comment_id") comment_id: Long
+    ): Response<DefaultResponse>
 }

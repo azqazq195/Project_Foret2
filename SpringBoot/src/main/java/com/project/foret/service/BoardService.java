@@ -7,6 +7,7 @@ import com.project.foret.model.PhotoModel;
 import com.project.foret.repository.*;
 import com.project.foret.response.BoardResponse;
 import com.project.foret.response.CreateResponse;
+import com.project.foret.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,30 @@ public class BoardService {
     private ForetRepository foretRepository;
 
     private MemberService memberService;
+
+    public ResponseEntity<Object> likeBoard(Long board_id, Long member_id){
+        Response response = new Response();
+        if(!memberRepository.findById(member_id).isPresent()){
+            response.setMessage("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+        if(!boardRepository.findById(board_id).isPresent()){
+            response.setMessage("게시글을 찾을 수 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+        Member member = memberRepository.findById(member_id).get();
+        Board board = boardRepository.findById(board_id).get();
+        if(!member.getLikes().contains(board)){
+            member.addLike(board);
+            memberRepository.save(member);
+            response.setMessage("좋아요");
+        } else {
+            member.removeLike(board);
+            memberRepository.save(member);
+            response.setMessage("싫어요");
+        }
+        return ResponseEntity.ok(response);
+    }
 
     public ResponseEntity<Object> createBoard(Board board, MultipartFile[] files) throws Exception {
         CreateResponse response = new CreateResponse();
@@ -180,6 +205,7 @@ public class BoardService {
                 // boardModel.setPhotos(getPhotoList(board));
                 boardModel.setMember(getMember(board));
                 boardModel.setComment_count(getCommentCount(board));
+                boardModel.setLike_count(getLikeCount(board));
                 boardModels.add(boardModel);
             }
             return new BoardResponse(boardModels);
@@ -236,6 +262,12 @@ public class BoardService {
     private int getCommentCount(Board board) {
         if (board.getComments() != null && board.getComments().size() != 0) {
             return board.getComments().size();
+        } else return 0;
+    }
+
+    private int getLikeCount(Board board){
+        if(board.getMembers() != null && board.getMembers().size() != 0) {
+            return board.getMembers().size();
         } else return 0;
     }
 }

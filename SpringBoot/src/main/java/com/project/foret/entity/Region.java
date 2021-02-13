@@ -15,8 +15,8 @@ public class Region {
     private String regionSi;
     private String regionGu;
 
-    @ManyToMany(targetEntity = Member.class, mappedBy = "tags", cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Member.class, mappedBy = "tags", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Member> members;
-    @ManyToMany(targetEntity = Foret.class, mappedBy = "tags", cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Foret.class, mappedBy = "tags", cascade ={CascadeType.PERSIST, CascadeType.MERGE})
     private List<Foret> forets;
 }

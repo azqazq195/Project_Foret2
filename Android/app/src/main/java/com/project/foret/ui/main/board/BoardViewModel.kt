@@ -8,6 +8,7 @@ import com.project.foret.model.Comment
 import com.project.foret.repository.ForetRepository
 import com.project.foret.response.CommentsResponse
 import com.project.foret.response.CreateResponse
+import com.project.foret.response.DefaultResponse
 import com.project.foret.util.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -23,6 +24,7 @@ class BoardViewModel(
 
     val createBoard: MutableLiveData<Resource<CreateResponse>> = MutableLiveData()
     val createComment: MutableLiveData<Resource<CreateResponse>> = MutableLiveData()
+    val deleteComment: MutableLiveData<Resource<DefaultResponse>> = MutableLiveData()
 
     fun getBoardDetails(board_id: Long) = viewModelScope.launch {
         board.postValue(Resource.Loading())
@@ -54,21 +56,6 @@ class BoardViewModel(
         return Resource.Error(response.message())
     }
 
-//    fun createBoard(board: Board) = viewModelScope.launch {
-//        createBoard.postValue(Resource.Loading())
-//        val response = foretRepository.createBoard(board)
-//        createBoard.postValue(handleCreateBoardResponse(response))
-//    }
-//
-//    private fun handleCreateBoardResponse(response: Response<CreateResponse>): Resource<CreateResponse> {
-//        if (response.isSuccessful) {
-//            response.body()?.let { resultResponse ->
-//                return Resource.Success(resultResponse)
-//            }
-//        }
-//        return Resource.Error(response.message())
-//    }
-
     fun createComment(comment: Comment) = viewModelScope.launch {
         createComment.postValue(Resource.Loading())
         val response = foretRepository.createComment(comment)
@@ -83,4 +70,21 @@ class BoardViewModel(
         }
         return Resource.Error(response.message())
     }
+
+    fun deleteComment(comment_id: Long) = viewModelScope.launch {
+        deleteComment.postValue(Resource.Loading())
+        val response = foretRepository.deleteComment(comment_id)
+        deleteComment.postValue(handleDeleteCommentResponse(response))
+    }
+
+    private fun handleDeleteCommentResponse(response: Response<DefaultResponse>): Resource<DefaultResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+
 }

@@ -176,6 +176,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 is Resource.Success -> {
                     response.data?.let { foretResponse ->
                         if (foretResponse.total == 0) {
+                            isLoadedBoard = true
                             showEmpty()
                         } else {
                             foretImageAdapter.differ.submitList(foretResponse.forets)

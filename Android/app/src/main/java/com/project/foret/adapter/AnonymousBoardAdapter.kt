@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -53,7 +54,7 @@ class AnonymousBoardAdapter : RecyclerView.Adapter<AnonymousBoardAdapter.Anonymo
     ) {
         val board = differ.currentList[position]
         holder.itemView.apply {
-            val spannable1 = SpannableStringBuilder("공감 (0)")
+            val spannable1 = SpannableStringBuilder("공감 (${board.like_count})")
             spannable1.setSpan(
                 ForegroundColorSpan(Color.parseColor("#FF22997b")),
                 4, // start
@@ -88,6 +89,7 @@ class AnonymousBoardAdapter : RecyclerView.Adapter<AnonymousBoardAdapter.Anonymo
             holder.itemView.findViewById<TextView>(R.id.tvAnonyComment).text = spannable2
             holder.itemView.findViewById<TextView>(R.id.tvAnonyRegDate).text =
                 board.reg_date?.substring(0, board.reg_date.indexOf("T"))
+            holder.itemView.findViewById<ToggleButton>(R.id.button_like).isChecked = true
             setOnClickListener {
                 onItemClickListener?.let { it(board) }
             }
