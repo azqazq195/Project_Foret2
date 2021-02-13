@@ -107,7 +107,7 @@
         android:layout_marginEnd="26dp"
         android:layout_marginBottom="26dp"
         android:clickable="true"
-        android:src="@drawable/forum_icon_write"
+        android:src="@drawable/icon_write"
         app:backgroundTint="#FFFFFF"
         app:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"

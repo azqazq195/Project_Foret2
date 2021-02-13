@@ -2,13 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:visibility="visible">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/home_background"
+        android:fillViewport="true"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +56,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_my_foret" />
+                        android:src="@drawable/icon_my_foret" />
                 </LinearLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -153,7 +156,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvForetName">
 
                     <TextView
-                        android:id="@+id/tvForetNotice"
+                        android:id="@+id/tvFavoriteTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="공지사항"
@@ -166,11 +169,11 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_notice" />
+                        android:src="@drawable/icon_notice" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvNotice"
+                    android:id="@+id/rvForetTag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -187,14 +190,16 @@
                 <LinearLayout
                     android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/rvNotice"
-                    tools:layout_editor_absoluteX="6dp">
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rvForetTag">
 
                     <TextView
                         android:id="@+id/tvFeed"
@@ -210,7 +215,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="6dp"
-                        android:src="@drawable/home_icon_new_feed" />
+                        android:src="@drawable/icon_new_feed" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -19,8 +19,18 @@ public class MemberController {
 
     private MemberService memberService;
 
+    @GetMapping("/checkEmail")
+    public ResponseEntity<Object> checkEmail(@RequestParam String email) throws Exception {
+        return memberService.checkEmail(email);
+    }
+
+    @GetMapping("/signIn")
+    public ResponseEntity<Object> signIn(@RequestParam String email, @RequestParam String password) throws Exception {
+        return memberService.signIn(email, password);
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<Object> createMember(Member member, MultipartFile[] files) throws Exception {
+    public ResponseEntity<Object> createMember(@RequestPart Member member, MultipartFile[] files) throws Exception {
         return memberService.createMember(member, files);
     }
 

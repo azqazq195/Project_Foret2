@@ -2,10 +2,12 @@ package com.project.foret.controller;
 
 import com.project.foret.entity.Foret;
 import com.project.foret.model.ForetModel;
+import com.project.foret.response.CreateResponse;
 import com.project.foret.response.ForetResponse;
 import com.project.foret.service.ForetService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,12 +21,19 @@ public class ForetController {
 
     private ForetService foretService;
 
+//    @PostMapping("/photo")
+//    public ResponseEntity<Object> photo(
+//            @RequestPart @Nullable Foret foret,
+//            MultipartFile[] files) throws Exception {
+//        return foretService.photo(files, foret);
+//    }
+
     @PostMapping("/create")
     public ResponseEntity<Object> createForet(
-            @RequestParam Long member_id,
-            Foret foret,
-            MultipartFile[] files) throws Exception {
-        return foretService.createForet(member_id, foret, files);
+            @RequestPart Foret foret,
+            MultipartFile[] files
+    ) throws Exception {
+        return foretService.createForet(foret, files);
     }
 
     @PutMapping("update/{id}")
@@ -54,5 +63,28 @@ public class ForetController {
     @GetMapping("/myForets")
     public ForetResponse getMyForets(@RequestParam Long member_id){
         return foretService.getMyForets(member_id);
+    }
+
+    @GetMapping("/page")
+    public ForetResponse getForetsByPage(
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        return foretService.getForetsByPage(page, size);
+    }
+
+    @PostMapping("/signUp")
+    public CreateResponse signUpForet(
+            @RequestParam Long foret_id,
+            @RequestParam Long member_id
+    ) {
+        return foretService.signUpForet(foret_id, member_id);
+    }
+
+    @GetMapping("/search")
+    public ForetResponse searchForet(
+            @RequestParam String name
+    ) {
+        return foretService.searchForet(name);
     }
 }

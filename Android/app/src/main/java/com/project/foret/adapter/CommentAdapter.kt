@@ -3,14 +3,17 @@ package com.project.foret.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.marginStart
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.project.foret.R
 import com.project.foret.model.Comment
 
-class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+class CommentAdapter(val isAnonymous: Boolean, val member_id: Long) :
+    RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val differCallBack = object : DiffUtil.ItemCallback<Comment>() {
@@ -26,10 +29,6 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
 
     val differ = AsyncListDiffer(this, differCallBack)
 
-    fun replaceTo(comments: List<Comment>){
-        differ.submitList(comments)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         return CommentViewHolder(
             LayoutInflater.from(parent.context).inflate(
@@ -41,26 +40,45 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+
         val comment = differ.currentList[position]
+
+        if(comment.id != comment.group_id){
+            val layoutRoot = holder.itemView.findViewById<LinearLayout>(R.id.layoutRoot)
+            val layoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            layoutParam.setMargins(48,0,0,0)
+            layoutRoot.layoutParams = layoutParam
+        }
+
+
         holder.itemView.apply {
-            holder.itemView.findViewById<TextView>(R.id.tvCommentWriter).text = comment.member?.name
-            holder.itemView.findViewById<TextView>(R.id.tvCommentContent).text = comment.content
-            holder.itemView.findViewById<TextView>(R.id.tvCommentRegDate).text =
+            if (isAnonymous)
+                this.findViewById<TextView>(R.id.tvCommentWriter).text =
+                    comment.member?.nickname
+            else
+                this.findViewById<TextView>(R.id.tvCommentWriter).text =
+                    comment.member?.name
+            this.findViewById<TextView>(R.id.tvCommentContent).text = comment.content
+            this.findViewById<TextView>(R.id.tvCommentRegDate).text =
                 comment.reg_date?.substring(0, comment.reg_date.indexOf("T"))
-            holder.itemView.findViewById<TextView>(R.id.tvReComment).setOnClickListener {
+            this.findViewById<TextView>(R.id.tvReComment).setOnClickListener {
                 onClickListener.onReCommentClick(it, position)
             }
-            holder.itemView.findViewById<TextView>(R.id.tvEditComment).setOnClickListener {
+            this.findViewById<TextView>(R.id.tvEditComment).setOnClickListener {
                 onClickListener.onEditCommentClick(it, position)
             }
-            holder.itemView.findViewById<TextView>(R.id.tvDeleteComment).setOnClickListener {
+            this.findViewById<TextView>(R.id.tvDeleteComment).setOnClickListener {
                 onClickListener.onDeleteCommentClick(it, position)
+            }
+            if(member_id != comment.member?.id){
+                this.findViewById<TextView>(R.id.tvEditComment).visibility = View.INVISIBLE
+                this.findViewById<TextView>(R.id.tvDeleteComment).visibility = View.INVISIBLE
             }
         }
     }
 
     interface OnClickListener {
-        fun onReCommentClick(v: View, position: Int)
+        fun onReCommentClick(v: View, position: Int)        // == onClickListener
         fun onEditCommentClick(v: View, position: Int)
         fun onDeleteCommentClick(v: View, position: Int)
     }

@@ -6,6 +6,9 @@ import com.project.foret.repository.MemberPhotoRepository;
 import com.project.foret.repository.MemberRepository;
 import com.project.foret.repository.RegionRepository;
 import com.project.foret.repository.TagRepository;
+import com.project.foret.response.CreateResponse;
+import com.project.foret.response.Response;
+import com.project.foret.response.SignInResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,17 +35,51 @@ public class MemberService {
     private TagRepository tagRepository;
     private RegionRepository regionRepository;
 
+    public ResponseEntity<Object> checkEmail(String email) {
+        Response response = new Response();
+        if(memberRepository.findByEmail(email).isPresent()){
+            response.setResult("FAIL");
+            response.setMessage("이미 존재하는 이메일 입니다.");
+            return ResponseEntity.ok().body(response);
+        } else {
+            response.setResult("OK");
+            response.setMessage("사용 가능한 이메일 입니다.");
+            return ResponseEntity.ok().body(response);
+        }
+    }
+
+    public ResponseEntity<Object> signIn(String email, String password) {
+        SignInResponse response = new SignInResponse();
+        if(memberRepository.findByEmail(email).isPresent()){
+            if(memberRepository.findByEmailAndPassword(email, password).isPresent()){
+                Long id = memberRepository.findByEmailAndPassword(email, password).get().getId();
+                response.setId(id);
+                response.setMessage("로그인 성공");
+                return ResponseEntity.ok().body(response);
+            } else {
+                response.setMessage("비밀번호가 다릅니다.");
+                return ResponseEntity.ok().body(response);
+            }
+        } else {
+            response.setMessage("존재하지 않는 이메일입니다.");
+            return ResponseEntity.ok().body(response);
+        }
+    }
+
     public ResponseEntity<Object> createMember(Member model, MultipartFile[] files) throws Exception {
+        CreateResponse response = new CreateResponse();
         Member newMember = new Member();
         if (memberRepository.findByEmail(model.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("이미 사용중인 이메일 입니다. 회원가입 실패");
+            response.setMessage("이미 사용중인 이메일 입니다. 회원가입 실패");
+            return ResponseEntity.badRequest().body(response);
         } else {
             newMember.setName(model.getName());
             newMember.setEmail(model.getEmail());
             newMember.setPassword(model.getPassword());
             newMember.setNickname(model.getNickname());
             newMember.setBirth(model.getBirth());
-            newMember.setDeviceToken(model.getDeviceToken());
+            // newMember.setDeviceToken(model.getDeviceToken());
+            newMember.setDeviceToken("token");
             if (model.getTags() != null) {
                 for (Tag tag : model.getTags()) {
                     newMember.addTag(tagRepository.findByTagName(tag.getTagName()).get());
@@ -60,9 +97,15 @@ public class MemberService {
             }
             // 포레
             Member savedMember = memberRepository.save(newMember);
-            if (memberRepository.findById(savedMember.getId()).isPresent())
-                return ResponseEntity.ok("회원가입 성공");
-            else return ResponseEntity.unprocessableEntity().body("회원가입 실패");
+            if (memberRepository.findById(savedMember.getId()).isPresent()){
+                response.setMessage("회원가입 성공");
+                response.setId(savedMember.getId());
+                return ResponseEntity.ok(response);
+            }
+            else {
+                response.setMessage("회원가입 실패");
+                return ResponseEntity.unprocessableEntity().body(response);
+            }
         }
     }
 

@@ -11,5 +11,11 @@ data class Foret (
     val reg_date: Date?,
     val photos: MutableList<Photo>?,
     val tags: MutableList<Tag>?,
-    val regions: MutableList<Region>?
-)
+    val regions: MutableList<Region>?,
+    val members: MutableList<Member>?
+) {
+    constructor(id: Long) :
+            this(id, null, null,null, null, null, null, null, null, null)
+    constructor(leader: Member, name: String, introduce: String, max_member: Int, tags: MutableList<Tag>, regions: MutableList<Region>) :
+            this(null, leader, name, introduce, max_member, null, null, tags, regions, null)
+}

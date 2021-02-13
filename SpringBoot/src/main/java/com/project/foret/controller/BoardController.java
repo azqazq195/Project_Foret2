@@ -1,8 +1,10 @@
 package com.project.foret.controller;
 
 import com.project.foret.entity.Board;
+import com.project.foret.entity.Foret;
 import com.project.foret.model.BoardModel;
 import com.project.foret.response.BoardResponse;
+import com.project.foret.response.Response;
 import com.project.foret.service.BoardService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,17 @@ public class BoardController {
 
     private BoardService boardService;
 
+    @PostMapping("/like")
+    public ResponseEntity<Object> likeBoard(
+            @RequestParam Long board_id,
+            @RequestParam Long member_id
+    ) {
+        return boardService.likeBoard(board_id, member_id);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Object> createBoard(
-            @RequestBody Board board,
+            @RequestPart Board board,
             MultipartFile[] files
     ) throws Exception {
         return boardService.createBoard(board, files);

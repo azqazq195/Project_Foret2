@@ -1,6 +1,5 @@
 package com.project.foret.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,11 +43,11 @@ class BoardImageAdapter : RecyclerView.Adapter<BoardImageAdapter.BoardViewHolder
             if (photo != null) {
                 Glide.with(this)
                     .load("${BASE_URL}${photo.dir}/${photo.filename}")
-                    .error(R.drawable.home_icon_null_image)
+                    .error(R.drawable.icon_null_image)
                     .into(holder.itemView.findViewById(R.id.ivBoardImage))
             } else {
                 Glide.with(this)
-                    .load(R.drawable.home_icon_null_image)
+                    .load(R.drawable.icon_null_image)
                     .into(holder.itemView.findViewById(R.id.ivBoardImage))
             }
         }

@@ -6,6 +6,8 @@ import com.project.foret.model.MemberModel;
 import com.project.foret.model.PhotoModel;
 import com.project.foret.repository.*;
 import com.project.foret.response.BoardResponse;
+import com.project.foret.response.CreateResponse;
+import com.project.foret.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,6 @@ import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -34,13 +35,35 @@ public class BoardService {
     private BoardPhotoRepository boardPhotoRepository;
     private MemberRepository memberRepository;
     private ForetRepository foretRepository;
-    private CommentRepository commentRepository;
 
     private MemberService memberService;
-    private CommentService commentService;
+
+    public ResponseEntity<Object> likeBoard(Long board_id, Long member_id){
+        Response response = new Response();
+        if(!memberRepository.findById(member_id).isPresent()){
+            response.setMessage("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+        if(!boardRepository.findById(board_id).isPresent()){
+            response.setMessage("게시글을 찾을 수 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+        Member member = memberRepository.findById(member_id).get();
+        Board board = boardRepository.findById(board_id).get();
+        if(!member.getLikes().contains(board)){
+            member.addLike(board);
+            memberRepository.save(member);
+            response.setMessage("좋아요");
+        } else {
+            member.removeLike(board);
+            memberRepository.save(member);
+            response.setMessage("싫어요");
+        }
+        return ResponseEntity.ok(response);
+    }
 
     public ResponseEntity<Object> createBoard(Board board, MultipartFile[] files) throws Exception {
-        HashMap<String, String> map = new HashMap<>();
+        CreateResponse response = new CreateResponse();
         if (files != null) {
             for (MultipartFile photo : files) {
                 board.addPhoto(uploadPhoto(photo));
@@ -48,12 +71,12 @@ public class BoardService {
         }
         Board savedBoard = boardRepository.save(board);
         if (boardRepository.findById(savedBoard.getId()).isPresent()) {
-            map.put("result", "게시글 생성 성공");
-            map.put("id", savedBoard.getId().toString());
-            return ResponseEntity.ok(map);
+            response.setMessage("게시글 생성 성공");
+            response.setId(savedBoard.getId());
+            return ResponseEntity.ok(response);
         } else {
-            map.put("result", "게시글 생성 실패");
-            return ResponseEntity.unprocessableEntity().body(map);
+            response.setMessage("게시글 생성 실패");
+            return ResponseEntity.unprocessableEntity().body(response);
         }
     }
 
@@ -138,7 +161,7 @@ public class BoardService {
 
     public BoardResponse getForetBoardList(Long foret_id, int type) {
         if (foretRepository.findById(foret_id).isPresent()) {
-            List<Board> boardList = boardRepository.findByForetIdAndTypeOrderById(foret_id, type);
+            List<Board> boardList = boardRepository.findByForetIdAndTypeOrderByIdDesc(foret_id, type);
             if (boardList.size() > 0) {
                 List<BoardModel> boardModels = new ArrayList<>();
                 for (Board board : boardList) {
@@ -160,11 +183,10 @@ public class BoardService {
         } else return new BoardResponse();
     }
 
-
     public BoardResponse getAnonymousBoardList(int order) {
         List<Board> boardList = new ArrayList<>();
         if (order == 1) {
-            boardList = boardRepository.findByTypeOrderById(4);
+            boardList = boardRepository.findByTypeOrderByIdDesc(4);
         } else if (order == 2) {
             boardList = boardRepository.findByTypeOrderByCommentCount(4);
         }
@@ -183,6 +205,7 @@ public class BoardService {
                 // boardModel.setPhotos(getPhotoList(board));
                 boardModel.setMember(getMember(board));
                 boardModel.setComment_count(getCommentCount(board));
+                boardModel.setLike_count(getLikeCount(board));
                 boardModels.add(boardModel);
             }
             return new BoardResponse(boardModels);
@@ -239,6 +262,12 @@ public class BoardService {
     private int getCommentCount(Board board) {
         if (board.getComments() != null && board.getComments().size() != 0) {
             return board.getComments().size();
+        } else return 0;
+    }
+
+    private int getLikeCount(Board board){
+        if(board.getMembers() != null && board.getMembers().size() != 0) {
+            return board.getMembers().size();
         } else return 0;
     }
 }

@@ -39,6 +39,19 @@ public class Member {
     private List<Board> boards;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+    @ManyToMany(targetEntity = Board.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Board> likes;
+
+    public void addLike(Board board) {
+        if (likes == null) {
+            likes = new ArrayList<>();
+        }
+        likes.add(board);
+    }
+
+    public void removeLike(Board board) {
+        likes.remove(board);
+    }
 
     public void addTag(Tag tag) {
         if (tags == null) {

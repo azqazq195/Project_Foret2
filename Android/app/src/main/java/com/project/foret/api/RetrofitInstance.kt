@@ -1,8 +1,6 @@
 package com.project.foret.api
 
-import com.google.gson.GsonBuilder
 import com.project.foret.util.Constants.Companion.BASE_URL
-import com.project.foret.util.Constants.Companion.BASE_URL2
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +17,7 @@ class RetrofitInstance {
                 .build()
 
             Retrofit.Builder()
-                .baseUrl(BASE_URL2)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

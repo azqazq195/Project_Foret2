@@ -34,6 +34,8 @@ public class Board {
     private List<BoardPhoto> photos;
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+    @ManyToMany(targetEntity = Member.class, mappedBy = "likes", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Member> members;
 
     public void addPhoto(BoardPhoto boardPhoto) {
         if (photos == null) {
